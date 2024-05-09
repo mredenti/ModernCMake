@@ -323,3 +323,33 @@ $ module load cmake/3.21.4
 
 
 
+## Agenda 
+
+Lunch Break
+Episode 6: Advanced CMake Features
+Generator expressions
+Functions and Macros
+Scripting in CMake
+Exercise: Create a CMake macro for repetitive tasks.
+Episode 7: Testing with CMake
+Adding tests with CTest
+Test-driven development with CMake
+Exercise: Write and add several tests to the existing CMake project.
+Episode 8: Installing and Packaging with CMake
+Install commands
+CPack for packaging
+Exercise: Write CMake install rules and generate a package.
+Episode 9: Managing Large Projects
+Organizing a project with subdirectories
+Interface libraries
+Managing dependencies
+Exercise: Refactor the project to use subdirectories.
+Episode 10: Modern CMake Practices
+Usage of modern CMake commands and targets
+Avoiding common pitfalls
+CMake project review and Q&A
+Exercise: Participants review each other's CMake projects and provide feedback.
+Conclusion and Wrap-Up
+Recap of the workshop
+Additional resources for further learning
+Feedback and workshop evaluation

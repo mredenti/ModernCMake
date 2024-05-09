@@ -286,23 +286,26 @@ $ cmake --build ./build --target help
 and can be chosen individually
 
 ```{.bash style=bashstyle}
-$ cmake --build . --target
+$ cmake --build ./build --target hello.s
 ```
 
+<!-- 
+  test 
+  install 
+  package
 
-## More 
+  For more complex projects, with a test stage and installation rules, CMake will generate
+  additional convenience targets:
+  test (or RUN_TESTS with the Visual Studio generator) will run the test suite
+  with the help of CTest. We will discuss testing and CTest extensively in Chapter
+  4, Creating and Running Tests.
+  install, will execute the installation rules for the project. We will discuss
+  installation rules in Chapter 10, Writing an Installer.
 
-For more complex projects, with a test stage and installation rules, CMake will generate
-additional convenience targets:
-test (or RUN_TESTS with the Visual Studio generator) will run the test suite
-with the help of CTest. We will discuss testing and CTest extensively in Chapter
-4, Creating and Running Tests.
-install, will execute the installation rules for the project. We will discuss
-installation rules in Chapter 10, Writing an Installer.
-
-package, this target will invoke CPack to generate a redistributable package for
-the project. Packaging and CPack will be discussed in Chapter 11, Packaging
-Projects.
+  package, this target will invoke CPack to generate a redistributable package for
+  the project. Packaging and CPack will be discussed in Chapter 11, Packaging
+  Projects.
+-->
 
 ## Switching Generators (Ninja)
 
@@ -524,49 +527,3 @@ Exercise. Configure a project to use a different compiler.
 ## {.standout}
 
 Exercise. Modify the CMake project to support multiple build types
-
-
-## Libraries
-
-
-## {.standout}
-
-Move to the cluster
-
-
-## CMake style 
-
-
-Lunch Break
-Episode 6: Advanced CMake Features
-Generator expressions
-Functions and Macros
-Scripting in CMake
-Exercise: Create a CMake macro for repetitive tasks.
-Episode 7: Testing with CMake
-Adding tests with CTest
-Test-driven development with CMake
-Exercise: Write and add several tests to the existing CMake project.
-Episode 8: Installing and Packaging with CMake
-Install commands
-CPack for packaging
-Exercise: Write CMake install rules and generate a package.
-Episode 9: Managing Large Projects
-Organizing a project with subdirectories
-Interface libraries
-Managing dependencies
-Exercise: Refactor the project to use subdirectories.
-Episode 10: Modern CMake Practices
-Usage of modern CMake commands and targets
-Avoiding common pitfalls
-CMake project review and Q&A
-Exercise: Participants review each other's CMake projects and provide feedback.
-Conclusion and Wrap-Up
-Recap of the workshop
-Additional resources for further learning
-Feedback and workshop evaluation
-
-
-## Workflow
-
-![CMake Project Files Generation Steps](./fig/CMakeProjectFilesGenerationSteps.png)
