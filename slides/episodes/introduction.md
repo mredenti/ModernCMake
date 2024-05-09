@@ -41,7 +41,7 @@ Autotools (a.k.a. Autohell)
 
 ## NEED FOR MODERN TOOLS... CMAKE
 
-popularity or something else
+a picture with google trends would probably suffice
 
 ## OLD
 
@@ -111,7 +111,7 @@ popularity or something else
 
 - **C**ross Platform **Make** is an open-source **build system generator**.
 
-- Plain text files describing the project are parsed to generate project files (Makefiles, ...) for many build systems (Make, Visual Studio, ...) and platforms 
+- It uses scripts called **CMakeLists.txt** to generate build files for a specific environment (Makefiles, ...)
 
 - Family of tools 
   - Build $\Rightarrow$ **CMake**
@@ -138,6 +138,26 @@ generators
 ## Interest over time
 
 ## History
+
+## Key Features 
+
+Cross-platform (Linux, macOS, Windows, ...)
+
+Open source 
+
+Great effort on maintaning backwards-compatibility with older scripts 
+
+Generates project files for major IDEs / build tools 
+
+  - Make
+  - Ninja
+  - Microsoft Visual Studio 
+  - Xcode  
+
+Direct CMake integration 
+
+  - Microsoft Visual Studio 2017...20??
+  - JetBrains CLion
 
 ## Key Features
 
