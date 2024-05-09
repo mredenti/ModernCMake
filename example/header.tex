@@ -1,0 +1,99 @@
+\usetheme{metropolis}
+\setmonofont{Fantasque Sans Mono}
+\makeatletter
+\beamer@ignorenonframefalse
+\makeatother
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+\usepackage{tikz}
+\definecolor{commentgreen}{RGB}{2,112,10}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{lightcommentgreen2}{RGB}{120, 180, 120}
+\definecolor{lightcommentgreen}{RGB}{175, 225, 175}
+\definecolor{eminence}{RGB}{108,48,130}
+\definecolor{weborange}{RGB}{255,117,24}
+\definecolor{frenchplum}{RGB}{129,20,83}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{verdeacqua}{RGB}{130, 150, 240}
+
+\lstset {
+    language=C++,
+    %frame=tb,
+    frame=single,  % Frame around code
+    frameround=tttt, % tttt means all four corners are rounded
+    rulecolor=\color{gray!50}, % Frame color, 50% gray
+    backgroundcolor=\color{gray!8}, % Background color, 20% gray
+    tabsize=4,
+    showstringspaces=false,
+    %numbers=left,
+    %upquote=true,
+    commentstyle=\color{commentgreen},
+    keywordstyle=\color{eminence},
+    stringstyle=\color{red},
+    basicstyle=\small\ttfamily, % basic font setting
+    emph={int,char,double,float,unsigned,void,bool,accessor,host_accessor,buffer,queue,handler,id,range,device,group,h_item,event},
+    emphstyle={\color{blue}},
+    % escapechar=\&,
+    % keyword highlighting
+    classoffset=1, % starting new class
+    otherkeywords={>,<,.,;,-,!,=,~,&},
+    morekeywords={>,<,.,;,-,!,=,~,&},
+    keywordstyle=\color{weborange},
+    classoffset=0,
+    morecomment=[l][\color{mymauve}]{\#},
+}
+
+\lstdefinelanguage{bash}{
+    morekeywords={echo, ls, cd, pwd, export, unset, exit}, % Add your common Bash commands here
+    morecomment=[l]{\#},  % Define how comments are marked
+    morestring=[b]",     % Define string delimiters
+    morestring=[b]'      % Define char delimiters
+}
+
+\lstdefinestyle{bashstyle}{
+    language=bash,
+    frame=single,  % Frame around code
+    frameround=tttt, % tttt means all four corners are rounded
+    rulecolor=\color{gray!50}, % Frame color, 50% gray
+    backgroundcolor=\color{gray!8}, % Background color, 20% gray
+}
+
+\lstdefinelanguage{CMake}{
+    keywords={cmake_minimum_required, 
+              project, 
+              add_executable, 
+              add_library,
+              include,
+              set,
+              message},
+    morecomment=[l]{\#}, 
+    morestring=[b]",
+    morestring=[b]',
+}
+
+
+\lstdefinestyle{cmakestyle}{
+  language=CMake,
+  frame=single,  % Frame around code
+  frameround=tttt, % tttt means all four corners are rounded
+  rulecolor=\color{gray!50}, % Frame color, 50% gray
+  backgroundcolor=\color{gray!8}, % Background color, 20% gray
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{verdeacqua},
+  commentstyle=\color{commentgreen},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  tabsize=4,
+  classoffset=1,                      % Starting a new class for additional keywords
+  morekeywords={VERSION,
+                LANGUAGES,
+                REQUIRED,
+                QUIET,
+                STATIC, 
+                SHARED,
+                MODULE,
+                STATUS},  % List of additional keywords
+  keywordstyle=\color{red},           % Style for additional keywords
+  classoffset=0,                      % Resetting classoffset to zero
+  % ... other CMake-specific settings ...
+}

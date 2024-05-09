@@ -32,7 +32,7 @@ def plantuml(key, value, format_, _):
 
                 subprocess.check_call(PLANTUML_BIN.split() + ["-t" + filetype, src])
                 sys.stderr.write('Created image ' + dest + '\n')
-
+                
             return Para([Image([ident, [], keyvals], caption, [dest, typef])])
 
 
