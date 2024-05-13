@@ -4,8 +4,7 @@ aspectratio: 169
 
 # BASIC STEPS WITH CMAKE
 
-## HELLO CMAKE!
-
+## HELLO WORLD WITH CMAKE!
 
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
@@ -19,8 +18,8 @@ aspectratio: 169
 
 ```c++
 //hello.cpp
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 
 int main(){
   std::cout << "Hello World!\n";
@@ -94,19 +93,31 @@ $ cmake -B ./build -S ./hello-world
 
 $ cmake --build ./build 
 
-$ ./build/hello-cmake
+$ ./build/hello_world
 ```
 
 :::
 ::::::::::::::
 
-## From a single source file to an executable - CMakeLists.txt
+<!--
+
+  The case of CMake commands and variables does not matter: the DSL is case-insensitive. However, the plain-text files that CMake parses must be called CMakeLists.txt and the case matters!
+
+  The -S switch specifies which source directory CMake should scan: this is the folder containing the root CMakeLists.txt, i.e. the one containing the project command. By default, CMake will allow in-source builds, i.e. storing build artifacts alongside source files. This is not good practice: you should always keep build artifacts from sources separate. Fortunately, the -B switch helps with that, as it is used to give where to store build artifacts, including the generated build system.
+
+-->
+
+
+## CMAKE_MINIMUM_REQUIRED()
+  
+```{.cmake style=cmakestyle}
+cmake_minimum_required(VERSION 3.12)
+```
 
 - Every CMake project requires setting the minimally required version(s).
-  
-  ```{.cmake style=cmakestyle}
-  cmake_minimum_required(VERSION 3.12)
-  ```
+
+- A fatal error will be issued if a version of CMake lower than the required one is used.
+
 
 <!-- 
   The CMake language is case insensitive, but the arguments are
@@ -115,7 +126,7 @@ $ ./build/hello-cmake
   However, CMake gives no guidance what this version may be, and a lot of projects just take the current CMake version or whatever the IDE is proposing as default. This is a problem, because some platforms don't always provide the latest CMake version, and a lot of trial and error is needed before projects can be used. -> there are tools that can determine the minimal working version of CMake
 -->
 
-. . . 
+## PROJECT
 
 <!-- 
   In CMake, C++ is the default programming language. However, we
@@ -130,8 +141,7 @@ $ ./build/hello-cmake
   ```
   CMake will set various project-specific variables (`PROJECT_NAME`, `PROJECT_SOURCE_DIR`, ...) and determine the compiler(s) based on the specified language(s)
 
-. . . 
-
+## ADD_EXECUTABLE()
 
 - Add the `hello_world` executable **TARGET** to be built from `hello.cpp`
 
@@ -140,6 +150,8 @@ $ ./build/hello-cmake
   ```
 
 <!-- 
+  We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables.
+
   All the above are built-in commands provided by CMake, part of CMake's internal implementation and one of its core commands.
 -->
 
@@ -346,11 +358,86 @@ $ cmake --build ./build --target hello.s
 
 
 
+# CREATING A LIBRARY 
 
+## ADD_LIBRARY()
+
+- add_library(message STATIC Message.hpp Message.cpp): This will
+generate the necessary build tool instructions for compiling the specified sources into a library.
+
+
+- The first argument to add_library is the name of the target. The
+same name can be used throughout CMakeLists.txt to refer to the library. The
+actual name of the generated library will be formed by CMake by adding the
+prefix lib in front and the appropriate extension as a suffix. The library
+extension is determined based on the second argument, STATIC or SHARED, and
+the operating system.
+
+- target_link_libraries(hello-world message): Links the library into the
+executable. This command will also guarantee that the hello-world executable
+properly depends on the message library. We thus ensure that the message
+library is always built before we attempt to link it to the hello-world
+executable.
+
+- After successful compilation, the build directory will contain the libmessage.a static
+library (on GNU/Linux) and the hello-world executable.
+
+## STATIC, SHARED, .
+
+CMake accepts other values as valid for the second argument to add_library and we will
+encounter all of them in the rest of the book:
+STATIC, which we have already encountered, will be used to create static
+libraries, that is, archives of object files for use when linking other targets, such as
+executables.
+SHARED will be used to create shared libraries, that is, libraries that can be linked
+dynamically and loaded at runtime. Switching from a static library to a dynamic
+shared object (DSO) is as easy as using add_library(message SHARED
+Message.hpp Message.cpp) in CMakeLists.txt.
+OBJECT can be used to compile the sources in the list given to add_library to
+object files, but then neither archiving them into a static library nor linking them
+into a shared object. The use of object libraries is particularly useful if one needs
+to create both static and shared libraries in one go. We will demonstrate this in
+this recipe.
+MODULE libraries are once again DSOs. In contrast to SHARED libraries, they are
+not linked to any other target within the project, but may be loaded dynamically
+later on. This is the argument to use when building a runtime plugin.
+
+## IMPORTED TARGETS 
+
+CMake is also able to generate special types of libraries. These produce no output in the
+build system but are extremely helpful in organizing dependencies and build requirements
+between targets:
+IMPORTED, this type of library target represents a library located outside the
+project. The main use for this type of library is to model pre-existing
+dependencies of the project that are provided by upstream packages. As such
+IMPORTED libraries are to be treated as immutable. We will show examples of
+using IMPORTED libraries throughout the rest of the book. See also: https:/ /
+cmake. org/ cmake/ help/ latest/ manual/ cmake- buildsystem. 7. html#importedtargets
+
+INTERFACE, this special type of CMake library is similar to an IMPORTED library,
+but is mutable and has no location. Its main use case is to model usage
+requirements for a target that is outside our project. We will show a use case for
+INTERFACE libraries in Recipe 5, Distributing a project with dependencies as Conda
+package, in Chapter 11, Packaging Projects. See also: https:/ / cmake. org/ cmake/
+help/ latest/ manual/ cmake- buildsystem. 7. html#interface- libraries
+ALIAS, as the name suggests, a library of this type defines an alias for a preexisting
+library target within the project. It is thus not possible to choose an alias
+for an IMPORTED library. See also: https:/ / cmake. org/ cmake/ help/ latest/
+manual/ cmake- buildsystem. 7. html#alias- libraries
 
 # Build Configurations
 
+## Scope 
 
+Targets are visible at any scope after the point that they have been defined. Regular (non-cache) variables are scoped to directories, functions, and block()s, and are only visible to script code in the same directory function, and block scope (same function scope, and same directory level, or subdirectories added by add_subdirectory). To define a variable in the parent directory's scope, you must define it like set(<variable> <value>... PARENT_SCOPE).
+
+## Extra 
+
+In the above example, note that .h header files were specified as sources too, not just the .cpp implementation files. Headers listed as sources don’t get compiled directly on their own, but the effect of adding them is for the benefit of IDE generators like Visual Studio, Xcode, Qt Creator, etc. This causes those headers to be listed in the project’s file list within the IDE, even if no source file refers to it via #include. This can make those headers easier to find during development and potentially aid things like refactoring functionality
+
+## IMPORTANT POINT TO UNDERSTAND - add_subdirectory vs include 
+
+If you need to support CMake 3.12 or older, you will need to either pull up any target_link_libraries() calls to the same directory as the target they operate on, or else use include() rather than add_subdirectory() to avoid introducing a new directory scope. Prefer the former where possible, since it is likely to be more intuitive for developers.
 
 ## Motivation 
 

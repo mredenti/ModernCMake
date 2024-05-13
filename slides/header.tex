@@ -6,6 +6,7 @@
 \usepackage{fontawesome5}
 \usepackage{xcolor}
 \usepackage{tikz}
+
 \definecolor{commentgreen}{RGB}{2,112,10}
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{lightcommentgreen2}{RGB}{120, 180, 120}
@@ -66,7 +67,9 @@
               add_library,
               include,
               set,
-              message},
+              message,
+              if, 
+              endif},
     morecomment=[l]{\#}, 
     morestring=[b]",
     morestring=[b]',
@@ -93,7 +96,8 @@
                 STATIC, 
                 SHARED,
                 MODULE,
-                STATUS},  % List of additional keywords
+                STATUS,
+                NOT},  % List of additional keywords
   keywordstyle=\color{red},           % Style for additional keywords
   classoffset=0,                      % Resetting classoffset to zero
   % ... other CMake-specific settings ...

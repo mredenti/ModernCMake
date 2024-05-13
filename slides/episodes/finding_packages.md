@@ -65,3 +65,18 @@ If you are a package author, never supply a Find<package>.cmake, but instead alw
 Exercise
 
 * Can you ...
+
+## The last resort
+
+Finding dependencies
+CMake offers a family of commands to find artifacts installed on your system:
+
+find_file to retrieve the full path to a file.
+
+find_library to find a library, shared or static.
+
+find_package to find and load settings from an external project.
+
+find_path to find the directory containing a file.
+
+find_program to find an executable.

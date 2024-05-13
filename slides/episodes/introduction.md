@@ -353,3 +353,15 @@ Conclusion and Wrap-Up
 Recap of the workshop
 Additional resources for further learning
 Feedback and workshop evaluation
+
+## POINT
+
+CMake builds typically follow a fairly standard process:
+
+Run cmake to produce a set of project files. CMake allows you to choose the type of project files with the -G option, which selects a particular project generator.
+Run a generator-specific build tool on those project files to produce executables, libraries, run tests, create packages, etc.
+
+## Abstracting away the build tool
+CMake also comes to our aid in helping us not have to deal with the platform differences of the build tool. The cmake --build option directs CMake to invoke the appropriate build tool for us, which allows us to specify the whole build something like this:
+
+Common generators include Unix Makefiles, Ninja, Xcode and various versions of Visual Studio. For each generator type, there is a corresponding build tool which can be called from a command line or from scripts. Depending on the generator, the type of build (Debug, Release, etc.) may need to be specified either at CMake time or at build time, leading to a workflow something like one of the following for a typical scripted build:

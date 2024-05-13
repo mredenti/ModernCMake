@@ -2,45 +2,213 @@
 aspectratio: 169
 ---
 
-# VARIABLES
+# VARIABLES 
 
+## LOCAL VARIABLES I
 
-## VARIABLES
+- A new user-defined local variable can be created with the `set` command
+  
+  ```{.cmake style=cmakestyle}
+  # Variable names are case sensitive, values can only contain [A-Za-z0-9_]
+  set(LIB_NAME "geometry") 
+  ```
 
-In CMake there are 3 distinct types of variables: 
+. . . 
 
-- **Regular Variables**
-- **Cache Variables**
-- **Environments Variables** 
+- **CMake variables are strings** (certain commands interpret them as other types)
+    
+  ```{.cmake style=cmakestyle}
+  # These three statements are equivalent
+  set(SRCS square.cpp circle.cpp)
+  set(SRCS "square.cpp" "circle.cpp")
+  set(SRCS "square.cpp;circle.cpp") # A list is a series of `;` separated strings
+  ```
 
-## REGULAR VARIABLES
+- Signatures of this command that specify a <value>... placeholder expect zero or more arguments. Multiple arguments will be joined as a semicolon-separated list to form the actual variable value to be set.
 
-The 
+. . . 
 
-CMake already defines a list of variables internally. (mmmm)
+- Local variables defined this way have a scope limited to the current ... and everything below it (CMAKE_CXX_STANDARD goes in the top level CMakeLists.txt)
 
-```{.bash style=bashstyle}
-$ cmake --help-variable-list
+## LOCAL VARIABLES II
+
+- Variables can be expanded with the `${}` operator
+
+    ```{.cmake style=cmakestyle}
+    # ... 
+
+    set(LIB_NAME "geometry")
+
+    # lists are a series of ; values 
+    set(SRCS "circle.cpp;square.cpp") 
+
+    add_library(${LIB_NAME} STATIC ${SRCS} geometry.hpp)
+
+    add_executable(main main.cpp)
+    target_link_libraries(main PRIVATE ${LIB_NAME})
+    ```
+- Be careful with variables which contain whitespace (PATH) 
+
+<!--
+    - CMake variables are always of string type
+    - The cmake-gui, ccmake interpret them as other types
+    - A `list` variable can be defined by providing it as a `;` separated strings
+-->
+
+## LOCAL VARIABLES: SCOPE
+
+One of the most confusing aspects of CMake is the scoping of variables. 
+
+Function. In effect when a variable is set within a function: the variable will be visible within the function, but not outside.
+
+Directory. In effect when processing a CMakeLists.txt in a directory: variables in the parent folder will be available, but any that is set in the current folder will not be propagated to the parent.
+
+Cache. These variables are persistent across calls to cmake and available to all scopes in the project. Modifying a cache variable requires using a special form of the set function.
+
+## SETTING THE C++ STANDARD
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+In our geometry example we used C++ features from the C17 standard
+
+```c++
+//hello.cpp
+#include <cstdlib>
+#include <iostream>
+
+int main(){
+  std::cout << "Hello World!\n";
+  return EXIT_SUCCESS;
+}
 ```
-. . .
 
-New user-defined variables can be created `set` command
+::: 
+::: {.column width="50%"}
+
+Certain variables are known internally to CMake
 
 ```{.cmake style=cmakestyle}
-# CMakeLists.txt
+# ...
+
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_library(geometry STATIC ${SRCS})
+
+# ...
 ```
 
-## CACHE VARIABLES 
+:::
+::::::::::::::
+
+. . . 
+
+- Running the build in verbose mode we can see how the flag `-std=17` has been applied to all targets
+    
+    ```{.bash style=bashstyle}
+    $ cmake --build ./build --verbose
+    ```
+
+# CACHE VARIABLES
+
+## CACHE VARIABLES
+
+- Cache variables are used to interact with the command line 
+    ```{.bash style=bashstyle}
+    $ cmake -D 
+    ```
+
+- Unlike local variables which have a lifetime limited to the processing of the CMakeLists.txt file, cache variables are stored in a special file called `CMakeCache.txt` in the build directory, and they persist between CMake runs. When you rerun the files generation stage, the cache is read in before starting
+
+- Once set, cache variables remain set until something explicitly removes them from the cache.
+
+- In a build, cached variables are set in the command line or in a graphical tool (such as ccmake, cmake-gui), and then written to a file called CMakeCache.txt.
+
+- Things like the compiler location, as discovered or set on the first run, are cached.
+
+## CONTROLLING COMPILER DEPENDENT FLAGS
+
+fdfd
+
+## CMAKE PRE-DEFINED VARIABLES 
+
+- CMake already defines a list of variables internally (170+)
+
+    ```{.bash style=bashstyle}
+    $ cmake --help-variable-list
+    ...
+    ```
+- A few useful CMake defined variables
+  
+    `PROJECT_SOURCE_DIR`
+    : folder to the top level `CMakeLists.txt` 
+
+    `PROJECT_BINARY_DIR`
+    : build folder (`-B`) for the project
+
+    `PROJECT_CURRENT_LIST_DIR`
+    : folder to the current `CMakeLists.txt` being processed
+
+- Help on a sigle variable can be obtained by querying the built-in documentation
+
+    ```{.bash style=bashstyle}
+    $ cmake --help-variable PROJECT_BINARY_DIR
+    ```
+
+## SETTING THE COMPILER    
+
+## RELEASE AND DEBUG BUILDS 
+
+CMake distinguishes between the following build types:
+
+Debug
+: fkdjf
+
+Release
+: dfdf 
+
+RelWithDebInfo
+: fdfdf
+
+MinSizeRel
+: fdfdj
+
+The build type can be selected on the command line
 
 
-Unlike normal variables which have a lifetime limited to the processing of the CMakeLists.txt file, cache variables are stored in a special file called CMakeCache.txt in the build directory, and they persist between CMake runs. When you rerun the files generation stage, the cache is read in before starting
+```{.bash style=bashstyle}
+$ cmake --help-variable PROJECT_BINARY_DIR
+```
 
-Once set, cache variables remain set until something explicitly removes them from the cache.
+```{.cmake style=cmakestyle}
+# we default to Release build type
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release")
+endif()
+```
 
-In a build, cached variables are set in the command line or in a graphical tool (such as ccmake, cmake-gui), and then written to a file called CMakeCache.txt.
+## CONTROLLING COMPILER FLAGS
 
-Feel free to look back at the example you built in the last lesson and investigate the CMakeCache.txt file in your build directory there. Things like the compiler location, as discovered or set on the first run, are cached.
+I think these are cache variables
+
+Compiler flags for different compilers 
+
+```{.cmake style=cmakestyle}
+set(CMAKE_CXX_STANDARD 17)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES Intel)
+    set(CMAKE_CXX_FLAGS "-ip -xHOST")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
+    set(CMAKE_CXX_FLAGS "-Ofast -march=native")
+endif()
+```
+
+The above will the set the flags for the entire project
+
 
 ## STANDOUT 
 
@@ -144,3 +312,12 @@ Prefer to provide cache variables for controlling whether to enable optional par
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
 modern-cmake/episodes/03-variables.md at main · mredenti/modern-cmake
+
+## IMPORTANT
+
+known extensions to CMake: .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h
+  .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc
+
+## {.standout}
+
+However, this will set the flags for the entire project. If you want fine-grained control, a nicer way is to define compile flags per target like in this example (here we want to lower the optimization level for mytarget to -O1):
