@@ -6,16 +6,15 @@ institute: m.redenti@cineca.it \and m.safari@cineca.it
 date: \today
 aspectratio: 169
 ---
- 
 
-# INTRODUCTION
-
-
-## MOTIVATION 
+## WHY DO WE NEED A GOOD BUILD SYSTEM 
 
 <!-- 
   Modern build systems should be able to build the software, package it, test it
-  Challenges of traditional build systems and the need for modern tools like CMake
+ 
+  The choice for a particular build system should be guided by 
+  the following idea: 
+    every moment a developer spends writing or debugging build definitions is a second wasted. So is every second spent waiting for the build system to actually start compiling code.
 -->
 
 \centering 
@@ -24,81 +23,65 @@ aspectratio: 169
 
 ## TRADITIONAL BUILD SYSTEMS - CHALLENGES
 
-GNU Make (Build System)
-  : Complications with large projects
-  : OS specific command issues
-  : portability challenges
 
-\alert{Cross-platform development would require manual updates across different build tools and IDEs respective configuration files}
+GNU Make
+  : Complications with large projects 
+  <!-- 
+    Development and maintenance of Makefiles can become very complicated as the project grows (error prone to deal with thousands of files and dependencies) 
+
+    Structuring Makefiles for a huge project is possible but very time consuming
+
+    Often see developing and maintaining multiple Makefiles targeting a specific platform or even compiler toolchain
+  -->
+  : Lack of portability 
+  <!-- 
+    Make does not know which compiler (options) we want and which environment we are on.
+
+    OS specific commands (ls, grep, dir, ..., slash, backslash) will not port.
+    
+    Surely one can hack their ways to achieve portabilty but GNU Make alternatives: NMake (Visual Studio) where shell commands are obviously targeted at Windows -->
+  : Need to tell Make what  
+
+<!--
+  All of the above approached poorly integrate with IDEs and 
+  cross-platform or IDE integrations would require manual updates across different build tools and IDEs respective configuration files
+-->
+
+
 
 . . . 
 
-Autotools (a.k.a. Autohell)
-  : Limited to Unix
-  : complex manual scripts
-  : poor IDE integration
-
-
-## NEED FOR MODERN TOOLS... CMAKE
-
-a picture with google trends would probably suffice
-
-## OLD
-
-:::::::::::::: {.columns}
-::: {.column width="50%"}
-
-**GNU Make (Build System)**
+\hspace{0.5cm}
 
 <!-- 
-  Essentially combines 3 languages: file dependencies, \alert{shell commands}, string processing
+    I am not sure this is true : Limited to Unix platforms : Generates only Makefiles
 -->
 
-- Development and maintenance of Makefiles can become very complicated as the project grows (error prone to deal with thousands of files and dependencies)
-- Lack of portability - OS specific commands (ls, grep, dir, ..., slash, backslash) will not port 
+Autotools <!-- a.k.a. Autohell -->
 
-<!-- 
-- portability is still possible to achieve but very cumbersome
--->
+  : Complex manual scripts (Bourne shell, m4) 
+  <!-- Long, difficult to understand scripts -->
 
-- GNU Make alternatives: NMake (Visual Studio) where shell commands are obviously targeted at Windows 
+  : Poor IDE integration
 
-:::
+  : Manual ordering of Fortran module files 
+  <!-- 
+    You need to make sure that the module files are created before they are referenced 
+  -->
 
-. . . 
-
-::: {.column width="50%"}
-
-**Autotools (a.k.a. Autohell)**
-
-\begin{itemize}
-\item hell
-\end{itemize}
-
-- Been used for many years 
-- Need to write scripts in Bourne shell, m4
-- Only on Unix platforms $\Rightarrow$ Visual Studio, ... are unsupported
-- Dependency discovery is mostly manual
-- Typically long, difficult to understand scripts
-- Poor integration with IDEs (example)
-- Generates only Makefiles
+  : Manual dependency discovery 
 
 
 
-:::
-::::::::::::::
-
-## Base Rule of CMake 
-
-- Let developers use the IDE and tools they are most familiar with, they are not going to be as productive if you force them to use the comman line
-
-- Nonostante the rich C++ ecosystem that is out there with various vendors creating IDEs, compilers, architecture but you can still express your build in one tool
-  
-## WHY CMAKE?
-
-
+# INTRODUCTION TO CMAKE
 
 ## WHAT IS CMAKE?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,inner sep=0pt, xshift=.3cm, yshift=-0.8cm] at (current page.north east) {
+  \href{http://www.example.com}{\includegraphics[width=4cm]{./fig/Logo_Kitware.png}}
+};
+\end{tikzpicture}
 
 <!-- 
  ... that provides a family of software development tools
@@ -111,7 +94,14 @@ a picture with google trends would probably suffice
 
 - **C**ross Platform **Make** is an open-source **build system generator**.
 
-- It uses scripts called **CMakeLists.txt** to generate build files for a specific environment (Makefiles, ...)
+- It uses plain text files called **CMakeLists.txt** to generate project files for major IDEs and build tools.
+
+<!-- 
+  Let developers use the IDE and tools they are most familiar with, they are not going to be as productive if you force them to use the command line
+
+  Nonostante the rich C++ ecosystem that is out there with various vendors creating IDEs, compilers, architecture but you can still express your build in one tool
+-->
+
 
 - Family of tools 
   - Build $\Rightarrow$ **CMake**
@@ -124,7 +114,95 @@ a picture with google trends would probably suffice
   Enable building (CMake), testing (CTest, CDash) and packaging (CPack) of software
 -->
 
-## CMAKE'S POSITION AMONG BUILD SYSTEMS 
+:::::::::::::: {.columns}
+::: {.column width="5%"}
+
+
+:::
+::: {.column width="50%"}
+
+\vspace{-2.5cm}
+\hspace{-5cm}
+
+```plantuml
+left to right direction
+skinparam PackagePadding 2
+skinparam BoxPadding 2
+skinparam NodePadding 2
+skinparam style strictuml
+skinparam padding 0
+scale 0.8
+
+skinparam rectangle {
+  BackgroundColor<<Windows>> LightBlue
+  BackgroundColor<<macOS>> LightBlue
+  BackgroundColor<<Linux>> LightBlue
+  BackgroundColor<<Tool>> Pink
+}
+
+skinparam Arrow {
+  Color Black
+}
+
+file "CMakeLists.txt" as ST
+rectangle "CMake" as CM #Pink
+
+collections "Visual Studio" as VS <<Windows>> #LightBlue
+file "XCode" as XC <<macOS>> #LightBlue
+file "Make" as MK <<Linux>> #LightBlue
+
+ST --> CM
+
+CM --> VS
+CM --> XC
+CM --> MK
+```
+
+:::
+::::::::::::::
+
+
+## WHAT IS CMAKE?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,inner sep=0pt, xshift=.3cm, yshift=-0.8cm] at (current page.north east) {
+  \href{http://www.example.com}{\includegraphics[width=4cm]{./fig/Logo_Kitware.png}}
+};
+\end{tikzpicture}
+
+<!-- 
+ ... that provides a family of software development tools
+
+ - Build System Generator => it generates files, it does not build
+ 
+- Dependency discovery is awesome (find_package())
+- Can not overcome the limitations of the underlying IDEs
+-->
+
+- **C**ross Platform **Make** is an open-source **build system generator**.
+
+- It uses plain text files called **CMakeLists.txt** to generate project files for major IDEs and build tools.
+
+<!-- 
+  Let developers use the IDE and tools they are most familiar with, they are not going to be as productive if you force them to use the command line
+
+  Nonostante the rich C++ ecosystem that is out there with various vendors creating IDEs, compilers, architecture but you can still express your build in one tool
+-->
+
+
+- Family of tools 
+  - Build $\Rightarrow$ **CMake**
+  - Test $\Rightarrow$ **CTest, CDash**
+  - Package $\Rightarrow$ **CPack**
+
+- Version 3.0 was released in June 2014 and signals the beginning of "Modern CMake".
+
+## CMAKE POPULARITY/WHO ELSE IS USING CMAKE
+
+interest over time and its relevance as the predominant build systems in C++ projects
+
+
+**CMAKE'S POSITION AMONG BUILD SYSTEMS**
 
 standalone
   : Make, NMake, SCons, Ninja
@@ -133,31 +211,72 @@ integrated
   : Visual Studio, Xcode, Eclipse
 
 generators
-  : Autotools (a.k.a. Autohell), **CMake**, Meson
+  : Autotools (a.k.a. Autohell), **CMake**, Meson, Bazel
 
-## Interest over time
+## CMAKE FEATURES 
 
-## History
+:::::::::::::: {.columns}
+::: {.column width="50%"}
 
-## Key Features 
+**Cross-platform** (Linux, Windows, macOS, ...)
 
-Cross-platform (Linux, macOS, Windows, ...)
+\vspace{0.2cm}
 
-Open source 
+**Open Source**
 
-Great effort on maintaning backwards-compatibility with older scripts 
+\vspace{0.2cm}
 
-Generates project files for major IDEs / build tools 
+**Multiple Generators**
 
-  - Make
-  - Ninja
-  - Microsoft Visual Studio 
-  - Xcode  
+- Makefiles (Unix, NMake, Borland, ...)
+- Ninja
+- Microsoft Visual Studio (.sln)
+- Eclipse
+- Xcode
 
-Direct CMake integration 
+\vspace{0.2cm}
+
+
+**Direct CMake integration with IDEs** 
 
   - Microsoft Visual Studio 2017...20??
   - JetBrains CLion
+
+
+:::
+
+. . . 
+
+::: {.column width="50%"}
+
+**Dependency discovery made easy**
+
+- `find_package()`
+
+\vspace{0.2cm}
+
+**Automatic chaining of library dependency information**
+
+\vspace{0.2cm}
+
+
+**Compiler language level support**
+
+- C, C++, Fortran, CUDA, HIP, ...
+
+\vspace{0.2cm}
+
+**Fortran Module Order**  
+
+<!-- 
+  Automatic ordering of Fortran files based on `use` statements in the code for a library
+-->
+
+:::
+::::::::::::::
+  
+
+## History
 
 ## Key Features
 
@@ -175,7 +294,6 @@ Uses CMake language
 - It's platform- and - compiler-agnostic, allowing reuse of CMake scripts across different platforms.
 - facilitate generation of files for different build systems across various platforms and IDEs
 - automatically track and propagate internal dependencies
-- build projects written in languages like C, C++, Fortran, and CUDA. 
 
 
 ## CMake High Level View
@@ -248,11 +366,6 @@ MK -down-> LB
 ::::::::::::::
 
 
-
-**Key Points:**
-- Challenges of software build systems.
-- Evolution of CMake and its current role in modern C++ development.
-
 <!-- 
 
   ## The complexity of the build process (compiled languages (C/C++/Fortran))
@@ -267,12 +380,22 @@ MK -down-> LB
 
 -->
 
+## CMAKE LANGUAGE
 
-## 6. CMake's Importance in Software Development
+
+
+
+## 6. CMake's Relevance in HPC 
+
+Color and progress output for make
+- Graphviz output for visualizing dependency trees
+- Full cross platform install() system
+- Compute link depend information, and chaining of
+dependent libraries
+- make help, make foo.o, make foo.i, make foo.s
+29
 
 Discussion on how CMake fits into the software development process, its role in streamlining development, testing, deployment, and complex use cases like large-scale projects and cross-platform development.
-
-## 7. CMake in HPC
 
 # Workshop Outline and Setup
 
@@ -354,14 +477,6 @@ Recap of the workshop
 Additional resources for further learning
 Feedback and workshop evaluation
 
-## POINT
-
-CMake builds typically follow a fairly standard process:
-
-Run cmake to produce a set of project files. CMake allows you to choose the type of project files with the -G option, which selects a particular project generator.
-Run a generator-specific build tool on those project files to produce executables, libraries, run tests, create packages, etc.
 
 ## Abstracting away the build tool
 CMake also comes to our aid in helping us not have to deal with the platform differences of the build tool. The cmake --build option directs CMake to invoke the appropriate build tool for us, which allows us to specify the whole build something like this:
-
-Common generators include Unix Makefiles, Ninja, Xcode and various versions of Visual Studio. For each generator type, there is a corresponding build tool which can be called from a command line or from scripts. Depending on the generator, the type of build (Debug, Release, etc.) may need to be specified either at CMake time or at build time, leading to a workflow something like one of the following for a typical scripted build:

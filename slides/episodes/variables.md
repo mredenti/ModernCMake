@@ -65,7 +65,7 @@ Directory. In effect when processing a CMakeLists.txt in a directory: variables 
 
 Cache. These variables are persistent across calls to cmake and available to all scopes in the project. Modifying a cache variable requires using a special form of the set function.
 
-## SETTING THE C++ STANDARD
+## CMAKE LANGUAGE STANDARD 
 
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
@@ -109,6 +109,8 @@ add_library(geometry STATIC ${SRCS})
     
     ```{.bash style=bashstyle}
     $ cmake --build ./build --verbose
+    [50%] Building ....
+    /usr/bin/c++ -std=gnu++11 -o main.cxx.o -c main.cxx
     ```
 
 # CACHE VARIABLES
@@ -156,6 +158,15 @@ fdfd
     ```{.bash style=bashstyle}
     $ cmake --help-variable PROJECT_BINARY_DIR
     ```
+
+## CMAKE COMPILER SELECTION 
+
+CMake caches the compiler for a build directory on the first invocation.
+CMake compiler detection has the following preference
+– env variables ( CC, CXX )
+– cc and cxx path entries
+– gcc and g++ path entries
+
 
 ## SETTING THE COMPILER    
 
@@ -321,3 +332,52 @@ known extensions to CMake: .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cpp
 ## {.standout}
 
 However, this will set the flags for the entire project. If you want fine-grained control, a nicer way is to define compile flags per target like in this example (here we want to lower the optimization level for mytarget to -O1):
+
+
+## CMAKECACHE.TXT
+
+Stores optional choices and provides a project global variable repository
+- Variables are kept from run to run
+- Located in the top directory of the build tree
+- A set of entries like this:
+– KEY:TYPE=VALUE
+- Valid types:
+– BOOL
+– STRING
+– PATH
+– FILEPATH
+– INTERNAL
+(these are only used by cmake-gui and ccmake to display the appropriate type
+of edit widget)
+
+## Variables and the Cache
+
+Dereferences look first for a local variable, then
+in the cache if there is no local definition for a
+variable
+Local variables hide cache variables
+
+
+## Mark as advanced 
+
+Advanced variables are not displayed in the
+cache editors by default
+- Allows for complicated, seldom changed
+options to be hidden from users
+- Cache variables of the INTERNAL type are
+never shown in cache editors
+
+## CMake SPECIAL VARIABLES 
+
+cmake --help-variables or online docs
+
+User settable variables
+– BUILD_SHARED_LIBS
+– CMAKE_INSTALL_PREFIX
+– CMAKE_CXX_FLAGS / CMAKE_<LANG>_FLAGS
+
+CMake pre-defined variables (should not be set by user code)
+– WIN32, UNIX, APPLE, CMAKE_VERSION
+– CMAKE_SOURCE_DIR, CMAKE_BINARY_DIR
+– PROJECT_NAME
+– PROJECT_SOURCE_DIR, PROJECT_BINARY_DIR
