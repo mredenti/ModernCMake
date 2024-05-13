@@ -94,7 +94,7 @@ Autotools <!-- a.k.a. Autohell -->
 
 - **C**ross Platform **Make** is an open-source **build system generator**.
 
-- It uses plain text files called **CMakeLists.txt** to generate project files for major IDEs and build tools.
+- It uses a scripting language to define the build process in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build tools.
 
 <!-- 
   Let developers use the IDE and tools they are most familiar with, they are not going to be as productive if you force them to use the command line
@@ -181,7 +181,7 @@ CM --> MK
 
 - **C**ross Platform **Make** is an open-source **build system generator**.
 
-- It uses plain text files called **CMakeLists.txt** to generate project files for major IDEs and build tools.
+- It uses a scripting language to define the build process in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build tools.
 
 <!-- 
   Let developers use the IDE and tools they are most familiar with, they are not going to be as productive if you force them to use the command line
@@ -249,6 +249,10 @@ generators
 
 ::: {.column width="50%"}
 
+**CMake scripting language**
+
+\vspace{0.2cm}
+
 **Dependency discovery made easy**
 
 - `find_package()`
@@ -270,11 +274,22 @@ generators
 
 <!-- 
   Automatic ordering of Fortran files based on `use` statements in the code for a library
+
+  CMake is an open-source project that serves as a tool for building, testing, packaging, and distributing cross-platform software
+    CMake is a scripting language written in C++
+    CMake is a de facto industry standard for building C++ projects
+    CMake is divided into 3 command-line tools:
+    cmake: for generating compiler-independent build instruction
+    ctest: for detecting and running tests
+    cpack: for packing the software project into convenient installers
 -->
 
 :::
 ::::::::::::::
   
+## CMAKE LANGUAGE OVERVIEW 
+
+
 
 ## History
 
@@ -480,3 +495,21 @@ Feedback and workshop evaluation
 
 ## Abstracting away the build tool
 CMake also comes to our aid in helping us not have to deal with the platform differences of the build tool. The cmake --build option directs CMake to invoke the appropriate build tool for us, which allows us to specify the whole build something like this:
+
+## More
+
+CMake as a Scripting Language
+CMake is a tool designed to manage the build process of software projects. It uses a scripting language to define the build process in CMakeLists.txt files. Here’s how it fits the characteristics of a scripting language:
+
+Interpreted Execution: CMake processes the CMakeLists.txt files line by line to generate build instructions (e.g., Makefiles or Visual Studio project files).
+
+High-Level Abstractions: CMake provides commands and functions that abstract complex build tasks. For example, add_executable is a high-level command that simplifies the process of defining an executable target.
+
+Ease of Use: Writing CMake scripts is generally straightforward, focusing on specifying what to build and how, without delving into the details of the build system being generated.
+
+Importance of Order in CMakeLists.txt
+In scripting languages, the order of commands can be crucial because the interpreter executes them sequentially. This is also true for CMake:
+
+Sequential Execution: Commands in CMakeLists.txt are executed in the order they appear. This means that each command can depend on the results of the commands that preceded it.
+Dependencies and Definitions: If a command relies on a variable or target defined by a previous command, changing the order could result in errors or unexpected behavior.
+Scope and Visibility: The scope of variables and targets can be influenced by their position in the script. For example, a variable defined within a function or block may not be accessible outside of it.

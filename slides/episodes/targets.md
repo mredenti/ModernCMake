@@ -54,6 +54,8 @@ variables, but before those propagated from dependencies by the
 accumulating options from the current target and the usage requirements of
 its dependencies.  The set of options is de-duplicated to avoid repetition.
 
+## VISIBILITY LEVELS / INHERITANCE
+
 ## TARGETS ARE OBJECTS WITH PROPERTIES 
 
 ```plantuml
