@@ -110,6 +110,10 @@
 \usepackage[edges]{forest}
 \definecolor{folderbg}{RGB}{124,166,198}
 \definecolor{folderborder}{RGB}{110,144,169}
+\definecolor{filebg}{RGB}{200,200,200}
+\definecolor{fileborder}{RGB}{150,150,150}
+\definecolor{execbg}{RGB}{255,223,186}
+\definecolor{execborder}{RGB}{255,140,0}
 \newlength\Size
 \setlength\Size{4pt}
 \tikzset{%
@@ -119,6 +123,11 @@
   },
   file/.pic={%
     \filldraw [draw=folderborder, top color=folderbg!5, bottom color=folderbg!10] (-\Size,.4*\Size+5pt) coordinate (a) |- (\Size,-1.2*\Size) coordinate (b) -- ++(0,1.6*\Size) coordinate (c) -- ++(-5pt,5pt) coordinate (d) -- cycle (d) |- (c) ;
+  },
+  executable/.pic={
+    \filldraw [draw=execborder, top color=execbg!5, bottom color=execbg!10]
+      (-\Size,.4*\Size+5pt) coordinate (a) |- (\Size,-1.2*\Size) coordinate (b)
+      -- ++(0,1.6*\Size) coordinate (c) -- ++(-5pt,5pt) coordinate (d) -- cycle (d) |- (c);
   },
 }
 \forestset{%
@@ -145,4 +154,5 @@
   },
   pic me set={directory}{folder},
   pic me set={file}{file},
+  pic me set={executable}{executable},
 }
