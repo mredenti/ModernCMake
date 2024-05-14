@@ -513,3 +513,8 @@ In scripting languages, the order of commands can be crucial because the interpr
 Sequential Execution: Commands in CMakeLists.txt are executed in the order they appear. This means that each command can depend on the results of the commands that preceded it.
 Dependencies and Definitions: If a command relies on a variable or target defined by a previous command, changing the order could result in errors or unexpected behavior.
 Scope and Visibility: The scope of variables and targets can be influenced by their position in the script. For example, a variable defined within a function or block may not be accessible outside of it.
+
+
+## Maybe 
+
+add support with testing frameworks GoogleTest as well as static and dynamic analysis

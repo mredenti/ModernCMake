@@ -107,6 +107,142 @@ $ ./build/hello_world
 
 -->
 
+## HELLO WORLD WITH CMAKE!
+
+:::::::::::::: {.columns}
+::: {.column width="45%"}
+
+\vspace{.5cm}
+
+**CPP**
+
+```c++
+//hello.cpp
+#include <cstdlib>
+#include <iostream>
+
+int main(){
+
+  std::cout << "Hello World!\n";
+  
+  return EXIT_SUCCESS;
+}
+```
+
+::: 
+::: {.column width="45%"}
+
+\vspace{.5cm}
+
+**FORTRAN**
+
+```fortran
+! hello_world.F90
+
+program hello
+
+  print *, 'Hello, World!'
+
+end program hello
+ 
+```
+
+::: 
+::::::::::::::
+
+## HELLO WORLD WITH CMAKE!
+
+\vspace{.5cm}
+
+\centering
+
+The root of a project using CMake must contain a **CMakeLists.txt** file.
+
+:::::::::::::: {.columns}
+::: {.column width="45%"}
+
+\vspace{.5cm}
+
+**CPP**
+
+```{.cmake style=cmakestyle}
+# CMakeLists.txt
+cmake_minimum_required(VERSION 3.21)
+
+project(HelloWorld LANGUAGES CXX)
+
+add_executable(hello_world hello.cpp)
+```
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [CMakeLists.txt, file
+      ]
+      [hello.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::: {.column width="45%"}
+
+\vspace{.5cm}
+
+**FORTRAN**
+
+```{.cmake style=cmakestyle}
+# CMakeLists.txt
+cmake_minimum_required(VERSION 3.21)
+
+project(HelloWorld LANGUAGES Fortran)
+
+add_executable(hello_world hello.F90)
+```
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [CMakeLists.txt, file
+      ]
+      [hello.f90, file
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+## GENERATE $\Rightarrow$ BUILD $\Rightarrow$ RUN
+
+1. **Generate** the build files 
+ 
+    ```{.bash style=bashstyle}
+    $ cmake -B ./build -S <path-to-root-CMakeLists.txt>
+    ```
+
+2. Run the native **build** system (compile)
+   
+    ```{.bash style=bashstyle}
+    $ cmake --build ./build 
+    ```
+
+3. Run the `hello_world` program
+
+   ```{.bash style=bashstyle}
+    $ ./build/hello_world
+    ```
 
 ## CMAKE_MINIMUM_REQUIRED()
   
@@ -114,7 +250,9 @@ $ ./build/hello_world
 cmake_minimum_required(VERSION 3.12)
 ```
 
-- Every CMake project requires setting the minimally required version(s).
+- Every CMake project requires setting the minimally required version(s) as the first line of the root `CMakeLists.txt` file.
+
+- If the running version of CMake is lower than the ``<min>`` required version it will stop processing the project and report an error.
 
 - A fatal error will be issued if a version of CMake lower than the required one is used.
 
@@ -126,7 +264,7 @@ cmake_minimum_required(VERSION 3.12)
   However, CMake gives no guidance what this version may be, and a lot of projects just take the current CMake version or whatever the IDE is proposing as default. This is a problem, because some platforms don't always provide the latest CMake version, and a lot of trial and error is needed before projects can be used. -> there are tools that can determine the minimal working version of CMake
 -->
 
-## PROJECT
+## PROJECT()
 
 <!-- 
   In CMake, C++ is the default programming language. However, we
@@ -155,6 +293,13 @@ cmake_minimum_required(VERSION 3.12)
   All the above are built-in commands provided by CMake, part of CMake's internal implementation and one of its core commands.
 -->
 
+## CONFIGURE AND GENERATE 
+
+... point out the importance that CMake runs two distinct steps ...
+
+## ATTENTION
+
+at some point you should fully explain the CMake workflow
 
 ## GENERATE AND BUILD
 
@@ -171,10 +316,10 @@ Using **CMake** through the CLI is a two-step process:
 1. **Generate** the build files 
  
     ```{.bash style=bashstyle}
-    $ cmake -B ./build -S ./<path-to-CMakeLists.txt>
+    $ cmake -B ./build -S <path-to-root-CMakeLists.txt>
     ```
 
-2. Run the **build** system
+2. Run the native **build** system
    
     ```{.bash style=bashstyle}
     $ cmake --build ./build 
