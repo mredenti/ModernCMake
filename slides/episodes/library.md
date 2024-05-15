@@ -5,6 +5,299 @@ aspectratio: 169
 
 # CREATING A LIBRARY 
 
+## example
+
+The upcoming example is on chapter-01/recipe-03
+
+<!--
+  Only rarely we have one-source-file projects and more realistically, as projects grow, we split them up into separate files. This simplifies (re)compilation but also helps humans maintaining and understanding the project.
+
+  A project almost always consists of more than a single executable built from a single source file. Projects are split across multiple source files, often spread across different subdirectories in the source tree. This practice not only helps in keeping source code organized within a project, but greatly favors modularity, code reuse, and separation of concerns, since common tasks can be grouped into libraries. This separation also simplifies and speeds up recompilation of a project during development. In this recipe, we will show
+  how to group sources into libraries and how to link targets against these libraries.
+-->
+
+## A GREETINGS LIBRARY
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+```c++
+// HelloWorld/src/greetings/greetings.h
+#ifndef GREETINGS_H
+#define GREETINGS_H
+
+namespace greetings {
+
+  void say_hello();
+  
+  void say_goodbye();
+}
+
+#endif // GREETINGS_H
+```
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [greetings.hpp, file
+      ]
+      [greetings.cpp, file
+      ]
+      [main.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+## A GREETINGS LIBRARY
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+```c++
+// HelloWorld/src/greetings/greetings.cpp
+#include <iostream>
+#include "greetings.h"
+
+namespace greetings {
+  
+  void say_hello() {
+    std::cout << "Hello, World!" << std::endl;
+  }
+
+  void say_goodbye() {
+    std::cout << "Goodbye, World!" << std::endl;
+  }
+}
+```
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [greetings.hpp, file
+      ]
+      [greetings.cpp, file
+      ]
+      [main.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## A GREETING LIBRARY
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+```c++
+#include <cstdlib>
+#include "greetings/greetings.h"
+
+int main() {
+
+  greetings::say_hello();
+
+  greetings::say_goodbye();
+
+  return EXIT_SUCCESS;
+}
+```
+
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [greetings.hpp, file
+      ]
+      [greetings.cpp, file
+      ]
+      [main.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## CREATING A LIBRARY - HOW TO DO IT 
+
+<!-- 
+  These two new files will also have to be compiled and we have to modify CMakeLists.txt accordingly. However, in this example we want to compile them first into a library, and not directly into the executable
+-->
+
+1. Create a new **target**, this time a static library. The name of the library will be name of the target and the sources are listed as follows
+
+    ```{.cmake style=cmakestyle}
+    add_library(greetings STATIC Greetings.hpp Greetings.cpp) 
+    ```
+. . . 
+
+2. The creation of the **target** for the `hello_world` executable is unmodified
+
+    ```{.cmake style=cmakestyle}
+    add_executable(hello_world hello.cpp) 
+    ```
+
+. . .
+
+3. Finally we have to tell CMake that the `greetings` library target has to be linked into the executable target
+
+    ```{.cmake style=cmakestyle}
+    target_link_libraries(hello-world greetings)
+    ```
+
+## CONFIGURE AND BUILD
+
+4. We can configure and build with the same commands as before 
+    
+    ```{.bash style=bashstyle}
+    $ cmake -B ./build -S ./hello-world/
+    $ cmake --build ./build --target help
+    $ cmake --build ./build 
+    Scanning dependencies of target message
+    [ 25%] Building CXX object CMakeFiles/message.dir/Message.cpp.o
+    [ 50%] Linking CXX static library libmessage.a
+    [ 50%] Built target message
+    Scanning dependencies of target hello-world
+    [ 75%] Building CXX object CMakeFiles/hello-world.dir/helloworld.
+    cpp.o
+    [100%] Linking CXX executable hello-world
+    [100%] Built target hello-world
+    ```
+
+## BUILD .. 
+
+dfd
+
+## RUN 
+
+5. Run 
+
+    ```{.bash style=bashstyle}
+    ./build/hello_world
+    ```
+
+
+## CREATING A LIBRARY - HOW IT WORKS
+
+```{.cmake style=cmakestyle}
+add_library(greetings STATIC Greetings.hpp Greetings.cpp) 
+```
+
+- Generates the necessary build instructions for compiling the specified sources, `Greetings.cpp`, into a static library
+
+- The name of the target, `greetings`, can be used troughout `CMakeLists.txt` to refer to the library
+
+- The actual name of the generated library will be formed by CMake by adding the prefix `lib` in front and the appropriate extension as a suffix.
+    
+    ```{.bash style=bashstyle}
+    $ cmake --build ./build --target greetings
+    ... libgreetings.a
+    ```
+
+  The library extension is determined based on the second argument, STATIC or SHARED, and the OS.
+
+
+## LINKING A LIBRARY - HOW IT WORKS
+
+```{.cmake style=cmakestyle}
+target_link_libraries(hello-world greetings)
+```
+
+- Links the library into the executable. 
+  
+    ```{.bash style=bashstyle}
+    $ cmake --build ./build --target greetings
+    ... libgreetings.a
+    ```
+
+. . .
+
+- Guarantees that the `hello-world` executable properly depends on the message library $\Rightarrow$ greetings library is always built before being linked it to the hello-world executable
+
+    ```{.bash style=bashstyle}
+    $ cmake --build ./build --target greetings
+    ... libgreetings.a
+    ```
+
+After successful compilation, the build directory will contain the libmessage.a static
+library (on GNU/Linux) and the hello-world executable
+
+## STATIC, SHARED, OBJECT MODULE 
+
+STATIC, which we have already encountered, will be used to create static
+libraries, that is, archives of object files for use when linking other targets, such as
+executables.
+SHARED will be used to create shared libraries, that is, libraries that can be linked
+dynamically and loaded at runtime. Switching from a static library to a dynamic
+shared object (DSO) is as easy as using add_library(message SHARED
+Message.hpp Message.cpp) in CMakeLists.txt.
+OBJECT can be used to compile the sources in the list given to add_library to
+object files, but then neither archiving them into a static library nor linking them
+into a shared object. The use of object libraries is particularly useful if one needs
+to create both static and shared libraries in one go. We will demonstrate this in
+this recipe.
+MODULE libraries are once again DSOs. In contrast to SHARED libraries, they are
+not linked to any other target within the project, but may be loaded dynamically
+later on. This is the argument to use when building a runtime plugin
+
+## IMPORTED, INTERFACE, ALIAS
+
+CMake is also able to generate special types of libraries. These produce no output in the
+build system but are extremely helpful in organizing dependencies and build requirements
+between targets:
+IMPORTED, this type of library target represents a library located outside the
+project. The main use for this type of library is to model pre-existing
+dependencies of the project that are provided by upstream packages. As such
+IMPORTED libraries are to be treated as immutable. We will show examples of
+using IMPORTED libraries throughout the rest of the book. See also: https:/ /
+cmake. org/ cmake/ help/ latest/ manual/ cmake- buildsystem. 7. html#importedtargets
+
+
+INTERFACE, this special type of CMake library is similar to an IMPORTED library,
+but is mutable and has no location. Its main use case is to model usage
+requirements for a target that is outside our project. We will show a use case for
+INTERFACE libraries in Recipe 5, Distributing a project with dependencies as Conda
+package, in Chapter 11, Packaging Projects. See also: https:/ / cmake. org/ cmake/
+help/ latest/ manual/ cmake- buildsystem. 7. html#interface- libraries
+ALIAS, as the name suggests, a library of this type defines an alias for a preexisting
+library target within the project. It is thus not possible to choose an alias
+for an IMPORTED library. See also: https:/ / cmake. org/ cmake/ help/ latest/
+manual/ cmake- buildsystem. 7. html#alias- libraries
+
+## THINGS THAT NEED TO BE UNDERSTOOD 
+
+- object libraries -- how to I access them when compiled, do I get a target for each object -- how do I create a object for each and then use them as a library
+
 ## ADD_LIBRARY()
 
 - add_library(message STATIC Message.hpp Message.cpp): This will
