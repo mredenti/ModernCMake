@@ -229,6 +229,7 @@ You can **access** the value of a local variable **after you set it** as long as
 
 ::: {.column width="43%"}
 
+\alert{Each new scope creates a local copy of all variables}
 
 :::
 :::::::::::::: 
@@ -339,33 +340,79 @@ add a few examples on the right to make it clear
     message(STATUS ${TEST_EXTEND}) # "42"
     ```
 
-- Cache variables persist across calls to `cmake`...
 
 ## CMAKE WORKFLOW && CMAKECACHE.TXT
 
-The **CMakeCache.txt** file is a set of entries of the form 
 
 :::::::::::::: {.columns}
-::: {.column width="50%"}
+::: {.column width="45%"}
 
-```shell
-// docstring 
-KEY:TYPE=VALUE
-```
+\vspace{1cm}
+
+- Cache variables are stored in a file called **CMakeCache.txt** located in the top directory of the build tree 
+<!--
+  - Stores optional choices and provides a project global variable repository
+-->
+
+- The **CMakeCache.txt** file is a set of entries of the form 
+
+    ```shell
+    // docstring 
+    KEY:TYPE=VALUE
+    ```
+
+- Cache variables persist across calls to `cmake`
+
+
 
 :::
 
-::: {.column width="50%"}
+::: {.column width="55%"}
+\begin{tikzpicture}[xscale=0.9, yscale=0.9, % Adjust the scale factors as needed
+  state/.style={rectangle, rounded corners, draw=black, fill=blue!20, thick, minimum height=3em, minimum width=7em, text centered},
+  file/.style={rectangle, draw=black, fill=yellow!20, thick, minimum height=3em, minimum width=7em, text centered, dashed},
+  process/.style={rectangle, rounded corners, draw=black, fill=green!20, thick, minimum height=3em, minimum width=7em, text centered},
+  circle state/.style={circle, draw=black, fill=black, thick, minimum size=.5cm, inner sep=0pt, text centered, font=\footnotesize\color{white}},
+  line/.style={draw, thick, -{Latex[length=3mm, width=2mm]}},
+  every node/.style={transform shape} % Ensures nodes are scaled properly
+]
 
+% Nodes
+\node (cleanstate) [circle state] {};
+\node (configure) [state, below=0.8cm of cleanstate] {configure};
+\node (generate) [state, below=0.8cm of configure] {generate};
+\node (build) [process, below=0.8cm of generate] {build};
+\node (workingstate) [circle state, right=2cm of build, yshift=-0.5cm] {};
+\node (cmakelists) [file, right=1.5cm of configure, yshift=1.5cm] {CMakeLists.txt};
+\node (cmakecache) [file, right=1.5cm of configure, yshift=-1cm] {CMakeCache.txt};
+\node (makefile) [file, right=1.5cm of generate, yshift=-1cm] {Makefile};
+\node (binaries) [file, below=0.8cm of build] {binaries};
+
+% Lines
+\path [line] (cleanstate) -- (configure);
+\path [line] (configure) -- (generate);
+\path [line] (generate) -- (build);
+\path [line] (build) -- (binaries);
+\path [line] (configure) -- (cmakelists);
+\path [line] (configure) -- (cmakecache);
+\path [line] (generate) -- (makefile);
+\path [line] (makefile) -- (build);
+\path [line] (workingstate) -- (build);
+
+% New line from build to configure
+\draw [line] (build.west) -- ++(-1,0) |- node[near start, above, align=center]{if CMakeLists.txt \\ changed} (configure.west);
+
+% Labels
+\node at (cleanstate.north) [above=.1cm] {clean state};
+\node at (workingstate.south) [below=.1cm] {working state};
+
+\end{tikzpicture}
+
+\end{tikzpicture}
 
 :::
 :::::::::::::: 
 
-- put a graph of the cmake workflow now
-
-- Stores optional choices and provides a project global variable repository
-- Variables are kept from run to run
-- Located in the top directory of the build tree
 
 ## VARIABLES AND THE CACHE 
 
