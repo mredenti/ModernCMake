@@ -518,3 +518,61 @@ Scope and Visibility: The scope of variables and targets can be influenced by th
 ## Maybe 
 
 add support with testing frameworks GoogleTest as well as static and dynamic analysis
+
+
+## {.standout}
+
+THESE ARE THE SLIDES WITH WHICH YOU SHOULD COMPLETE THE SECTION ON INTRODUCTION TO CMAKE
+
+## CMAKE LANGUAGE (I)
+
+Command based, one per line
+	set(FOO “bar”)
+	add_executable(foo bar.cpp)
+	if(FOO)
+Commands don’t return values: no nesting
+Commands may have arguments and overloads
+	file(WRITE <file> <content>)
+	file(READ <file> <variable>)
+See the documentation
+
+
+Variables are set with command set(), removed with unset()
+Variables are all strings
+	set(FOO “bar”)
+	set(FOO bar)
+	set(FOO 42)
+Lists are strings too, semicolon separated
+	set(FOO “1;2;3”)
+	set(FOO 1 2 3)
+Variables are read using ${<var>}
+	set(FOO ${BAR})
+
+## CMAKE LANGUAGE (II)
+
+
+Control flow
+if() / elseif() / else() / endif()
+foreach() / endforeach()
+while() / endwhile()
+break() / continue() / return()
+Comments starts with #
+# I am a comment
+
+
+Others
+include(<file>)
+Read another CMake files in the same context
+add_subdirectory(<dir>)
+Read another CMakeLists.txt file in <dir> in a new context
+message(<text>)
+Print a message, useful for displaying status, progress, warnings or errors
+
+The add_subdirectory command allows a project
+to be separated into directories
+
+<!--
+  The add_subdirectory command allows a project to be separated into directories
+
+  CMake is a declarative language which contains 90+ commands. It contains general purpose constructs: set , unset, if , elseif , else , endif, foreach, while, break
+-->

@@ -3,9 +3,11 @@ aspectratio: 169
 ---
 
 
-# CREATING A LIBRARY 
+# CREATING A LIBRARY / BUILDING AND LINKING STATIC AND SHARED LIBRARIES
 
-## example
+## NOTES
+
+You might also want to mention that they can add all sources to the executable alternatively...
 
 The upcoming example is on chapter-01/recipe-03
 
@@ -147,6 +149,10 @@ int main() {
 
 ::: 
 ::::::::::::::
+
+## IMPORTANT POINT
+
+We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
 
 ## CREATING A LIBRARY - HOW TO DO IT 
 

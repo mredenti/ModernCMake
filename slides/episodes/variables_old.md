@@ -4,99 +4,35 @@ aspectratio: 169
 
 # VARIABLES 
 
-## OVERVIEW 
+## VARIABLES 
 
-<!--
-  In CMake there are only two building blocks (syntactic elements) that define 
-  the structure and organization of code and allow us to manage the build process
-  of software projects
--->
+Three types of variables 
 
-**Variables** are the basic unit of storage in CMake.
-
-<!-- 
-  **Variables** and commands are the only two syntactic elements of the CMaka language. 
--->
-
-\underline{Purpose}:
-
-<!--
-  controlling the configuration and behaviour of the build process
-
-  customise and manage different aspects of the build system, enabling flexibility and reusability
--->
-
-- **Configuration**: setting paths, compiler options, compiler standards 
-  <!--and other configurations required during the build process -->
-  
--  **Customisation:** manage and control the build process based on different criteria (target platform, build type, compiler ID, user-specific options)
-
-
-Three types of variables: **Local**, **Cache**, **Environment**
-
-<!--
-
-  Declared/Defined using the set() command.
-
-  Customization: Variables allow you to customize the build process based on different criteria such as the target platform, build type (e.g., Debug or Release), or user-specific options.
-
-  Reuse: By defining variables, you can reuse values throughout your CMake scripts, reducing redundancy and making maintenance easier.
-
-  - Variables are essential for integrating external tools and dependencies. You can use variables to specify paths, compiler flags, and other configurations required for external libraries and tools, ensuring a smooth integration process.
-
-  - Variables enable conditional logic in CMake scripts. By using variables in conditional statements, you can make decisions based on the system environment, platform, or user-defined settings, ensuring that the build process adapts appropriately to different scenarios.
-
-  - Variables provide a way for users to customize the build process. By setting cache variables, users can override default settings through command-line arguments or CMake GUI tools, allowing for tailored builds based on specific needs and environments.
-
--->
+- Local 
+- Cache 
+- Environment 
 
 ## LOCAL VARIABLES 
-
-\vspace{0.5cm}
-<!--
-  Key Points:
-  Local variables are declared using the set() command.
-  Scope limited to the directory where they are defined.
-  Useful for temporary settings and internal script logic.
--->
 
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
 
 <!--
-  - The ${} operator can be used recursively
-
   - A new user-defined local variable can be created with the `set` command
 
   -  Variable names are case sensitive, values can only contain [A-Za-z0-9_]
 -->
 
-<!-- - `set()` to create a new local variable -->
-
-\vspace{0.5cm}
-
-- Variables are expanded using ${}
-  
-  ```{.cmake style=cmakestyle}
-  message(STATUS BAR=${BAR})
-  ```
-
-\vspace{0.5cm}
-
-- Variable names are case sensitive <!-- values can only contain A-Za-z0-9_ -->
+- To create a user-defined local variable 
 
   ```{.cmake style=cmakestyle}
-  set(FOO "bar") 
-  set(foo "")  
+  set(LIB_NAME "geometry") 
   ```
 
 ::: 
 ::: {.column width="50%"}
 
-\vspace{0.5cm}
-
-
-- Variables are all strings
+- **Variables are all strings** 
     
   ```{.cmake style=cmakestyle}
   set(FOO "bar") # "bar"
@@ -104,252 +40,54 @@ Three types of variables: **Local**, **Cache**, **Environment**
   set(FOO 42)    # "42"
   ```
 
-\vspace{0.5cm}
-
-
-- Lists are semicolon-separated strings
-  
-  ```{.cmake style=cmakestyle}
-  set(FOO "1" "2" "3") # "1;2;3"
-  set(FOO 1 2 3)       # "1;2;3" 
-  ```
-
-<!--
-  - The ${} operator can be used recursively
-
-  - A new user-defined local variable can be created with the `set` command
-
-  -  Variable names are case sensitive, values can only contain [A-Za-z0-9_]
--->
-
-<!-- 
-  Be careful with variables which contain whitespace (PATH) 
-
-  Multiple arguments will be joined as a semicolon-separated list to form the actual variable value to be set.
--->
-:::
-:::::::::::::: 
-
-## LOCAL VARIABLES - SCOPE (I)
-
-<!--
-  SCOPE IS ONE OF THE MOST CONFUSING ASPECTS OF CMAKE
--->
-
-\vspace{0.5cm}
-
-
-You can **access** the value of a local variable **after you set it** as long as you are in the same **directory scope** of the current CMakeLists.txt file.
- 
-<!-- 
-  include() does not create a new scope, can be used within the directory scope of the current CMakeLists.txt file 
--->
-
-:::::::::::::: {.columns}
-::: {.column width="57%"}
-
-  <!--
-
-  - Variable values are inherited by CMakeLists.txt files in sub directories
-
-  - Accessible in subdirectories but not vice versa
-
-  Scopes created by add_subdirectory() or custom function call
-
-  - Local variables are limited to the scope of the current directory and its subdirectories
-  
---> 
-
-\vspace{.3cm}
-
-- `add_subdirectory()` does not create a new scope
-
-    ```{.cmake style=cmakestyle}
-    # project/CMakeLists.txt
-    set(FOO "foo") 
-    add_subdirectory(src)
-    message(STATUS ${BAR}) # ""
-    ```
-
-    ```{.cmake style=cmakestyle}
-    # project/src/CMakeLists.txt
-    message(STATUS ${FOO}) #"foo"
-    set(BAR "bar")
-    ```
-
-:::
-
-::: {.column width="43%"}
-
-
-\vspace{1cm}
-
-\begin{forest}
-  pic dir tree,
-  where level=0{}{
-    directory,
-  },
-  [ 
-    [project
-      [CMakeLists.txt, file
-      ]
-      [src
-        [CMakeLists.txt, file
-        ]
-      ]
-    ]
-  ]
-\end{forest}
-
-:::
-:::::::::::::: 
-
-. . . 
-
-:::::::::::::: {.columns}
-::: {.column width="57%"}
-
-- Scope can be extended to parent
-
-    ```{.cmake style=cmakestyle}
-    # src/CMakeLists.txt
-    set(BAR "bar" PARENT_SCOPE)
-    ```
-
-:::
-
-::: {.column width="43%"}
-
-
-:::
-:::::::::::::: 
-
-## LOCAL VARIABLES - SCOPE (II)
-
-
-\vspace{0.5cm}
-
-Local variables are also scoped by functions (not by macro)
-
-```{.cmake style=cmakestyle}  
-# CMakeLists.txt file
-function(test)
-  set(TEST "42") 
-  set(TEST_EXTEND "42" PARENT_SCOPE)
-endfunction()
-
-test()
-message(STATUS ${TEST}) # ""
-message(STATUS ${TEST_EXTEND}) # "42"
-```
-
-
-## CACHE VARIABLES
-
-\vspace{0.5cm}
-
-<!--
-  In the previous recipe, we introduced conditionals in a rather rigid fashion: by introducing variables with a given truth value hardcoded. This can be useful sometimes, but it prevents users of your code from easily toggling these variables. Another disadvantage of the rigid approach is that the CMake code does not communicate to the reader that this is a value that is expected to be modified from outside. The recommended way to toggle behavior in
-  the build system generation for your project is to present logical switches as options in your CMakeLists.txt using the option() command.
--->
-
-CMake **Cache variables** are primarily used to expose build configurations to the user.
-
-- You can override default cache variable values through the command line 
-  
-  ```{.cmake style=cmakestyle}  
-  # set(<variable> <value>... CACHE <type> <docstring> [FORCE])
-  set(TRAFFIC_LIGHT "RED" CACHE STRING "Traffic light color")
-  
-  if(TRAFFIC_LIGHT MATCHES "RED")
-    message(FATAL_ERROR "STOP")
-  elseif(TRAFFIC_LIGH MATCHES "GREEN")
-    message(STATUS "GO")
-  else()
-    message(STATUS "ACCELLERATE")
-  endif()
-  ```
-
-  ```{.bash style=bashstyle}
-  $ cmake -B <...> -S <...> -D TRAFFIC_LIGHT="GREEN" 
-  -- GO
-  ```
-
-
-- Cache entries are typed and require a docstring
-
-## CACHE VARIABLES (II)
-
-- Boolean specialisation
-  
-  ```{.cmake style=cmakestyle}  
-  # CMakeLists.txt file
-  
-  # ...
-
-  # set(<variable> <value>... CACHE <type> <docstring> [FORCE])
-  set(ENABLE_CUDA "ON" CACHE BOOL "Build project X with CUDA support")
-
-  if(ENABLE_CUDA)
-    enable_language(CUDA)
-  endif()
-  ```
-
-- User controlled build options
-
-- Used to interact with the command line
-
-- Modifying a cache variable requires a special form of the `set` command
-
-- Persist across calls to `cmake`
-
-- Available to all scopes in the project
-
-
-
 - **Lists are ; separated strings**
   ```{.cmake style=cmakestyle}
   set(FOO "1" "2" "3") # "1;2;3"
   set(FOO 1 2 3)       # "1;2;3" 
   ```
  
-## CMakeCache.txt
+- **Variables are expanded using ${}**
+  
+  ```{.cmake style=cmakestyle}
+  set(FOO "${BAR}")
+  ```
 
-- Stores optional choices and provides a project global variable repository
-- Variables are kept from run to run
-- Located in the top directory of the build tree
-- A set of entries like this:
-– KEY:TYPE=VALUE
-- Valid types:
-– BOOL
-– STRING
-– PATH
-– FILEPATH
-– INTERNAL
-(these are only used by cmake-gui and ccmake to display the appropriate type
-of edit widget)
+<!-- 
+  Multiple arguments will be joined as a semicolon-separated list to form the actual variable value to be set.
+-->
+:::
+:::::::::::::: 
 
-## VARIABLES AND THE CACHE 
+## LOCAL VARIABLES II
 
-Dereferences look first for a local variable, then
-in the cache if there is no local definition for a
-variable
-Local variables hide cache variables
+- Variables can be expanded with the `${}` operator
 
-## CONDITIONAL LOGIC 
+    ```{.cmake style=cmakestyle}
+    # ... 
 
-- Uses variables to enable conditional logic (`if()`, `elseif()`, ...) <!-- in CMake scripts -->
+    set(LIB_NAME "geometry")
+
+    # lists are a series of ; values 
+    set(SRCS "circle.cpp;square.cpp") 
+
+    add_library(${LIB_NAME} STATIC ${SRCS} geometry.hpp)
+
+    add_executable(main main.cpp)
+    target_link_libraries(main PRIVATE ${LIB_NAME})
+    ```
+- Be careful with variables which contain whitespace (PATH) 
+
+<!--
+    - CMake variables are always of string type
+    - The cmake-gui, ccmake interpret them as other types
+    - A `list` variable can be defined by providing it as a `;` separated strings
+-->
+
 
 ## SCOPE
 
 - Local variables defined this way have a scope limited to the current ... and everything below it (CMAKE_CXX_STANDARD goes in the top level CMakeLists.txt)
 
-
-Variables are scoped
-Each new scope creates a local copy of all variables
-Scopes created by add_subdirectory() or custom function call
-Top level scope is the CACHE, can serve as global variables. Values are kept between runs.
-Can prepopulate the cache variables with -D<var>=<val> on the command line
 
 ## LOCAL VARIABLES: SCOPE
 
@@ -360,34 +98,6 @@ Function. In effect when a variable is set within a function: the variable will 
 Directory. In effect when processing a CMakeLists.txt in a directory: variables in the parent folder will be available, but any that is set in the current folder will not be propagated to the parent.
 
 Cache. These variables are persistent across calls to cmake and available to all scopes in the project. Modifying a cache variable requires using a special form of the set function.
-
-
-## CMAKE VARIABLES 
-
-- cmake --help-variable-list | wc l
-
-cmake --help-variables or online docs
-- User settable variables
-– BUILD_SHARED_LIBS
-– CMAKE_INSTALL_PREFIX
-– CMAKE_CXX_FLAGS / CMAKE_<LANG>_FLAGS
-- CMake pre-defined variables (should not be set by user code)
-– WIN32, UNIX, APPLE, CMAKE_VERSION
-– CMAKE_SOURCE_DIR, CMAKE_BINARY_DIR
-– PROJECT_NAME
-– PROJECT_SOURCE_DIR, PROJECT_BINARY_DIR
-
-Help on a specific built-in variable can be obtained with:
-
-cmake --help-variable PROJECT_BINARY_DIR
-
-## CHOOSING THE COMPILERS 
-
-- CMake caches the compiler for a build directory on the first invocation
-- CMake compiler detection has the following preference 
-  - env variables (CC, CXX)
-  - cc and cxx path entries
-  - gcc and g++ path entries
 
 ## CMAKE LANGUAGE STANDARD 
 
@@ -436,13 +146,6 @@ add_library(geometry STATIC ${SRCS})
     [50%] Building ....
     /usr/bin/c++ -std=gnu++11 -o main.cxx.o -c main.cxx
     ```
-
-## BUILD CONFIGURATONS 
-
-- With Makefile generators(Makefile, Ninja):
-- CMAKE_BUILD_TYPE:STRING=Release
-- known values are: Debug, Release, MinSizeRel,
-RelWithDebInfo
 
 # CACHE VARIABLES
 
