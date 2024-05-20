@@ -395,6 +395,7 @@ add a few examples on the right to make it clear
 \path [line] (build) -- (binaries);
 \path [line] (configure) -- (cmakelists);
 \path [line] (configure) -- (cmakecache);
+\path [line] (cmakecache) -- (configure);
 \path [line] (generate) -- (makefile);
 \path [line] (makefile) -- (build);
 \path [line] (workingstate) -- (build);

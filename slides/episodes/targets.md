@@ -4,6 +4,47 @@ aspectratio: 169
 
 # Targets
 
+## WHAT ARE CMAKE TARGETS 
+
+What are CMake targets?
+CMake target
+Many times in the documentation you may read about CMake
+target. A target is something that CMake should build (i.e.
+generate something enabling the building of the target).
+A CMake target has dependencies and properties.
+1 Executable are targets: add executable
+2 Libraries are targets: add library
+3 There exist some builtin targets: install, clean, package, . . .
+4 You may create custom targets: add custom target
+CMake
+
+## TARGET DEPENDENCIES AND PROPERTIES 
+
+Target dependencies and properties I
+A CMake target has dependencies and properties.
+Dependencies
+Most of the time, source dependencies are computed from target
+specifications using CMake builtin dependency scanner (C,
+C++, Fortran) whereas library dependencies are inferred via
+target link libraries specification.
+If this is not enough then one can use add dependencies, or some
+properties.
+CMake
+
+## dksfjd
+
+Properties
+Properties may be attached to either target or source file (or
+even test). They may be used to tailor prefix or suffix to be
+used for libraries, compile flags, link flags, linker language,
+shared libraries version, . . .
+see : set target properties or set source files properties
+Sources vs Targets
+Properties set to a target like COMPILE FLAGS are used for
+all sources of the concerned target. Properties set to a source
+are used for the source file itself (which may be involved in
+several targets).
+
 ## Targets
 
 CMake is all about targets and properties. An executable is a target, a library is a
@@ -135,3 +176,14 @@ target_sources
 - It is much more robust to use targets and properties than using variables and here we will discuss why.
 
 - Visibility levels PRIVATE, PUBLIC, or INTERFACE are very powerful but not easy to describe and imagine in words. Maybe a better approach to demonstrate what visibility levels is to see it in action.
+
+## exporting importing your project
+
+Exporting/Import your project
+Export/Import to/from others
+CMake can help project using CMake as a build system to
+export/import targets to/from other project using CMake as a
+build system.
+No more time for that today sorry, see:
+http://www.cmake.org/Wiki/CMake/Tutorials/Exporting_
+and_Importing_Targets

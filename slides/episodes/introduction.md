@@ -1,5 +1,5 @@
 ---
-title: Modern CMake
+title: CMake
 subtitle: Introduction to Build Systems (Generators) and Package Managers in HPC
 author: Michael Redenti \and Mandana Safari
 institute: m.redenti@cineca.it \and m.safari@cineca.it 
@@ -94,8 +94,13 @@ Autotools <!-- a.k.a. Autohell -->
 
 - **C**ross Platform **Make** is an open-source **build system generator**.
 
-- It uses a scripting language to define the build process in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build tools.
+- It allows us to: 
+  - structure and build C/C++/Fortran/... projects $\Rightarrow$ **CMake**
+  - easily integrate third-party dependencies
+  - orchestrate tests $\Rightarrow$ **CTest, CDash**
+  - package projects $\Rightarrow$ **CPack**
 
+- Version 3.0 was released in June 2014 and signals the beginning of "Modern CMake".
 <!-- 
   Let developers use the IDE and tools they are most familiar with, they are not going to be as productive if you force them to use the command line
 
@@ -103,26 +108,20 @@ Autotools <!-- a.k.a. Autohell -->
 -->
 
 
-- Family of tools 
-  - Build $\Rightarrow$ **CMake**
-  - Test $\Rightarrow$ **CTest, CDash**
-  - Package $\Rightarrow$ **CPack**
-
 <!-- 
   CMake generates native makefiles and workspaces that can be used in the compiler environment of your choice
 
   Enable building (CMake), testing (CTest, CDash) and packaging (CPack) of software
 -->
 
+
+
+## BUILD SYSTEM GENERATOR
+
+CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build tools.
+
 :::::::::::::: {.columns}
-::: {.column width="5%"}
-
-
-:::
-::: {.column width="50%"}
-
-\vspace{-2.5cm}
-\hspace{-5cm}
+::: {.column width="65%"}
 
 ```plantuml
 left to right direction
@@ -158,49 +157,15 @@ CM --> XC
 CM --> MK
 ```
 
+::: 
+::: {.column width="35%"}
+
 :::
-::::::::::::::
-
-
-## WHAT IS CMAKE?
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[anchor=north east,inner sep=0pt, xshift=.3cm, yshift=-0.8cm] at (current page.north east) {
-  \href{http://www.example.com}{\includegraphics[width=4cm]{./fig/Logo_Kitware.png}}
-};
-\end{tikzpicture}
-
-<!-- 
- ... that provides a family of software development tools
-
- - Build System Generator => it generates files, it does not build
- 
-- Dependency discovery is awesome (find_package())
-- Can not overcome the limitations of the underlying IDEs
--->
-
-- **C**ross Platform **Make** is an open-source **build system generator**.
-
-- It uses a scripting language to define the build process in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build tools.
-
-<!-- 
-  Let developers use the IDE and tools they are most familiar with, they are not going to be as productive if you force them to use the command line
-
-  Nonostante the rich C++ ecosystem that is out there with various vendors creating IDEs, compilers, architecture but you can still express your build in one tool
--->
-
-
-- Family of tools 
-  - Build $\Rightarrow$ **CMake**
-  - Test $\Rightarrow$ **CTest, CDash**
-  - Package $\Rightarrow$ **CPack**
-
-- Version 3.0 was released in June 2014 and signals the beginning of "Modern CMake".
+:::::::::::::: 
 
 ## CMAKE POPULARITY/WHO ELSE IS USING CMAKE
 
 interest over time and its relevance as the predominant build systems in C++ projects
-
 
 **CMAKE'S POSITION AMONG BUILD SYSTEMS**
 
@@ -212,6 +177,20 @@ integrated
 
 generators
   : Autotools (a.k.a. Autohell), **CMake**, Meson, Bazel
+
+
+## WHY SHOULD YOU USE CMAKE 
+
+You want to avoid hard-coding paths
+You need to build a package on more than one computer
+You want to use CI (continuous integration)
+You need to support different OSs (maybe even just flavors of Unix)
+You want to support multiple compilers
+You want to use an IDE, but maybe not all of the time
+You want to describe how your program is structured logically, not flags and commands
+You want to use a library
+You want to use tools, like Clang-Tidy, to help you code
+You want to use a debugger
 
 ## CMAKE FEATURES 
 
@@ -249,9 +228,6 @@ generators
 
 ::: {.column width="50%"}
 
-**CMake scripting language**
-
-\vspace{0.2cm}
 
 **Dependency discovery made easy**
 
@@ -272,6 +248,9 @@ generators
 
 **Fortran Module Order**  
 
+\vspace{0.2cm}
+
+**CMake scripting language**
 <!-- 
   Automatic ordering of Fortran files based on `use` statements in the code for a library
 
@@ -289,96 +268,130 @@ generators
   
 ## CMAKE LANGUAGE OVERVIEW 
 
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+Command based, one per line 
+
+```{.cmake style=cmakestyle}
+set(FOO "bar")
+add_executable(foo bar.cpp)
+if(FOO)
+```
+
+Numerous commands
+
+```{.bash style=bashstyle}
+$ cmake --help-command-list | wc -l
+```
+
+Commands do not return values, no nesting
+
+Commands may have arguments and overloads 
+
+```{.cmake style=cmakestyle}
+file(WRITE <file> <content>)
+file(READ <file> <variable>)
+```
+
+link to documentation
+
+:::
+::: {.column width="50%"}
+
+Variables are set with command `set()`, removed with `unset()`
 
 
-## History
+Variables are all strings
+:::
+::::::::::::::
+
+
+## CMAKE LANGUAGE OVERVIEW (II)
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+Control flow
+
+```{.cmake style=cmakestyle}
+if() / elseif() / else() / endif()
+```
+
+```{.cmake style=cmakestyle}
+foreach() / endforeach()
+```
+
+```{.cmake style=cmakestyle}
+while() / endwhile()
+```
+
+```{.cmake style=cmakestyle}
+break() / continue()
+```
+
+\vspace{.5cm}
+
+Comments start with #
+
+```{.cmake style=cmakestyle}
+# I am a single line comment
+```
+
+:::
+::: {.column width="50%"}
+
+Read another CMake file in the same context
+
+```{.cmake style=cmakestyle}
+include(<file>)
+```
+
+\vspace{.5cm}
+
+
+Read another `CMakeLists.txt` file in `<dir>` in a new context
+
+```{.cmake style=cmakestyle}
+add_subdirectory(<dir>)
+```
+
+\vspace{.5cm}
+
+Print a message 
+<!-- 
+  Usefule for displaying status, progress, warning or errors 
+-->
+
+```{.cmake style=cmakestyle}
+message(<text>)
+```
+
+
+
+:::
+::::::::::::::
+
 
 ## Key Features
 
-Build System Generator 
-
-Compiler indipendent configuration files 
+Compiler indipendent configuration files (need example)
 
 Uses CMake language
 
 - Automatic dependency generation 
-- Automatic chaining of library dependency information
-- Dependency discovery is awesome (find_package())
+- 
 - **Single description file** generate builds for many build systems and platforms from one description file 
+  
 - **Integration** easy to build end-to-end build systems using CTest and CPack
 - It's platform- and - compiler-agnostic, allowing reuse of CMake scripts across different platforms.
 - facilitate generation of files for different build systems across various platforms and IDEs
 - automatically track and propagate internal dependencies
 
-
-## CMake High Level View
-
-:::::::::::::: {.columns}
-::: {.column width="60%"}
-```plantuml
-left to right direction
-skinparam PackagePadding 2
-skinparam BoxPadding 2
-skinparam NodePadding 2
-skinparam style strictuml
-skinparam padding 0
-scale 0.8
-
-skinparam rectangle {
-  BackgroundColor<<Windows>> LightBlue
-  BackgroundColor<<macOS>> LightBlue
-  BackgroundColor<<Linux>> LightBlue
-  BackgroundColor<<Tool>> Pink
-}
-
-skinparam Arrow {
-  Color Black
-}
-
-file "CMakeLists.txt" as ST
-rectangle "CMake" as CM #Pink
-
-collections "Visual Studio" as VS <<Windows>> #LightBlue
-file "XCode" as XC <<macOS>> #LightBlue
-file "Make" as MK <<Linux>> #LightBlue
-
-ST --> CM
-
-CM --> VS
-CM --> XC
-CM --> MK
-```
-:::
-
-
-::: {.column width="40%"}
-
-```plantuml
-skinparam rectangle {
-    StrokeColor Black
-    BackgroundColor White
-}
-
-rectangle "Source Tree" as ST
-rectangle "CMake" as CMake
-rectangle "Visual Studio" as VS
-rectangle "Windows Binaries" as WB
-rectangle "XCode" as XC
-rectangle "macOS Binaries" as MB
-rectangle "Make" as MK
-rectangle "Linux Binaries" as LB
-
-ST -down-> CMake : generates
-CMake -right-> VS : for Windows
-CMake -down-> XC : for macOS
-CMake -left-> MK : for Linux
-VS -down-> WB
-XC -down-> MB
-MK -down-> LB
-```
-
-:::
-::::::::::::::
 
 
 <!-- 
@@ -395,10 +408,6 @@ MK -down-> LB
 
 -->
 
-## CMAKE LANGUAGE
-
-
-
 
 ## 6. CMake's Relevance in HPC 
 
@@ -413,24 +422,6 @@ dependent libraries
 Discussion on how CMake fits into the software development process, its role in streamlining development, testing, deployment, and complex use cases like large-scale projects and cross-platform development.
 
 # Workshop Outline and Setup
-
-## Agenda
-
-Overview of the workshop format which includes episodes with exercises, each teaching a CMake concept.
-
-
-Detailed agenda with timings for each session, including breaks and Q&A sessions.
-
-<!--
-  ## Objectives
-
-  Focus on modern CMake especially for HPC, building reliable projects in C/C++/Fortran, and best practices for using CMake in collaborative projects.
--->
-
-**Skills Developed:**
-- Writing maintainable build configuration files.
-- Managing dependencies and libraries.
-- Integrating CMake with CI/CD pipelines.
 
 ## Setup
 
@@ -463,38 +454,81 @@ $ module load cmake/3.21.4
 
 ## Agenda 
 
-Lunch Break
-Episode 6: Advanced CMake Features
-Generator expressions
-Functions and Macros
-Scripting in CMake
-Exercise: Create a CMake macro for repetitive tasks.
-Episode 7: Testing with CMake
-Adding tests with CTest
-Test-driven development with CMake
-Exercise: Write and add several tests to the existing CMake project.
-Episode 8: Installing and Packaging with CMake
-Install commands
-CPack for packaging
-Exercise: Write CMake install rules and generate a package.
-Episode 9: Managing Large Projects
-Organizing a project with subdirectories
-Interface libraries
-Managing dependencies
-Exercise: Refactor the project to use subdirectories.
-Episode 10: Modern CMake Practices
-Usage of modern CMake commands and targets
-Avoiding common pitfalls
-CMake project review and Q&A
-Exercise: Participants review each other's CMake projects and provide feedback.
-Conclusion and Wrap-Up
-Recap of the workshop
-Additional resources for further learning
-Feedback and workshop evaluation
+Introduction 
+  - Overview of the CMake Language - commands and variables (+ functions, macros)
+
+- Basic Steps with CMake
+  - Hello World with CMake
+    - Build project files 
+    - Compile
+  - Creating a static library and linking
+
+- Variables 
+  - Local variables 
+  - Cache variables 
+  - Environment variables 
+  - CMakeCache.txt 
+  - CMakeWorkflow
+  - Variables and the Cache
+  - Setting the Compiler
+  - Setting the standard 
+  - Recap: local vs cache variables 
+
+- Conditional Logic 
+  - if() endif() 
+  - Build configurations (Release, Debug, ...)
+  - Controlling compiler flags depending on compiler ID
+
+- Targets
+  - Targets have properties
+  - Setting the compiler on a target
+  - Visibility Levels
+  - Inheritance
+
+- Finding dependencies
+  - Modules 
+  - Configuration 
+  - PkgConfig
 
 
-## Abstracting away the build tool
-CMake also comes to our aid in helping us not have to deal with the platform differences of the build tool. The cmake --build option directs CMake to invoke the appropriate build tool for us, which allows us to specify the whole build something like this:
+LUNCH BREAK
+
+- Structuring a large projects (?)
+
+- Testing 
+
+- Installing
+
+- Generator expressions
+
+- Functions and Macros
+
+- Testing with CMake
+  - Adding tests with CTest
+  - Test-driven development with CMake
+  - Exercise: Write and add several tests to the existing CMake project.
+
+- Installing with CMake
+  - Install commands
+  - Write CMake install rules and generate a package.
+
+- Managing Large Projects
+  - Organizing a project with subdirectories
+  - Exercise: Refactor the project to use subdirectories.
+
+- Modern CMake Practices
+  - Usage of modern CMake commands and targets
+
+General tips and tricks
+
+  - Avoiding common pitfalls
+
+- Conclusion and Wrap-Up
+
+- Recap of the workshop
+
+- Additional resources for further learning
+
 
 ## More
 
@@ -520,56 +554,6 @@ Scope and Visibility: The scope of variables and targets can be influenced by th
 add support with testing frameworks GoogleTest as well as static and dynamic analysis
 
 
-## {.standout}
-
-THESE ARE THE SLIDES WITH WHICH YOU SHOULD COMPLETE THE SECTION ON INTRODUCTION TO CMAKE
-
-## CMAKE LANGUAGE (I)
-
-Command based, one per line
-	set(FOO “bar”)
-	add_executable(foo bar.cpp)
-	if(FOO)
-Commands don’t return values: no nesting
-Commands may have arguments and overloads
-	file(WRITE <file> <content>)
-	file(READ <file> <variable>)
-See the documentation
-
-
-Variables are set with command set(), removed with unset()
-Variables are all strings
-	set(FOO “bar”)
-	set(FOO bar)
-	set(FOO 42)
-Lists are strings too, semicolon separated
-	set(FOO “1;2;3”)
-	set(FOO 1 2 3)
-Variables are read using ${<var>}
-	set(FOO ${BAR})
-
-## CMAKE LANGUAGE (II)
-
-
-Control flow
-if() / elseif() / else() / endif()
-foreach() / endforeach()
-while() / endwhile()
-break() / continue() / return()
-Comments starts with #
-# I am a comment
-
-
-Others
-include(<file>)
-Read another CMake files in the same context
-add_subdirectory(<dir>)
-Read another CMakeLists.txt file in <dir> in a new context
-message(<text>)
-Print a message, useful for displaying status, progress, warnings or errors
-
-The add_subdirectory command allows a project
-to be separated into directories
 
 <!--
   The add_subdirectory command allows a project to be separated into directories

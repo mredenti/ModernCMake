@@ -4,6 +4,29 @@ aspectratio: 169
 
 # Installing 
 
+## Overview
+
+In previous chapters, we have shown how to configure, build, and test our projects using
+CMake. Installing projects is an equally important part of the developer's toolbox, and this
+chapter will demonstrate how to achieve that
+
+We will walk you through the various steps to be taken in refining the installation of a
+simple C++ project: from making sure that important files built in your project are copied
+over to the right directories, to ensuring that other projects depending on your work can
+detect it using CMake. The four recipes in this chapter will build upon the simple example
+given in Chapter 1, From a Simple Executable to Libraries, Recipe 3, Building and linking shared
+and static libraries. There we tried to build a very simple library and link it into an
+executable. We also showed how to build both a static and a shared library out of the same
+source files. In this chapter, we will go a bit deeper and discuss and formalize what
+happens at install time.
+
+## Installing your project
+
+In this very first recipe, we will introduce our small project and some of the basic concepts
+that will be used also in the subsequent recipes. Installing files, libraries, and executables is
+a very basic task, but it can present some pitfalls. We will walk you through these and show
+you how to effectively avoid many of them with CMake.
+
 ## From docs
 
 - Software is typically installed into a directory separate from the source and build trees. This allows it to be distributed in a clean form and isolates users from the details of the build process. 

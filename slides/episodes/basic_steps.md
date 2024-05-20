@@ -315,6 +315,11 @@ On GNU/Linux, CMake will by default generate Unix Makefiles to build the project
 
 ## STEP 2 - RUNNING THE NATIVE BUILD SYSTEM
 
+<!--
+  Abstracting away the build tool
+    CMake also comes to our aid in helping us not have to deal with the platform differences of the build tool. The cmake --build option directs CMake to invoke the appropriate build tool for us, which allows us to specify the whole build something like this:
+-->
+
 ```{.bash style=bashstyle}
 $ cmake --build ./build 
 [ 50%] Building CXX object CMakeFiles/hello_world.dir/hello.cpp.o
