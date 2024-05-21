@@ -6,42 +6,197 @@ aspectratio: 169
 
 ## Overview 
 
-Project may be using external libraries, program, files...
-Those can be found using the `find_package()` command.
-
-f ind package ( LibXml2 )
-2 i f (LIBXML2 FOUND)
-3 a d d d e f i n i t i o n s (􀀀DHAVE XML ${LIBXML2 DEFINITIONS} )
-4 i n c l u d e d i r e c t o r i e s ( ${LIBXML2 INCLUDE DIR} )
-5 el se (LIBXML2 FOUND)
-6 s e t ( LIBXML2 LIBRARIES "" )
-7 e n d i f (LIBXML2 FOUND)
-8 . . .
-9 t a r g e t l i n k l i b r a r i e s (MyTarget ${LIBXML2 LIBRARIES } )
-CMake
-
-maybe replace the above with the math library...!!
-
-## Overview 
+<!--
+    In this chapter we will talk about how to detect external/third party 
+    libraries in CMake. There comes a time where as your project grows 
+    you want to make use of external libraries, programs, files...
+-->
 
 Projects often depend on other projects and libraries.
 
-    - How to detect third party libraries?
-    - How to link to these external libraries?
+- How to detect/find third party libraries?
+- How to link to these external libraries?
+
+
+Project may be using external libraries, program, files...
+In CMake 
+Those can be found using the `find_package()` command.
 
 Maybe have a code snippet motivating the example, questions and so on?
 Maybe show a compilation line with manual linking
 
-## Finding Packages 
+Should we maybe have an example with the math library?
+maybe replace the above with the math library...!
+
+Highlight that we are not talking about installing them, we assume these libraries 
+ideally already installed on our system 
+
+## Finding Packages in CMake
 
 In CMake there are two ways for searching packages
 
 - **Modules** 
 - **CMake package configurations** 
+- **PkgConfig**
+- **Write your own Find<package>.cmake module**
 
 but both of them use the same inferface `find_package()`
 
+Mention that the way we will present the different approaches is in order of priority...
 
+
+## MOTIVATING EXAMPLE - HELLO WORLD WITH MPI
+
+\vspace{.5cm}
+
+<!--
+    An alternative and often complementary approach to OpenMP shared-memory parallelism
+    is the Message Passing Interface (MPI), which has become the de facto standard for
+    modeling a program executing in parallel on a distributed memory system. Although
+    modern MPI implementations allow shared-memory parallelism as well, a typical approach
+    in high-performance computing is to use OpenMP within a compute node combined with
+    MPI across compute nodes. The implementation of the MPI standard consists of the
+    following.
+-->
+
+:::::::::::::: {.columns}
+::: {.column width="75%"}
+
+```cpp
+#include <iostream>
+#include <mpi.h>
+
+int main(int argc, char **argv) {
+
+    MPI_Init(NULL, NULL); 
+
+    // Get the rank of the process
+    int world_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+    // Print off a hello world message
+    call to greetings library
+    
+    MPI_Finalize(); 
+}
+```
+
+:::
+::: {.column width="25%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [greetings.hpp, file
+      ]
+      [greetings.cpp, file
+      ]
+      [main.cpp, file
+      ]
+      [hello-mpi.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+:::
+::::::::::::::
+
+## OBJECTIVE / MANUAL COMPILATION 
+
+## OBJECTIVE 
+
+maybe show what would be our objective if doing so via manual compilation
+
+```{.bash style=bashstyle}
+mpic++ .. 
+```
+
+```{.bash style=bashstyle}
+mpic++ --showme compiler wrapper
+```
+
+
+## SETTING THE GLOBAL CXX COMPILER TO THE MPI WRAPPER 
+
+I would mention this later but not now as it would create confusion, 
+you would be adding a lot of pecies Indeed also because we know the reasons
+
+- The logic with respect to TPL should be handled by your CMake build configuration 
+  - What if you want to apply -D HAVE_MPI flags to your executables 
+  - What if you need to enable another TPL based on whether you enabled MPI or not
+
+show the cmakelists.txt file as it was before 
+
+and set the compiler from the command line globally
+
+\alert{How to achieve this in CMake?}
+
+
+## HOW TO DO IT (I) : DETECTING MPI
+
+In this recipe, we set out to find the MPI implementation: library, header files, compiler
+wrappers, and launcher. To do so, we will leverage the FindMPI.cmake standard CMake
+module:
+
+1. First, we define the minimum CMake version, project name, supported language,
+and language standard:
+
+```{.cmake style=cmakestyle}
+cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+project(hello-mpi LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+```
+
+2. We then call find_package to locate the MPI implementation:
+```{.cmake style=cmakestyle}
+find_package(MPI REQUIRED)
+```
+
+## HOW TO DO IT (II) : LINKING AGAINST MPI
+
+3. We define the executable name and, source, and similarly to the previous recipe,
+link against the imported target:
+
+```{.cmake style=cmakestyle}
+add_executable(hello-mpi hello-mpi.cpp)
+target_link_libraries(
+    hello-mpi
+    PUBLIC
+        MPI::MPI_CXX
+)
+```
+
+- You could also leave it as PRIVATE since we will not be linking against the executable anyhow
+
+## HOW TO DO IT (III)
+
+4. Let us configure and build the executable:
+
+
+$ mkdir -p build
+$ cd build
+$ cmake -D CMAKE_CXX_COMPILER=mpicxx ..
+-- ...
+-- Found MPI_CXX: /usr/lib/openmpi/libmpi_cxx.so (found version
+"3.1")
+
+-- Found MPI: TRUE (found version "3.1")
+-- ...
+$ cmake --build .
+
+1. To execute this program in parallel, we use the mpirun launcher (in this case,
+using two tasks):
+$ mpirun -np 2 ./hello-mpi
+Hello world from processor larry, rank 1 out of 2 processors
+Hello world from processor larry, rank 0 out of 2 processors
 ##  Finding Packages - Predefined Modules 
 
 CMake has a rather extensive set of prepackaged modules to detect the most commonly used libraries and programs, such as Python and Boost for example
@@ -168,6 +323,9 @@ Getting ready
 The example code (hello-mpi.cpp, downloaded from http:/ / www. mpitutorial. com),
 which we will compile in this recipe, will initialize the MPI library, have every process
 print its name, and eventually finalize the library:
+
+
+<!-- 
 
 ## HOW TO DO IT 
 
@@ -430,3 +588,100 @@ CMake
 CMake is a declarative language which contains 90+
 commands. It contains general purpose constructs: set , unset,
 if , elseif , else , endif, foreach, while, break
+
+
+
+## DETECING EXTERNAL LIBRARIES: PKG-CONFIG
+
+see chapter-03/recipe-09; the example is in C
+
+
+We have so far discussed two ways of detecting external dependencies:
+Using find-modules shipped with CMake. This is generally reliable and well
+tested. However, not all packages have a find-module in the official release of
+CMake.
+Using <package>Config.cmake, <package>ConfigVersion.cmake,
+and <package>Targets.cmake files provided by the package vendor and
+installed alongside the package itself in standard locations.
+
+What if a certain dependency provides neither a find-module nor vendor-packaged CMake
+files? In this case, we are left with two options:
+Rely on the pkg-config utility to discover packages on the system. This relies
+on the package vendors distributing metadata about their packages in .pc
+configuration files.
+Write our own find-package module for the dependency.
+
+## Overview
+
+In this recipe, we will show how to leverage pkg-config from within CMake to locate the
+FFTW ìlibrary. The next recipe, Detecting external libraries: II. Writing a findmodule, will show how to write your own basic find-module for FFTW
+
+
+## Step by step instructions 
+
+dfd 
+
+## How it works?
+
+Once pkg-config is found, CMake will provide two functions to wrap the functionality
+offered by this program:
+pkg_check_modules, to find all modules (libraries and/or programs) in the
+passed list
+pkg_search_module, to find the first working module in the passed list
+These functions accept the REQUIRED and QUIET arguments, as find_package does. In
+more detail, our call to pkg_search_module is the following:
+pkg_search_module(
+ZeroMQ
+REQUIRED
+libzeromq libzmq lib0mq
+IMPORTED_TARGET
+)
+Here, the first argument is the prefix that will be used to name the target that is storing the
+result of the search for the ZeroMQ library: PkgConfig::ZeroMQ. Notice that we need to
+pass different options for the names of the library on the system: libzeromq, libzmq,
+and lib0mq. This is due to the fact that different operating systems and package managers
+can choose different names for the same package.
+
+## Writing a find module
+
+This recipe complements the previous recipe, Detecting external libraries: I. Using pkg-config.
+We will show how to write a basic find-module to locate the ZeroMQ messaging library on
+your system so that the detection of the library can be made to work on non-Unix operating
+systems. We will reuse the same server-client sample code.
+
+## explanation 
+
+The module documentation consists of:
+
+An underlined heading specifying the module name.
+
+A simple description of what the module finds. More description may be required for some packages. If there are caveats or other details users of the module should be aware of, specify them here.
+
+A section listing imported targets provided by the module, if any.
+
+A section listing result variables provided by the module.
+
+Optionally a section listing cache variables used by the module, if any.
+
+If the package provides any macros or functions, they should be listed in an additional section, but can be documented by additional .rst: comment blocks immediately above where those macros or functions are defined.
+
+The find module implementation may begin below the documentation block. Now the actual libraries and so on have to be found. The code here will obviously vary from module to module (dealing with that, after all, is the point of find modules), but there tends to be a common pattern for libraries.
+
+
+## common pattern for finding the library
+steps 
+
+## Step 1
+
+First, we try to use pkg-config to find the library. Note that we cannot rely on this, as it may not be available, but it provides a good starting point.
+
+find_package(PkgConfig)
+pkg_check_modules(PC_Foo QUIET Foo)
+This should define some variables starting PC_Foo_ that contain the information from the Foo.pc file
+
+## Step 2
+
+
+Just add a simple example with fftw
+
+-->
