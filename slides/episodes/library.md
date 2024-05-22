@@ -16,8 +16,24 @@ aspectratio: 169
   how to group sources into libraries and how to link targets against these libraries.
 -->
 
-A project almost always consists of more than a single executable built from a single source file. 
-Only rarely we have one-source-file projects and more realistically, as projects grow, we split them up into separate files. This simplifies (re)compilation but also helps humans maintaining and understanding the project.
+- Most projects consist of multiple source files
+
+- Splitting code into multiple files enhances modularity, code reuse, and separation of concerns
+
+- Using libraries simplifies code management and speeds up recompilation
+
+<!-- 
+  Why Use Libraries?
+    Libraries organize common tasks and reusable code.
+    They facilitate modular project structure.
+    Libraries improve code maintainability and understanding.
+
+  A project almost always consists of more than a single executable built from a single source file. 
+  Only rarely we have one-source-file projects and more realistically, as projects grow, we split them up into separate files. This simplifies (re)compilation but also helps humans maintaining and understanding the project.
+
+  Understanding the concepts that are to come in this chapter helps in organizing 
+  and managing larger projects effectively, ensuring better code maintenance and scalability.
+-->
 
 BUT WHY DO WE NEED LIBRARIES? THAT AIN'T CLEAR!
 
@@ -165,7 +181,7 @@ int main() {
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
 
-1. The top level CMakeLists.txt file will contain the global set-up of our project as well as . to ..
+1. In the top level `CMakeLists.txt` file declare the global setup of our project. Additionally, include a call to the `add_subdirectory()` command to incorporate the `CMakeLists.txt` configuration from the `src` subdirectory
 
 ```{.cmake style=cmakestyle}
 cmake_minimum_required(VERSION 3.21)
