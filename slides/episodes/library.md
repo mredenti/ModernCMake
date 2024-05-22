@@ -3,28 +3,31 @@ aspectratio: 169
 ---
 
 
-# CREATING A LIBRARY / BUILDING AND LINKING STATIC AND SHARED LIBRARIES
+# CREATING A LIBRARY 
 
-## NOTES
+## OVERVIEW
 
-You might also want to mention that they can add all sources to the executable alternatively...
-
-The upcoming example is on chapter-01/recipe-03
+<!-- 
+  BUILDING AND LINKING STATIC AND SHARED LIBRARIES
+-->
 
 <!--
-  Only rarely we have one-source-file projects and more realistically, as projects grow, we split them up into separate files. This simplifies (re)compilation but also helps humans maintaining and understanding the project.
-
   A project almost always consists of more than a single executable built from a single source file. Projects are split across multiple source files, often spread across different subdirectories in the source tree. This practice not only helps in keeping source code organized within a project, but greatly favors modularity, code reuse, and separation of concerns, since common tasks can be grouped into libraries. This separation also simplifies and speeds up recompilation of a project during development. In this recipe, we will show
   how to group sources into libraries and how to link targets against these libraries.
 -->
 
-## A GREETINGS LIBRARY
+A project almost always consists of more than a single executable built from a single source file. 
+Only rarely we have one-source-file projects and more realistically, as projects grow, we split them up into separate files. This simplifies (re)compilation but also helps humans maintaining and understanding the project.
+
+BUT WHY DO WE NEED LIBRARIES? THAT AIN'T CLEAR!
+
+## A GREETINGS LIBRARY - SET UP (I)
 
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
 
 ```c++
-// HelloWorld/src/greetings/greetings.h
+// greetings/src/greetings.hpp
 #ifndef GREETINGS_H
 #define GREETINGS_H
 
@@ -47,12 +50,14 @@ namespace greetings {
     directory,
   },
   [ 
-    [hello-world
-      [greetings.hpp, file
-      ]
-      [greetings.cpp, file
-      ]
-      [main.cpp, file
+    [greetings
+      [src
+        [\colorbox{pink}{greetings.hpp}, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
       ]
     ]
   ]
@@ -62,24 +67,24 @@ namespace greetings {
 ::::::::::::::
 
 
-## A GREETINGS LIBRARY
+## A GREETINGS LIBRARY - SET UP (II)
 
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
 
 ```c++
-// HelloWorld/src/greetings/greetings.cpp
+// greetings/src/greetings.cpp
 #include <iostream>
-#include "greetings.h"
+#include "greetings.hpp"
 
 namespace greetings {
   
   void say_hello() {
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "Hello, World!\n";
   }
 
   void say_goodbye() {
-    std::cout << "Goodbye, World!" << std::endl;
+    std::cout << "Goodbye, World!\n";
   }
 }
 ```
@@ -93,12 +98,14 @@ namespace greetings {
     directory,
   },
   [ 
-    [hello-world
-      [greetings.hpp, file
-      ]
-      [greetings.cpp, file
-      ]
-      [main.cpp, file
+    [greetings
+      [src
+        [greetings.hpp, file
+        ]
+        [\colorbox{pink}{greetings.cpp}, file
+        ]
+        [hello.cpp, file
+        ]
       ]
     ]
   ]
@@ -107,14 +114,14 @@ namespace greetings {
 ::: 
 ::::::::::::::
 
-## A GREETING LIBRARY
+## A GREETINGS LIBRARY - SET UP (III)
 
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
 
 ```c++
 #include <cstdlib>
-#include "greetings/greetings.h"
+#include "greetings.hpp"
 
 int main() {
 
@@ -136,12 +143,14 @@ int main() {
     directory,
   },
   [ 
-    [hello-world
-      [greetings.hpp, file
-      ]
-      [greetings.cpp, file
-      ]
-      [main.cpp, file
+    [greetings
+      [src
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [\colorbox{pink}{hello.cpp}, file
+        ]
       ]
     ]
   ]
@@ -150,38 +159,146 @@ int main() {
 ::: 
 ::::::::::::::
 
-## IMPORTANT POINT
+## CREATING A STATIC LIBRARY - HOW TO DO IT (I)
 
-We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
 
-## CREATING A LIBRARY - HOW TO DO IT 
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+1. The top level CMakeLists.txt file will contain the global set-up of our project as well as . to ..
+
+```{.cmake style=cmakestyle}
+cmake_minimum_required(VERSION 3.21)
+
+project(Greetings LANGUAGES CXX)
+
+add_subdirectory(src)
+```
+
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [\colorbox{pink}{CMakeLists.txt}, file
+      ]
+      [src
+        [CMakeLists.txt, file
+        ]
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## CREATING A STATIC LIBRARY - HOW TO DO IT (II)
 
 <!-- 
   These two new files will also have to be compiled and we have to modify CMakeLists.txt accordingly. However, in this example we want to compile them first into a library, and not directly into the executable
 -->
 
-1. Create a new **target**, this time a static library. The name of the library will be name of the target and the sources are listed as follows
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+2. Create a new **target**, this time a static library. The name of the library will be name of the target and the sources are listed as follows
 
     ```{.cmake style=cmakestyle}
-    add_library(greetings STATIC Greetings.hpp Greetings.cpp) 
+    add_library(greetings 
+                STATIC 
+                    greetings.hpp greetings.cpp) 
     ```
-. . . 
 
-2. The creation of the **target** for the `hello_world` executable is unmodified
+3. The creation of the **target** for the `hello` executable is unmodified
 
     ```{.cmake style=cmakestyle}
-    add_executable(hello_world hello.cpp) 
+    add_executable(hello hello.cpp) 
     ```
 
-. . .
+::: 
+::: {.column width="35%"}
 
-3. Finally we have to tell CMake that the `greetings` library target has to be linked into the executable target
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## CREATING A STATIC LIBRARY - HOW TO DO IT (III)
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+4. Finally we have to tell CMake that the `greetings` library target has to be linked into the `hello`executable target
 
     ```{.cmake style=cmakestyle}
-    target_link_libraries(hello-world greetings)
+    target_link_libraries(hello greetings)
     ```
 
-## CONFIGURE AND BUILD
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## (CONFIGURE $\Rightarrow$ GENERATE) $\Rightarrow$ BUILD $\Rightarrow$ RUN
 
 4. We can configure and build with the same commands as before 
     
@@ -213,7 +330,7 @@ dfd
     ```
 
 
-## CREATING A LIBRARY - HOW IT WORKS
+## HOW IT WORKS - ADD_LIBRARY()
 
 ```{.cmake style=cmakestyle}
 add_library(greetings STATIC Greetings.hpp Greetings.cpp) 
@@ -303,6 +420,10 @@ manual/ cmake- buildsystem. 7. html#alias- libraries
 ## THINGS THAT NEED TO BE UNDERSTOOD 
 
 - object libraries -- how to I access them when compiled, do I get a target for each object -- how do I create a object for each and then use them as a library
+  
+## IMPORTANT POINT
+
+We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
 
 ## ADD_LIBRARY()
 

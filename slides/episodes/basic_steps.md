@@ -173,6 +173,75 @@ add_executable(hello hello.F90)
          Pack Artifacts
 -->
 
+## CMAKE_MINIMUM_REQUIRED()
+
+<!-- 
+  Purpose: Ensures the project uses a minimum version of CMake for compatibility. 
+-->
+  
+```{.cmake style=cmakestyle}
+cmake_minimum_required(VERSION <min>)
+```
+
+- Every CMake project requires setting the minimally required version(s) as the first line of the root **CMakeLists.txt** file.
+
+- CMake will stop processing and a fatal error will be issued if the running version of CMake is lower than the `<min>` required.
+
+- Which version should you set? Don't worry about it, there are tools that automatically test your project to determine the minimum CMake version required.
+
+<!-- 
+  The CMake language is case insensitive, but the arguments are
+  case sensitive
+
+  However, CMake gives no guidance what this version may be, and a lot of projects just take the current CMake version or whatever the IDE is proposing as default. This is a problem, because some platforms don't always provide the latest CMake version, and a lot of trial and error is needed before projects can be used. -> there are tools that can determine the minimal working version of CMake
+-->
+
+## PROJECT()
+
+<!-- 
+  In CMake, C++ is the default programming language. However, we
+  suggest to always explicitly state the project’s language in the
+  project command using the LANGUAGES option.
+-->
+
+  
+```{.cmake style=cmakestyle}
+project(<PROJECT-NAME>
+        [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
+        [DESCRIPTION <project-description-string>]
+        [HOMEPAGE_URL <url-string>]
+        [LANGUAGES <language-name>...])
+```
+
+<!-- 
+  Defines the project name and sets up the environment for building
+-->
+
+- Initializes various project-level settings, variables (`PROJECT_NAME`, `PROJECT_SOURCE_DIR`, ...) and the languages enabled for the build
+
+- Invocation of the `project()` command triggers a series of internal CMake scripts (Modules) that primarily
+  - Determine Operating System Information 
+  - Find and Test Compilers  
+
+
+## ADD_EXECUTABLE()
+
+```{.cmake style=cmakestyle}
+add_executable(hello_world hello.cpp)
+```
+
+- Add the `hello_world` executable **TARGET** to be built from `hello.cpp`
+
+- CMake is about targets .... the hello_world target ...
+
+<!-- 
+  We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables.
+
+  All the above are built-in commands provided by CMake, part of CMake's internal implementation and one of its core commands.
+-->
+
+- say something about the recognised extension of the file
+
 ## RUNNING CMAKE 
 
 `cmake`
@@ -569,72 +638,6 @@ with buttons on configure and generate
 
 - explain this two distinct steps and emphasise how important they are - we will come back to explaining the CMake workflow in more depth once we have introduced and discussed the CMakeCache.txt
 
-## CMAKE_MINIMUM_REQUIRED()
-
-<!-- 
-  Purpose: Ensures the project uses a minimum version of CMake for compatibility. 
--->
-  
-```{.cmake style=cmakestyle}
-cmake_minimum_required(VERSION <min>)
-```
-
-- Every CMake project requires setting the minimally required version(s) as the first line of the root **CMakeLists.txt** file.
-
-- CMake will stop processing and a fatal error will be issued if the running version of CMake is lower than the `<min>` required.
-
-- Which version should you set? Don't worry about it, there are tools that automatically test your project to determine the minimum CMake version required.
-
-<!-- 
-  The CMake language is case insensitive, but the arguments are
-  case sensitive
-
-  However, CMake gives no guidance what this version may be, and a lot of projects just take the current CMake version or whatever the IDE is proposing as default. This is a problem, because some platforms don't always provide the latest CMake version, and a lot of trial and error is needed before projects can be used. -> there are tools that can determine the minimal working version of CMake
--->
-
-## PROJECT()
-
-<!-- 
-  In CMake, C++ is the default programming language. However, we
-  suggest to always explicitly state the project’s language in the
-  project command using the LANGUAGES option.
--->
-
-  
-```{.cmake style=cmakestyle}
-project(<PROJECT-NAME>
-        [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
-        [DESCRIPTION <project-description-string>]
-        [HOMEPAGE_URL <url-string>]
-        [LANGUAGES <language-name>...])
-```
-
-<!-- 
-  Defines the project name and sets up the environment for building
--->
-
-- Initializes various project-level settings, variables (`PROJECT_NAME`, `PROJECT_SOURCE_DIR`, ...) and the languages enabled for the build
-
-- Invocation of the `project()` command triggers a series of internal CMake scripts (Modules) that primarily
-  - Determine Operating System Information 
-  - Find and Test Compilers  
-
-
-## ADD_EXECUTABLE()
-
-```{.cmake style=cmakestyle}
-add_executable(hello_world hello.cpp)
-```
-
-- Add the `hello_world` executable **TARGET** to be built from `hello.cpp`
-
-- CMake is about targets .... the hello_world target ...
-
-<!-- 
-  We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables.
-
-  All the above are built-in commands provided by CMake, part of CMake's internal implementation and one of its core commands.
--->
 
 ## CONFIGURE AND GENERATE 
 
