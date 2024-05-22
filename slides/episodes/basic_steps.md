@@ -6,6 +6,11 @@ aspectratio: 169
 
 ## HELLO WORLD WITH CMAKE!
 
+\lstset{
+  xleftmargin=0.0\linewidth,
+  xrightmargin=0.0\linewidth
+}
+
 :::::::::::::: {.columns}
 ::: {.column width="45%"}
 
@@ -20,7 +25,7 @@ aspectratio: 169
 
 int main(){
 
-  std::cout << "Hello World!\n";
+  std::cout << "Hello, World!\n";
   
   return EXIT_SUCCESS;
 }
@@ -34,9 +39,11 @@ int main(){
 **FORTRAN**
 
 ```fortran
-! hello_world.F90
+! hello.F90
 
 program hello
+
+  implicit none
 
   print *, 'Hello, World!'
 
@@ -79,7 +86,7 @@ end program hello
 The root of a project using CMake must contain a **CMakeLists.txt** file.
 
 :::::::::::::: {.columns}
-::: {.column width="45%"}
+::: {.column width="50%"}
 
 \vspace{.5cm}
 
@@ -91,7 +98,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(HelloWorld LANGUAGES CXX)
 
-add_executable(hello_world hello.cpp)
+add_executable(hello hello.cpp)
 ```
 
 <!--
@@ -118,7 +125,7 @@ add_executable(hello_world hello.cpp)
 \end{forest}
 
 ::: 
-::: {.column width="45%"}
+::: {.column width="50%"}
 
 \vspace{.5cm}
 
@@ -130,7 +137,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(HelloWorld LANGUAGES Fortran)
 
-add_executable(hello_world hello.F90)
+add_executable(hello hello.F90)
 ```
 
 \begin{forest}
@@ -142,7 +149,7 @@ add_executable(hello_world hello.F90)
     [hello-world
       [CMakeLists.txt, file
       ]
-      [hello.f90, file
+      [hello.F90, file
       ]
     ]
   ]
@@ -168,9 +175,6 @@ add_executable(hello_world hello.F90)
 
 ## RUNNING CMAKE 
 
-CMake ships with several tools:
-
-
 `cmake`
   : a non-interactive CL
 
@@ -179,12 +183,14 @@ CMake ships with several tools:
 
 `cmake-gui` 
   : a QT-based GUI
-
   
-put some pictures instead on the side of the UI
+<!-- 
+  put some pictures instead on the side of the UI
+-->
 
 . . . 
 
+\vspace{.5cm}
 
 On Galileo100
 
@@ -195,19 +201,61 @@ On Galileo100
   ```
 
 ## STEP 1 - BUILD FILES GENERATION
- 
+
+\centering The first step with **cmake** is to **generate project files**.
+
+<!--
+  This involves running the cmake command to configure the project and generate the necessary build system files.
+
+  Use the cmake command to configure the project and generate the build system files in the build directory. The -S flag specifies the source directory (where your CMakeLists.txt file is located), and the -B flag specifies the build directory.
+
+  Configure the project by detecting your system's compiler and other necessary tools.
+
+  Generate build system files in the build directory (e.g., Makefiles or project files for your IDE).
+
+  The first step with CMake after writing your source files and CMakeLists.txt is to generate project files by running the cmake command with the source and build directory specifications. This prepares your project for building by creating all necessary build system files.
+-->
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="75%"}
+
   ```{.bash style=bashstyle}
   $ cmake -B ./build -S ./hello-world
-  -- The CXX compiler identification is GNU 11.3.0
+  -- The CXX compiler identification is GNU 8.4.1
   -- Detecting CXX compiler ABI info
   -- Detecting CXX compiler ABI info - done
-  -- Check for working CXX compiler: /usr/bin/c++ - skipped
+  -- Check for working CXX compiler: /usr/bin/c++ 
+    - skipped
   -- Detecting CXX compile features
   -- Detecting CXX compile features - done
-  -- Configuring done
-  -- Generating done
-  -- Build files have been written to: $WORK/01-HelloWorld/
+  -- Configuring done (0.9s)
+  -- Generating done (0.1s)
+  -- Build files have been written to: <...>/build
   ```
+
+::: 
+::: {.column width="25%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [CMakeLists.txt, file
+      ]
+      [hello.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+:::
+::::::::::::::
+
 
 ## STEP 1 - BUILD FILES GENERATION (Cont.)
 
@@ -218,8 +266,14 @@ On Galileo100
 
 - **Unix Makefiles** is the default CMake generator on G100
 
-- The developer edit CMakeLists.txt, invoke CMake but should
-**never edit the generated files**
+\vspace{.5cm}
+
+- The developer must **never edit the generated files**
+<!-- 
+  The developer edits the CMakeLists.txt, invoke CMake but must never edit the generated files
+-->
+
+\vspace{.5cm}
 
 - **Out of source builds!** 
   - clear separation of source and build files
@@ -245,7 +299,7 @@ On Galileo100
     [hello-world
       [CMakeLists.txt, file
       ]
-      [hello.f90, file
+      [hello.cpp, file
       ]
     ]
     [build
@@ -320,6 +374,10 @@ On GNU/Linux, CMake will by default generate Unix Makefiles to build the project
     CMake also comes to our aid in helping us not have to deal with the platform differences of the build tool. The cmake --build option directs CMake to invoke the appropriate build tool for us, which allows us to specify the whole build something like this:
 -->
 
+\centering Once the project files have been generated, we direct CMake to invoke the appropriate build tool.
+
+\vspace{.5cm}
+
 ```{.bash style=bashstyle}
 $ cmake --build ./build 
 [ 50%] Building CXX object CMakeFiles/hello_world.dir/hello.cpp.o
@@ -329,20 +387,27 @@ $ cmake --build ./build
 
 . . . 
 
-- The `--build` flag will automatically invoke the native build tool
-  
-- [Not recommended] You typically see people doing this with Unix Makefiles:
+<!-- 
+
+  The `--build` flag will automatically invoke the native build tool
+-->
+
+. . . 
+
+- [Not recommended] If the generator is **Unix Makefiles** the following is equivalent
 
   ```{.bash style=bashstyle}
-  $ cd build 
-  $ make
+  $ cd build && make 
   ```
 
-- The former way is “better” because it is less tied to a specific build tool. 
+- The former way is “better” because it is less tied to a specific build tool (portability - writing documentation, CI/CD pipelines, ...)
 
-- The former approach is portable (writing documentation, CI/CD pipelines, ...)
 
-- To see the output in verbose mode append the `--verbose` flag (maybe have this on another slide)
+## STEP 2 - RUNNING THE NATIVE BUILD SYSTEM (VERBOSE MODE)
+
+To see the output in verbose mode append the `--verbose` flag 
+
+
 
 ## STEP 3 - RUN HELLO WORLD
 
@@ -352,7 +417,7 @@ $ cmake --build ./build
 \vspace{1cm}
 
 ```{.bash style=bashstyle}
-$ ./build/hello_world
+$ ./build/hello
 Hello, World!
 ```
 
@@ -373,7 +438,7 @@ Hello, World!
     [hello-world
       [CMakeLists.txt, file
       ]
-      [hello.f90, file
+      [hello.cpp, file
       ]
     ]
     [build
@@ -385,7 +450,7 @@ Hello, World!
       ]
       [cmake\_install.cmake, file
       ]
-      [hello\_world, executable
+      [hello, executable
       ]
     ]
   ]
@@ -425,7 +490,7 @@ $ cmake --build ./build --target help
 and each target can be invoked individually
 
 ```{.bash style=bashstyle}
-$ cmake --build ./build --target hello.s
+$ cmake --build ./build --target hello
 ```
 
 ## SWITCHING GENERATORS (Ninja)
@@ -583,10 +648,6 @@ $ cmake --help-command-list | wc -l
 $ cmake --help-command project
 ```
 
-## ATTENTION
-
-at some point you should fully explain the CMake workflow
-
 ## CMAKE: A BUILD SYSTEM GENERATOR 
 
 CMake is a generator: it generates native build systems files
@@ -620,67 +681,3 @@ Using **CMake** through the CLI is a two-step process:
     ```{.bash style=bashstyle}
     $ cmake --build ./build 
     ```
-
-## CMAKE WORKFLOW (Unix Makefiles Generator)
-
-```plantuml
-
-top to bottom direction
-
-skinparam ranksep 5
-skinparam padding 0
-
-skinparam artifact {
-  BorderColor Black
-  BackgroundColor LightGold
-  FontSize 10
-  StereotypeFontSize 8
-}
-
-skinparam file {
-  BorderColor Black
-}
-
-skinparam rectangle {
-  BorderColor Black
-  BackgroundColor LightGreen
-  roundcorner 25
-}
-
-skinparam defaultTextAlignment center
-skinparam ArrowColor Black
-skinparam Arrow {
-  Thickness 1
-}
-
-folder "hello-world" as Repo  #LightBlue {
-  file "hello_world.cpp" as HelloWorld  #LightGold
-  file "CMakeLists.txt" as CMakeLists   #LightGold
-}
-
-
-rectangle "CMake" as CMake {
-  rectangle "Configure" as Configure #LightGrey
-  rectangle "Generate" as Generate #LightGrey
-}
-
-folder "build" as Unix #LightBlue {
-  file "CMakeCache.txt" as CMakeCache #LightGold
-  file "cmake_install.cmake" as CMakeInstall #LightGold
-  folder "CMakeFiles" as CMakeFiles
-  file "Makefile" as Makefile #LightGold
-}
-
-rectangle "Build" as Build 
-
-' Connect the blocks
-CMakeLists -down-> CMake :  1
-Configure -right-> Generate
-Generate -right-> Unix :  OUT
-Unix -down-> Build : 2
-```
-
-
-<!-- 
-  The generated `Makefile` assumes "Unix Makefiles" as the underlying host-system build tool
--->

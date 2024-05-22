@@ -4,6 +4,13 @@ aspectratio: 169
 
 # Finding Packages 
 
+## IMPORTANT 
+
+REMEMBER TO ADD IF DEF TO MPI EXAMPLE 
+THIS WAY IT IS CLEAR WHY IT IS WORTH TO LINK DIRECTLY
+
+you maybe want to give color to function and macro calls?
+
 ## Overview 
 
 <!--
@@ -44,6 +51,10 @@ but both of them use the same inferface `find_package()`
 
 Mention that the way we will present the different approaches is in order of priority...
 
+
+# Find\<PackageName\>.cmake
+
+# find_package(\<PACKAGE_NAME\> MODULE)
 
 ## MOTIVATING EXAMPLE - HELLO WORLD WITH MPI
 
@@ -106,38 +117,47 @@ int main(int argc, char **argv) {
 :::
 ::::::::::::::
 
-## OBJECTIVE / MANUAL COMPILATION 
+## OBJECTIVE / MANUAL COMPILATION / DESIDERATA 
 
-## OBJECTIVE 
+
+
+MPI is ... a library , compiler wrapper and some other stuff
+
+- How would we do this if we had to compile it manuall?
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
 
 maybe show what would be our objective if doing so via manual compilation
-
+(G100)
 ```{.bash style=bashstyle}
-mpic++ .. 
+$ module load openmpi
+$ mpic++ ..
 ```
 
+:::
+::: {.column width="50%"}
+
+show and highlight where linking takes place
+
+- It is a compiler wrapper...
+  
+Show command used to invoke real compiler
 ```{.bash style=bashstyle}
-mpic++ --showme compiler wrapper
+$ mpic++ --showme:command
+<>/gcc-10.2.0-<>/bin/gcc
 ```
 
+Show list of include dirs added when compiling
+```{.bash style=bashstyle}
+$ mpic++ --showme:incdirs
+<...>/openmpi-4.1.1<...>/include 
+```
 
-## SETTING THE GLOBAL CXX COMPILER TO THE MPI WRAPPER 
+:::
+::::::::::::::
 
-I would mention this later but not now as it would create confusion, 
-you would be adding a lot of pecies Indeed also because we know the reasons
-
-- The logic with respect to TPL should be handled by your CMake build configuration 
-  - What if you want to apply -D HAVE_MPI flags to your executables 
-  - What if you need to enable another TPL based on whether you enabled MPI or not
-
-show the cmakelists.txt file as it was before 
-
-and set the compiler from the command line globally
-
-\alert{How to achieve this in CMake?}
-
-
-## HOW TO DO IT (I) : DETECTING MPI
+## HOW TO DO IT - DETECTING MPI
 
 In this recipe, we set out to find the MPI implementation: library, header files, compiler
 wrappers, and launcher. To do so, we will leverage the FindMPI.cmake standard CMake
@@ -155,66 +175,142 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ```
 
-2. We then call find_package to locate the MPI implementation:
+2. We then call `find_package()` to locate the MPI implementation:
 ```{.cmake style=cmakestyle}
 find_package(MPI REQUIRED)
 ```
 
-## HOW TO DO IT (II) : LINKING AGAINST MPI
+## HOW TO DO IT (II) - LINKING AGAINST MPI
 
-3. We define the executable name and, source, and similarly to the previous recipe,
-link against the imported target:
+3. We define the executable name, source and then **link against the imported target**:
 
 ```{.cmake style=cmakestyle}
 add_executable(hello-mpi hello-mpi.cpp)
 target_link_libraries(
     hello-mpi
+    PRIVATE
+        MPI::MPI_CXX
+)
+```
+
+\alert{Is it the case that the private properties become part of the library linking against...explain}
+
+maybe it is worth adding the if(MPI_FOUND) and so on...
+
+<!--
+    **Note**: You could also leave it as PRIVATE since we will not be linking against the executable anyhow
+-->
+
+## HOW TO DO IT (III) - CONFIGURATION 
+
+4. (G100) Let us configure and generate the project files:
+
+```{.bash style=bashstyle}
+$ module load openmpi/...
+$ cmake -B ./build -S ./hello-world
+-- ...
+-- Found MPI_CXX: /usr/lib/openmpi/libmpi_cxx.so (found version
+"3.1")
+-- Found MPI: TRUE (found version "3.1")
+-- ...
+```
+
+\alert{In the book they had this cmake -D CMAKE_CXX_COMPILER=mpicxx .. which in my o}
+
+## HOW TO DO IT (IV) - BUILD
+
+5. Let us invoke the build
+```{.bash style=bashstyle}
+$ cmake --build ./build -v 
+```
+
+show the output and highlight the linking to the mpi library
+
+## HOW TO DO IT (IV) - RUN
+
+6. To execute this program in parallel, we use the mpirun launcher (in this case,
+using two tasks):
+
+```{.bash style=bashstyle}
+$ mpirun -np 2 ./hello-mpi
+Hello world from processor larry, rank 1 out of 2 processors
+Hello world from processor larry, rank 0 out of 2 processors
+```
+
+
+## HOW IT WORKS (I)
+
+We have found linking to MPI to be extremely compact. We did not have to worry about compile flags, include directories, ... 
+
+```{.cmake style=cmakestyle}
+# . . .
+target_link_libraries(
+    hello_world
     PUBLIC
         MPI::MPI_CXX
 )
 ```
 
-- You could also leave it as PRIVATE since we will not be linking against the executable anyhow
+## HOW IT WORKS (II)
 
-## HOW TO DO IT (III)
+ ... these settings and dependencies are encoded in the definition of the library 
 
-4. Let us configure and build the executable:
+```{.cmake style=cmakestyle}
+include(CMakePrintHelpers)
+cmake_print_properties(
+    TARGETS mmm is this a keyword or a variable -> check
+        MPI::MPI_CXX
+    PROPERTIES
+        INTERFACE_COMPILE_OPTIONS
+        INTERFACE_INCLUDE_DIRECTORIES
+        INTERFACE_LINK_LIBRARIES
+)
+```
 
+```{.bash style=bashstyle}
+show properties values
+```
 
-$ mkdir -p build
-$ cd build
-$ cmake -D CMAKE_CXX_COMPILER=mpicxx ..
--- ...
--- Found MPI_CXX: /usr/lib/openmpi/libmpi_cxx.so (found version
-"3.1")
+**If you split the above part into two columns then we can easily fit the below**
 
--- Found MPI: TRUE (found version "3.1")
--- ...
-$ cmake --build .
+**Note that all properties of interest have the prefix INTERFACE_, because these properties
+usage requirements for any target wanting to interface and use the OpenMP target.**
 
-1. To execute this program in parallel, we use the mpirun launcher (in this case,
-using two tasks):
-$ mpirun -np 2 ./hello-mpi
-Hello world from processor larry, rank 1 out of 2 processors
-Hello world from processor larry, rank 0 out of 2 processors
-##  Finding Packages - Predefined Modules 
+\alert{You should have talked about the CMakePrintHelpers.cmake standard module
+already in the TARGETS chapter}
+
+## HOW IT WORKS (III) - The FindMPI.cmake module
+
+Where was this IMPORTED target `MPI::MPI_CXX` defined?
 
 CMake has a rather extensive set of prepackaged modules to detect the most commonly used libraries and programs, such as Python and Boost for example
 
-Just pring the list to screen with the grep command to show a few
+```{.bash style=bashstyle}
+$ ls $CMAKE_PREFIX_PATH/<>/modules
+FindMPI.cmake
+Find...
+```
 
-However, not all libraries and programs are covered and from time to time you will have to provide your own detection scripts
+- How does find_package() command works?
 
-In this
-chapter, we will discuss the necessary tools and discover the find family of CMake
-commands:
-find_file to find a full path to a named file
-find_library to find a library
-find_package to find and load settings from an external project
-find_path to find a directory containing the named file
-find_program to find a program
+find_package is a wrapper command for CMake modules written for discovering and
+setting up packages. These modules contain CMake commands to identify packages in
+standard locations on the system. The files for the CMake modules are called
+Find<name>.cmake and the commands they contain will be run internally when a call to
+find_package(<name>) is issued.
 
-a list with all cmake modules for a particular version...
+## EXTRA BUT EQUALLY IMPORTANT
+
+thanks to imported targets provided by a reasonably modern FindOpenMP module:
+
+OpenMP::OpenMP_CXX which
+is of the IMPORTED type. 
+
+
+IMPORTED libraries are pseudotargets that fully encode usage requirements for dependencies outside our own project. To use MPI one needs to set compiler flags, include directories, and link libraries. All of these are set as properties on the MPI::MPI_CXX pseudotarget and transitively applied to our example target simply by using the target_link_libraries command. This makes using libraries within our CMake scripts exceedingly easy.
+
+
+##  HOW DOES IT WORK - MODULE MODE (II)
 
 ##  Finding Packages - Modules 
 
@@ -234,13 +330,20 @@ See doc cmake --help-module FindLibXml2
 Many modules are provided by CMake (130 as of CMake 2.8.7)
 CMake
 
-## How does find_package() command works?
+- Also show how they can query about these variables with 
 
-find_package is a wrapper command for CMake modules written for discovering and
-setting up packages. These modules contain CMake commands to identify packages in
-standard locations on the system. The files for the CMake modules are called
-Find<name>.cmake and the commands they contain will be run internally when a call to
-find_package(<name>) is issued.
+cmake --help-module name_of_module
+
+
+
+## WHICH LOCATIONS ARE SEARCHED FOR 
+
+- List the default locations that find_package searches for these packages 
+
+- Add a word that these modules may define some additional variables that we 
+can set to give hints for search directories 
+
+- Looks for a file named `find<package_name>.cmake` in the CMake cache variable `CMAKE_MODULE_PATH`
 
 ## how does findMPI.cmake works 
 
@@ -262,43 +365,6 @@ interpreter is found in the usual lookup locations
 Use the same example as for the OpenMP with the how it works...
 and then explain these aspects about imported targets...
 
-## HOW IT WORKS 
-
-[ 117 ]
-How it works
-Our simple example seems to work: the code compiled and linked, and we observe a
-speed-up when running on multiple cores. The fact that the speed-up is not a perfect
-multiple of OMP_NUM_THREADS is not our concern in this recipe, since we focus on the
-CMake aspect of a project which requires OpenMP. We have found linking to OpenMP to
-be extremely compact thanks to imported targets provided by a reasonably modern
-FindOpenMP module:
-target_link_libraries(example
-PUBLIC
-OpenMP::OpenMP_CXX
-)
-We did not have to worry about compile flags or about include directories - these settings
-and dependencies are encoded in the definition of the library OpenMP::OpenMP_CXX which
-is of the IMPORTED type. As we mentioned in Recipe 3, Building and linking static and shared
-libraries, in Chapter 1, From a Simple Executable to Libraries, IMPORTED libraries are pseudotargets
-that fully encode usage requirements for dependencies outside our own project. To
-use OpenMP one needs to set compiler flags, include directories, and link libraries. All of
-these are set as properties on the OpenMP::OpenMP_CXX target and transitively applied to
-our example target simply by using the target_link_libraries command. This makes
-using libraries within our CMake scripts exceedingly easy. We can print the properties of
-interface with the cmake_print_properties command, offered by the
-CMakePrintHelpers.cmake standard module:
-include(CMakePrintHelpers)
-cmake_print_properties(
-TARGETS
-OpenMP::OpenMP_CXX
-PROPERTIES
-INTERFACE_COMPILE_OPTIONS
-INTERFACE_INCLUDE_DIRECTORIES
-INTERFACE_LINK_LIBRARIES
-)
-Note that all properties of interest have the prefix INTERFACE_, because these properties
-usage requirements for any target wanting to interface and use the OpenMP target.
-
 ## MPI example 
 
 the Message Passing Interface (MPI), which has become the de facto standard for
@@ -317,69 +383,24 @@ mpic++/mpiCC/mpicxx for C++, mpicc for C, and mpifort for Fortran.
 of your compiled code. Its name is implementation-dependent and it is usually
 one of the following: mpirun, mpiexec, or orterun.
 
-## Getting ready 
 
-Getting ready
-The example code (hello-mpi.cpp, downloaded from http:/ / www. mpitutorial. com),
-which we will compile in this recipe, will initialize the MPI library, have every process
-print its name, and eventually finalize the library:
+## WHAT IF ?
+
+However, not all libraries and programs are covered and from time to time you will have to provide your own detection scripts
+
+In this
+chapter, we will discuss the necessary tools and discover the find family of CMake
+commands:
+find_file to find a full path to a named file
+find_library to find a library
+find_package to find and load settings from an external project
+find_path to find a directory containing the named file
+find_program to find a program
+
+a list with all cmake modules for a particular version...
 
 
 <!-- 
-
-## HOW TO DO IT 
-
-In this recipe, we set out to find the MPI implementation: library, header files, compiler
-wrappers, and launcher. To do so, we will leverage the FindMPI.cmake standard CMake
-module:
-1. First, we define the minimum CMake version, project name, supported language,
-and language standard:
-cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
-project(recipe-06 LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-2. We then call find_package to locate the MPI implementation:
-find_package(MPI REQUIRED)
-3. We define the executable name and, source, and similarly to the previous recipe,
-link against the imported target:
-add_executable(hello-mpi hello-mpi.cpp)
-target_link_libraries(hello-mpi
-PUBLIC
-MPI::MPI_CXX
-)
-
-
-## Configure 
-
-4. Let us configure and build the executable:
-
-
-$ mkdir -p build
-$ cd build
-$ cmake -D CMAKE_CXX_COMPILER=mpicxx ..
--- ...
--- Found MPI_CXX: /usr/lib/openmpi/libmpi_cxx.so (found version
-"3.1")
-
--- Found MPI: TRUE (found version "3.1")
--- ...
-$ cmake --build .
-
-1. To execute this program in parallel, we use the mpirun launcher (in this case,
-using two tasks):
-$ mpirun -np 2 ./hello-mpi
-Hello world from processor larry, rank 1 out of 2 processors
-Hello world from processor larry, rank 0 out of 2 processors
-
-## alternatives
-
-CMake has modules for finding many widespread software packages. We
-recommend to always search the CMake online documentation for
-existing Find<package>.cmake modules and to read their
-documentation before using them. The documentation for the
-find_package command can be found at https:/ / cmake. org/ cmake/
-help/ v3. 5/ command/ find_ package. html. A
 
 
 ## How it works
@@ -427,6 +448,18 @@ ${MPI_CXX_LIBRARIES}
 In this recipe, we have discussed C++, but the arguments and approach are equally valid for
 a C or Fortran project.
 
+-->
+
+# find_package(\<PACKAGE_NAME\> CONFIG)
+
+## alternatives
+
+CMake has modules for finding many widespread software packages. We
+recommend to always search the CMake online documentation for
+existing Find<package>.cmake modules and to read their
+documentation before using them. The documentation for the
+find_package command can be found at https:/ / cmake. org/ cmake/
+help/ v3. 5/ command/ find_ package. html. A
 
 ## CONFIGURATION MODE
 
@@ -444,7 +477,12 @@ mode, please consult the official documentation at https:/ / cmake. org/ cmake/ 
 command/ find_ package. html.
 
 
+<!-- 
+
+
 ## There is more
+
+## WHERE DOES CMAKE LOOK FOR CONFIG MODULES?
 
 I am just missing an example here...
 
@@ -685,3 +723,20 @@ This should define some variables starting PC_Foo_ that contain the information 
 Just add a simple example with fftw
 
 -->
+
+# EXTRA INFORMATION 
+
+## SETTING THE GLOBAL CXX COMPILER TO THE MPI WRAPPER 
+
+I would mention this later but not now as it would create confusion, 
+you would be adding a lot of pecies Indeed also because we know the reasons
+
+- The logic with respect to TPL should be handled by your CMake build configuration 
+  - What if you want to apply -D HAVE_MPI flags to your executables 
+  - What if you need to enable another TPL based on whether you enabled MPI or not
+
+show the cmakelists.txt file as it was before 
+
+and set the compiler from the command line globally
+
+\alert{How to achieve this in CMake?}

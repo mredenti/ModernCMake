@@ -4,16 +4,19 @@ aspectratio: 169
 
 # VARIABLES 
 
-## IMPORTANT 
-
-CMAKE VARIABLES ARE NOT ENVIRONMENT VARIABLES (UNLIKE MAKEFILES)
-
 ## OVERVIEW 
 
 <!--
   In CMake there are only two building blocks (syntactic elements) that define 
   the structure and organization of code and allow us to manage the build process
   of software projects
+
+  The preceding chapters showed how to define basic targets and produce build outputs. On its own,
+  this is already useful, but CMake comes with a whole host of other features which bring great
+  flexibility and convenience. This chapter covers one of the most fundamental parts of CMake,
+  namely the use of variables.
+
+  MENTION HOW WE HAVE NOT REALLY DISCUSSED COMPILATIONS
 -->
 
 **Variables** are the basic unit of storage in CMake.
@@ -40,6 +43,8 @@ Three types of variables: **Local**, **Cache**, **Environment**
 
 <!--
 
+  CMAKE VARIABLES ARE NOT ENVIRONMENT VARIABLES (UNLIKE MAKEFILES)
+
   Declared/Defined using the set() command.
 
   Customization: Variables allow you to customize the build process based on different criteria such as the target platform, build type (e.g., Debug or Release), or user-specific options.
@@ -54,7 +59,7 @@ Three types of variables: **Local**, **Cache**, **Environment**
 
 -->
 
-## LOCAL VARIABLES 
+## LOCAL VARIABLES (I)
 
 \vspace{0.5cm}
 <!--
@@ -64,8 +69,19 @@ Three types of variables: **Local**, **Cache**, **Environment**
   Useful for temporary settings and internal script logic.
 -->
 
-:::::::::::::: {.columns}
-::: {.column width="50%"}
+- A local variable can be defined in a CMakeLists.txt file with the `set()` command
+
+    ```{.cmake style=cmakestyle}
+    set(varName value... [PARENT_SCOPE])
+    ```
+
+- Variable names, `varName`, can contain `A-Za-z0-9_` with letters being
+case-sensitive
+
+    ```{.cmake style=cmakestyle}
+    set(FOO "foo") 
+    set(foo "bar")  
+    ```
 
 <!--
   - The ${} operator can be used recursively
@@ -77,36 +93,28 @@ Three types of variables: **Local**, **Cache**, **Environment**
 
 <!-- - `set()` to create a new local variable -->
 
-\vspace{0.5cm}
-
 - Variables are expanded using ${}
   
-  ```{.cmake style=cmakestyle}
-  message(STATUS BAR=${BAR})
-  ```
+    ```{.cmake style=cmakestyle}
+    message(STATUS FOO=${foo}) # "bar"
+    ```
+
+## LOCAL VARIABLES (II)
+
+
 
 \vspace{0.5cm}
 
-- Variable names are case sensitive <!-- values can only contain A-Za-z0-9_ -->
-
-  ```{.cmake style=cmakestyle}
-  set(FOO "bar") 
-  set(foo "")  
-  ```
-
-::: 
-::: {.column width="50%"}
-
-\vspace{0.5cm}
-
-
-- Variables are all strings
+- CMake treats all variables as strings 
+<!-- 
+  but ultimately, they are just strings.
+-->
     
-  ```{.cmake style=cmakestyle}
-  set(FOO "bar") # "bar"
-  set(FOO bar)   # "bar"
-  set(FOO 42)    # "42"
-  ```
+    ```{.cmake style=cmakestyle}
+    set(FOO "bar") # "bar"
+    set(FOO bar)   # "bar"
+    set(FOO 42)    # "42"
+    ```
 
 \vspace{0.5cm}
 
@@ -116,9 +124,14 @@ Three types of variables: **Local**, **Cache**, **Environment**
   ```{.cmake style=cmakestyle}
   set(FOO "1" "2" "3") # "1;2;3"
   set(FOO 1 2 3)       # "1;2;3" 
+  set(FOO "1;2;3")     # "1;2;3" 
   ```
 
+PLEASE USE SRCS TO COLLECT THE FILES AND MAKE MORE SENSE
+
 <!--
+  the resultant string is how CMake represents lists.
+
   - The ${} operator can be used recursively
 
   - A new user-defined local variable can be created with the `set` command
@@ -131,8 +144,6 @@ Three types of variables: **Local**, **Cache**, **Environment**
 
   Multiple arguments will be joined as a semicolon-separated list to form the actual variable value to be set.
 -->
-:::
-:::::::::::::: 
 
 ## LOCAL VARIABLES - SCOPE (I)
 \alert{this might be a bit confusing...}
