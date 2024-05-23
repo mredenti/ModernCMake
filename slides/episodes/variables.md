@@ -72,7 +72,7 @@ Three types of variables: **Local**, **Cache**, **Environment**
 - A local variable can be defined in a CMakeLists.txt file with the `set()` command
 
     ```{.cmake style=cmakestyle}
-    set(varName value... [PARENT_SCOPE])
+    set(varName value...)
     ```
 
 - Variable names, `varName`, can contain `A-Za-z0-9_` with letters being
@@ -127,8 +127,6 @@ case-sensitive
   set(FOO "1;2;3")     # "1;2;3" 
   ```
 
-PLEASE USE SRCS TO COLLECT THE FILES AND MAKE MORE SENSE
-
 <!--
   the resultant string is how CMake represents lists.
 
@@ -146,7 +144,7 @@ PLEASE USE SRCS TO COLLECT THE FILES AND MAKE MORE SENSE
 -->
 
 ## LOCAL VARIABLES - SCOPE (I)
-\alert{this might be a bit confusing...}
+
 <!--
   SCOPE IS ONE OF THE MOST CONFUSING ASPECTS OF CMAKE
 
@@ -159,15 +157,54 @@ PLEASE USE SRCS TO COLLECT THE FILES AND MAKE MORE SENSE
 
 \vspace{0.5cm}
 
+A local variable has a scope corresponding to the CMakeLists.txt file in which the variable is defined (**directory scope**)...
 
-You can **access** the value of a local variable **after you set it** as long as you are in the same **directory scope** of the current CMakeLists.txt file.
- 
+\vspace{0.5cm}
+
+
+... but **you can read the intended value of a local variable only after you have set it**.
+
+:::::::::::::: {.columns}
+::: {.column width="70%"}
+
+  ```{.cmake style=cmakestyle}
+  # project/CMakeLists.txt
+  message(STATUS ${FOO}} # ""
+  set(FOO "foo")
+  message(STATUS ${FOO}} # "foo"
+  ```
+
+:::
+::: {.column width="30%"}
+
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [project
+      [CMakeLists.txt, file
+      ]
+    ]
+  ]
+\end{forest}
+
+:::
+:::::::::::::: 
+
+## LOCAL VARIABLES - SCOPE (II)
+
+\vspace{.5cm}
+
 <!-- 
   include() does not create a new scope, can be used within the directory scope of the current CMakeLists.txt file 
 -->
+The `add_subdirectory()` command creates a new scope for processing that subdirectory's CMakeLists.txt file.
 
 :::::::::::::: {.columns}
-::: {.column width="57%"}
+::: {.column width="70%"}
 
   <!--
 
@@ -184,26 +221,28 @@ You can **access** the value of a local variable **after you set it** as long as
 
 --> 
 
-\vspace{.3cm}
+\vspace{.5cm}
 
-- `add_subdirectory()` does not create a new scope \alert{WRONG}
+<!--
+  Subdirectories inherit variables from their parent scope
+-->
+
+- All variables defined in the calling scope are copied into the subdirectory’s child scope upon
+entry.
 
     ```{.cmake style=cmakestyle}
     # project/CMakeLists.txt
     set(FOO "foo") 
     add_subdirectory(src)
-    message(STATUS ${BAR}) # ""
     ```
 
     ```{.cmake style=cmakestyle}
     # project/src/CMakeLists.txt
     message(STATUS ${FOO}) #"foo"
-    set(BAR "bar")
     ```
 
 :::
-
-::: {.column width="43%"}
+::: {.column width="30%"}
 
 
 \vspace{1cm}
@@ -228,33 +267,136 @@ You can **access** the value of a local variable **after you set it** as long as
 :::
 :::::::::::::: 
 
-. . . 
+## LOCAL VARIABLES - SCOPE (III)
+
+\vspace{.5cm}
+
+The `add_subdirectory()` command creates a new scope for processing that subdirectory's CMakeLists.txt file.
 
 :::::::::::::: {.columns}
-::: {.column width="57%"}
+::: {.column width="70%"}
 
-- Scope can be extended to parent
+\vspace{.5cm}
+
+- Any change to a variable in the subdirectory’s child scope is local to that child scope.
 
     ```{.cmake style=cmakestyle}
-    # src/CMakeLists.txt
-    set(BAR "bar" PARENT_SCOPE)
+    # project/CMakeLists.txt
+    set(FOO "foo") 
+    add_subdirectory(src)
+    message(STATUS ${FOO}) # "foo"
+    ```
+
+    ```{.cmake style=cmakestyle}
+    # project/src/CMakeLists.txt
+    unset(FOO) 
+    message(STATUS ${FOO}) # ""
     ```
 
 :::
+::: {.column width="30%"}
 
-::: {.column width="43%"}
 
-\alert{Each new scope creates a local copy of all variables}
+\vspace{1cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [project
+      [CMakeLists.txt, file
+      ]
+      [src
+        [CMakeLists.txt, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
 
 :::
 :::::::::::::: 
 
-## LOCAL VARIABLES - SCOPE (II)
+## LOCAL VARIABLES - SCOPE (IV)
+
+\vspace{.5cm}
+
+<!-- 
+  include() does not create a new scope, can be used within the directory scope of the current CMakeLists.txt file 
+-->
+The `add_subdirectory()` command creates a new scope for processing that subdirectory's CMakeLists.txt file.
+
+:::::::::::::: {.columns}
+::: {.column width="70%"}
+
+  <!--
+
+  - Variable values are inherited by CMakeLists.txt files in sub directories
+
+  - Accessible in subdirectories but not vice versa
+
+  Scopes created by add_subdirectory() or custom function call
+
+  - Local variables are limited to the scope of the current directory and its subdirectories
+  
+  -  Local variables defined this way have a scope limited to the current ... and everything below it (CMAKE_CXX_STANDARD goes in the top level CMakeLists.txt)
+
+
+--> 
+
+\vspace{.5cm}
+
+<!--
+  Subdirectories inherit variables from their parent scope
+-->
+
+- If required, a local variable's scope can be extended to the parent
+
+    ```{.cmake style=cmakestyle}
+    # project/CMakeLists.txt
+    add_subdirectory(src)
+    message(STATUS ${BAR}) # "bar"
+    ```
+
+    ```{.cmake style=cmakestyle}
+    # project/src/CMakeLists.txt
+    set(BAR "bar" PARENT_SCOPE)
+    ```
+
+:::
+::: {.column width="30%"}
+
+
+\vspace{1cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [project
+      [CMakeLists.txt, file
+      ]
+      [src
+        [CMakeLists.txt, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+:::
+:::::::::::::: 
+
+## LOCAL VARIABLES - SCOPE (V)
 
 
 \vspace{0.5cm}
 
-Local variables are also scoped by functions (not by macro)
+Local variables are also scoped by functions (not by macro) - same arguments as before apply
 
 ```{.cmake style=cmakestyle}  
 # CMakeLists.txt file
@@ -275,15 +417,37 @@ message(STATUS ${TEST_EXTEND}) # "42"
 <!--
   In the previous recipe, we introduced conditionals in a rather rigid fashion: by introducing variables with a given truth value hardcoded. This can be useful sometimes, but it prevents users of your code from easily toggling these variables. Another disadvantage of the rigid approach is that the CMake code does not communicate to the reader that this is a value that is expected to be modified from outside. The recommended way to toggle behavior in
   the build system generation for your project is to present logical switches as options in your CMakeLists.txt using the option() command.
+
+  In addition to normal variables discussed in Section 6.1, “Variable Basics”, CMake also supports
+cache variables. Unlike normal variables which have a lifetime limited to the processing of the
+CMakeLists.txt file, cache variables are stored in the special file called CMakeCache.txt in the build
+directory, and they persist between CMake runs. Once set, cache variables remain set until
+something explicitly removes them from the cache.
+Cache variables are primarily intended as a customization point for developers. Rather than hardcoding
+the value in the CMakeLists.txt file as a normal variable, a cache variable can be used so that
+the developer can override the value without having to edit the CMakeLists.txt file. Cache variables
+can be set on the cmake command line or modified by interactive GUI tools without having to change
+anything in the project itself. Using these customization points, the developer can turn different
+parts of the build on or off, set paths to external packages, use different flags for compilers and
+linkers, and so on. Later chapters cover these and other uses of cache variables.
+
+Cache variables have more information attached to them than a normal variable, including a
+nominal type and a documentation string. Both must be provided when setting a cache variable.
+The docstring does not affect how CMake treats the variable. It is used only by GUI tools to provide
+things like a tooltip or one-line description for the cache variable. The docstring should be short and
+consist of plain text with no HTML markup. It can be an empty string.
+CMake will always treat a variable as a string during processing. The type is used mostly to improve
+the user experience in GUI tools
 -->
 
 CMake **Cache variables** are primarily used to expose build configurations to the user. <!-- User controlled build options -->
 
-- Modifying a cache variable requires a special form of the `set` command
+- Defining a cache variable requires a special form of the `set` command
 
   ```{.cmake style=cmakestyle}  
-  set(<variable> <value>... CACHE <type> <docstring> [FORCE])
+  set(<variable> <value>... CACHE <type> <docstring>)
   ```
+  
 
 - Cache entries are typed and require a docstring:
   - BOOL ((these are only used by cmake-gui and ccmake to display the appropriate type of edit widget))
@@ -318,12 +482,16 @@ add a few examples on the right to make it clear
 
 ## CACHE VARIABLES (III)
 
-- Boolean specialisation say a little bit more --- shortcut to BOOL types cache variables because they are so common
-  
+<!-- 
+  Setting a boolean cache variable is such a common need that CMake provides a separate command for it.
+-->
+
+- Boolean specialisation 
+    
   ```{.cmake style=cmakestyle}  
   # ...
 
-  # set(ENABLE_CUDA "OFF" CACHE BOOL "Build project X with CUDA support")
+  # set(ENABLE_CUDA "OFF" CACHE BOOL "Build project with CUDA enabled")
   option(ENABLE_CUDA "Build project X with CUDA support" OFF)
 
   if(ENABLE_CUDA)
@@ -338,7 +506,7 @@ add a few examples on the right to make it clear
 
 ## CACHE VARIABLES - SCOPE 
 
-- Unlike local variables, **cache variables are availables to all scopes in the project** (directory scope, function scope)
+- Unlike local variables, **cache variables have global scope** 
 
 
     \vspace{.5cm}
@@ -354,6 +522,8 @@ add a few examples on the right to make it clear
     message(STATUS ${TEST}) # ""
     message(STATUS ${TEST_EXTEND}) # "42"
     ```
+
+    
 
 
 ## CMAKE WORKFLOW && CMAKECACHE.TXT
@@ -808,3 +978,11 @@ CMake pre-defined variables (should not be set by user code)
 – CMAKE_SOURCE_DIR, CMAKE_BINARY_DIR
 – PROJECT_NAME
 – PROJECT_SOURCE_DIR, PROJECT_BINARY_DIR
+
+
+## IMPORTANT
+
+Conditional Logic
+if() endif(): Covering basic conditional logic is essential.
+Build Configurations: Explain different build types (Debug, Release, etc.).
+Controlling Compiler Flags Depending on Compiler ID: Show how to tailor flags for different compilers.

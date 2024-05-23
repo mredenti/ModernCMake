@@ -13,7 +13,14 @@ aspectratio: 169
 
 <!--
   A project almost always consists of more than a single executable built from a single source file. Projects are split across multiple source files, often spread across different subdirectories in the source tree. This practice not only helps in keeping source code organized within a project, but greatly favors modularity, code reuse, and separation of concerns, since common tasks can be grouped into libraries. This separation also simplifies and speeds up recompilation of a project during development. In this recipe, we will show
+
   how to group sources into libraries and how to link targets against these libraries.
+
+  Keeping everything in one directory is fine for simple projects, but most real world projects split
+  their files across multiple directories. It is common to find different file types or individual modules
+  grouped under their own directories, or for files belonging to logical functional groupings to be in
+  their own part of the project’s directory hierarchy. While the directory structure may be driven by
+  how developers think of the project, the way the project is structured also impacts the build system.
 -->
 
 - Most projects consist of multiple source files
@@ -191,6 +198,27 @@ project(Greetings LANGUAGES CXX)
 add_subdirectory(src)
 ```
 
+<!--
+  These commands bring content from another file or directory into the build, allowing the
+  build logic to be distributed across the directory hierarchy rather than forcing everything to be
+  defined at the top-most level. This offers a number of advantages:
+  - Build logic is localized, meaning that characteristics of the build can be defined in the directory
+  where they have the most relevance.
+  - Builds can be composed of subcomponents which are defined independently of the top level
+  project consuming them. This is especially important if a project makes use of things like git
+  submodules or embeds third party source trees.
+  - Because directories can be self-contained, it becomes relatively trivial to turn parts of the build
+  on or off simply by choosing whether to add in that directory.
+
+  The add_subdirectory() command allows a project to bring another directory into the build. That
+  directory must have its own CMakeLists.txt file which will be processed at the point where
+  add_subdirectory() is called. A corresponding directory will be created in the project’s build tree.
+
+  The sourceDir does not have to be a subdirectory within the source tree, although it usually is. Any
+  directory can be added, with sourceDir being specified as either an absolute or relative path, the
+  latter being relative to the current source directory. Absolute paths are typically only needed when
+  adding directories that are outside the main source tree.
+-->
 
 ::: 
 ::: {.column width="35%"}
@@ -536,10 +564,6 @@ generate the dependency graph of a project:
 
     ```{.bash style=bashstyle}
     $ cmake -B ./build -S . --graphviz=greetings.dot
-    -- Configuring done
-    -- Generating done
-    Generate graphviz: ./greetings.dot
-    -- Build files have been written to: <>/build
     $ dot -T png greetings.dot -o greetings.png
     ```
 
