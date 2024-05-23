@@ -62,7 +62,7 @@
     frame=single,  % Frame around code
     frameround=tttt, % tttt means all four corners are rounded
     rulecolor=\color{gray!50}, % Frame color, 50% gray
-    backgroundcolor=\color{gray!8}, % Background color, 20% gray
+    backgroundcolor=\color{white!8}, % Background color, 20% gray gray!8
     xleftmargin=0.06\linewidth,         % Left margin
     xrightmargin=0.06\linewidth  
 }
@@ -114,9 +114,16 @@
                 NOT,
                 MATCHES,
                 CACHE,
+                OBJECT, 
+                EXCLUDE_FROM_ALL,
                 FORCE, 
                 PARENT_SCOPE,
-                FATAL_ERROR},  % List of additional keywords
+                FATAL_ERROR,
+                PRIVATE,
+                PUBLIC, 
+                INTERFACE,
+                TARGETS,
+                PROPERTIES},  % List of additional keywords
   keywordstyle=\color{red},           % Style for additional keywords
   classoffset=0,                      % Resetting classoffset to zero
   xleftmargin=0.06\linewidth,         % Left margin

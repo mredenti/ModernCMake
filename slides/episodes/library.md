@@ -231,6 +231,10 @@ add_subdirectory(src)
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
 
+<!--
+  We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
+-->
+
 2. Create a new **target**, this time a static library. The name of the library will be name of the target and the sources are listed as follows
 
     ```{.cmake style=cmakestyle}
@@ -279,7 +283,7 @@ add_subdirectory(src)
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
 
-4. Finally we have to tell CMake that the `greetings` library target has to be linked into the `hello`executable target
+4. Finally we have to tell CMake that the `greetings` library target has to be linked into the `hello` executable target
 
     ```{.cmake style=cmakestyle}
     target_link_libraries(hello greetings)
@@ -314,37 +318,131 @@ add_subdirectory(src)
 ::: 
 ::::::::::::::
 
-## (CONFIGURE $\Rightarrow$ GENERATE) $\Rightarrow$ BUILD $\Rightarrow$ RUN
+## (CONFIGURE $\Rightarrow$ GENERATE) 
 
-4. We can configure and build with the same commands as before 
+<!--
+
+  The output from the configuration and 
+  generation is actually the same as before
+
+  $\Rightarrow$ BUILD $\Rightarrow$ RUN
+-->
+
+
+We can configure and build with the same commands as before 
     
-    ```{.bash style=bashstyle}
-    $ cmake -B ./build -S ./hello-world/
-    $ cmake --build ./build --target help
-    $ cmake --build ./build 
-    Scanning dependencies of target message
-    [ 25%] Building CXX object CMakeFiles/message.dir/Message.cpp.o
-    [ 50%] Linking CXX static library libmessage.a
-    [ 50%] Built target message
-    Scanning dependencies of target hello-world
-    [ 75%] Building CXX object CMakeFiles/hello-world.dir/helloworld.
-    cpp.o
-    [100%] Linking CXX executable hello-world
-    [100%] Built target hello-world
-    ```
+```{.bash style=bashstyle}
+$ cmake -B ../build --trace-source=CMakeLists.txt 
 
-## BUILD .. 
+<>/greetings/CMakeLists.txt(1): cmake_minimum_required(VERSION 3.21)
+<>/greetings/CMakeLists.txt(3): project(Greetings LANGUAGES CXX)
+-- The CXX compiler identification is GNU 8.4.1
+. . . 
+-- Detecting CXX compile features - done
+<>/greetings/CMakeLists.txt(5): add_subdirectory(src)
+<>/greetings/src/CMakeLists.txt(1): 
+        add_library(greetings STATIC greetings.cpp greetings.hpp)
+<>/greetings/src/CMakeLists.txt(8): 
+        add_executable(hello hello.cpp)
+<>/greetings/src/CMakeLists.txt(12): 
+        target_link_libraries(hello greetings)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: <>/build
+```
 
-dfd
+## BUILD THE GREETINGS LIBRARY
+
+
+```{.bash style=bashstyle}
+$ cmake --build ./build --target greetings -v
+
+[ 50%] Building CXX object src/CMakeFiles/greetings.dir/greetings.cpp.o
+cd <>/build/src && /usr/bin/c++  
+      -MD -MT src/CMakeFiles/greetings.dir/greetings.cpp.o 
+      -MF CMakeFiles/greetings.dir/greetings.cpp.o.d 
+      -o CMakeFiles/greetings.dir/greetings.cpp.o 
+      -c <>/greetings/src/greetings.cpp
+[100%] Linking CXX static library libgreetings.a
+cd <>/build/src
+. . . 
+/usr/bin/ar qc libgreetings.a CMakeFiles/greetings.dir/greetings.cpp.o
+/usr/bin/ranlib libgreetings.a
+. . . 
+[100%] Built target greetings
+```
+
+## BUILD AND LINK THE HELLO PROGRAM TO GREETINGS
+
+```{.bash style=bashstyle}
+$ cmake --build ./build --target hello -v
+
+. . . 
+[ 75%] Building CXX object src/CMakeFiles/hello.dir/hello.cpp.o
+cd <>/build/src && /usr/bin/c++ 
+    -MD -MT src/CMakeFiles/hello.dir/hello.cpp.o 
+    -MF CMakeFiles/hello.dir/hello.cpp.o.d 
+    -o CMakeFiles/hello.dir/hello.cpp.o 
+    -c <>/greetings/src/hello.cpp
+[100%] Linking CXX executable hello
+cd <>/build/src && . . . 
+/usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o -o hello libgreetings.a 
+. . . 
+```
+
 
 ## RUN 
 
-5. Run 
 
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+\vspace{1cm}
+
+- Finally we can run the `hello` program
+    
     ```{.bash style=bashstyle}
-    ./build/hello_world
+    $ ./build/src/hello
+    Hello, World!
+    Goodbye, World!
     ```
 
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [..., file
+        ]
+      ]
+    ]
+    [build
+      [..., file
+      ]
+      [CMakeFiles
+      ]
+      [src
+        [...
+        ]
+        [hello, executable
+        ]
+        [libgreetings.a, executable
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
 
 ## HOW IT WORKS - ADD_LIBRARY()
 
@@ -352,21 +450,16 @@ dfd
 add_library(greetings STATIC Greetings.hpp Greetings.cpp) 
 ```
 
-- Generates the necessary build instructions for compiling the specified sources, `Greetings.cpp`, into a static library
+- Generates the necessary build instructions for compiling the specified sources, `Greetings.cpp`, into a **STATIC** library
 
 - The name of the target, `greetings`, can be used troughout `CMakeLists.txt` to refer to the library
 
-- The actual name of the generated library will be formed by CMake by adding the prefix `lib` in front and the appropriate extension as a suffix.
-    
-    ```{.bash style=bashstyle}
-    $ cmake --build ./build --target greetings
-    ... libgreetings.a
-    ```
-
-  The library extension is determined based on the second argument, STATIC or SHARED, and the OS.
+- The actual name of the generated library will be formed by CMake by adding the prefix `lib` in front and the appropriate extension as a suffix, determined based on the second argument, **STATIC**, and the OS.
 
 
-## LINKING A LIBRARY - HOW IT WORKS
+## HOW IT WORKS - TARGET_LINK_LIBRARIES()
+
+\vspace{.5cm}
 
 ```{.cmake style=cmakestyle}
 target_link_libraries(hello-world greetings)
@@ -379,35 +472,82 @@ target_link_libraries(hello-world greetings)
     ... libgreetings.a
     ```
 
-. . .
+. . . 
 
-- Guarantees that the `hello-world` executable properly depends on the message library $\Rightarrow$ greetings library is always built before being linked it to the hello-world executable
+<!--
+  We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
+-->
+
+- Guarantees that the `hello` target depends on the message library $\Rightarrow$ the **greetings** library is always built before being linked it to the `hello` executable
 
     ```{.bash style=bashstyle}
-    $ cmake --build ./build --target greetings
-    ... libgreetings.a
+    $ cmake --build ./build 
+    [ 25%] Building CXX object src/CMakeFiles/greetings.dir/greetings.cpp.o
+    [ 50%] Linking CXX static library libgreetings.a
+    [ 50%] Built target greetings
+    [ 75%] Building CXX object src/CMakeFiles/hello.dir/hello.cpp.o
+    [100%] Linking CXX executable hello
+    [100%] Built target hello
     ```
 
-After successful compilation, the build directory will contain the libmessage.a static
-library (on GNU/Linux) and the hello-world executable
+<!--
+$\Rightarrow$ the **greetings** library is always built before being linked it to the `hello` executable
+-->
 
-## STATIC, SHARED, OBJECT MODULE 
+<!-- 
+  After successful compilation, the build directory will contain the libmessage.a static
+  library (on GNU/Linux) and the hello-world executable
+-->
 
-STATIC, which we have already encountered, will be used to create static
-libraries, that is, archives of object files for use when linking other targets, such as
-executables.
-SHARED will be used to create shared libraries, that is, libraries that can be linked
-dynamically and loaded at runtime. Switching from a static library to a dynamic
-shared object (DSO) is as easy as using add_library(message SHARED
-Message.hpp Message.cpp) in CMakeLists.txt.
-OBJECT can be used to compile the sources in the list given to add_library to
-object files, but then neither archiving them into a static library nor linking them
-into a shared object. The use of object libraries is particularly useful if one needs
-to create both static and shared libraries in one go. We will demonstrate this in
-this recipe.
-MODULE libraries are once again DSOs. In contrast to SHARED libraries, they are
-not linked to any other target within the project, but may be loaded dynamically
-later on. This is the argument to use when building a runtime plugin
+## LIBRARY TYPES: STATIC, SHARED, OBJECT MODULE 
+
+            
+```{.cmake style=cmakestyle}
+add_library(<name> [STATIC | SHARED | OBJECT | MODULE]
+                    [<source>...])
+                    [EXCLUDE_FROM_ALL]
+```
+
+**STATIC** 
+ : used to create static libraries, that is, archives of object files for use when linking other targets
+
+
+**SHARED**
+  : used to create shared libraries, that is, libraries that can be linked dynamically and loaded at runtime
+  
+**OBJECT** 
+  : used to compile the sources in the list given to `add_library()` to object files, but then neither archiving them into a static library nor linking them into a shared object. 
+  
+<!-- 
+
+  The use of object libraries is particularly useful if one needs to create 
+  both static and shared libraries in one go. We will demonstrate this in
+
+  MODULE libraries are once again DSOs. In contrast to SHARED libraries, they are
+  not linked to any other target within the project, but may be loaded dynamically
+  later on. This is the argument to use when building a runtime plugin
+
+-->
+
+## GRAPHVIZ OF DEPENDENCIES
+
+- CMake can use the Graphviz graph visualization software (http://www.graphviz.org) to
+generate the dependency graph of a project:
+
+    ```{.bash style=bashstyle}
+    $ cmake -B ./build -S . --graphviz=greetings.dot
+    -- Configuring done
+    -- Generating done
+    Generate graphviz: ./greetings.dot
+    -- Build files have been written to: <>/build
+    $ dot -T png greetings.dot -o greetings.png
+    ```
+
+The generated diagram will show dependencies between targets in different directories
+
+show the picture
+
+# EXTRA
 
 ## IMPORTED, INTERFACE, ALIAS
 
@@ -432,6 +572,7 @@ ALIAS, as the name suggests, a library of this type defines an alias for a preex
 library target within the project. It is thus not possible to choose an alias
 for an IMPORTED library. See also: https:/ / cmake. org/ cmake/ help/ latest/
 manual/ cmake- buildsystem. 7. html#alias- libraries
+
 
 ## THINGS THAT NEED TO BE UNDERSTOOD 
 
