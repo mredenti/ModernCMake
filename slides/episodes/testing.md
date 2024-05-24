@@ -158,6 +158,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # enable testing functionality
 enable_testing()
+
+add_subdirectory(src)
+add_subdirectory(tests)
 ```
 
 ::: 
@@ -204,13 +207,19 @@ enable_testing()
 2. We then define the summation OBJECT library 
 
 ```{.cmake style=cmakestyle}
-add_library(summation OBJECT "")
+add_library(summation OBJECT)
 target_sources(
     summation 
     PRIVATE 
         sum_integers.cpp
     PUBLIC 
-        sum_integers.hpp) # test whether test.cpp gets it
+        sum_integers.hpp) 
+
+# Include directory for the summation target
+target_include_directories(
+    summation 
+    PUBLIC 
+        ${CMAKE_CURRENT_LIST_DIR})
 ```
 
 ::: 
@@ -317,8 +326,14 @@ $ cmake --build ./build
 
 ```{.bash style=bashstyle}
 $ ctest --test-dir ./build
+Internal ctest changing into directory: <>/build
+Test project <>/build
+    Start 1: test_sum_integers
+1/1 Test #1: test_sum_integers ................ Passed  0.00 sec
 
-put output here
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
 ```
 
 `ctest`
