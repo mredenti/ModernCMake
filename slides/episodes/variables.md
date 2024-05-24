@@ -59,6 +59,196 @@ Three types of variables: **Local**, **Cache**, **Environment**
 
 -->
 
+
+## MOTIVATING EXAMPLE: TOGGLE LIBRARY USAGE 
+
+\vspace{.5cm}
+
+\centering Consider the same source code as for the greetings project.
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+How can we toggle between the following two behaviours:
+
+\vspace{.3cm}
+
+1. Build `greetings.hpp` and `greetings.cpp` into a `STATIC` library and then link the resulting library into the `hello` executable 
+
+\vspace{.3cm}
+
+2. Build  `greetings.hpp`, `greetings.cpp` and `hello.cpp` into a single executable, without producing the library
+
+
+<!-- 
+  This is a common use case where variables can control the build configuration.
+-->
+
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [src
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## HOW TO DO IT (I)
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+1. Introduce a logical variable, `USE_LIBRARY`, in the top level `CMakeLists.txt` file with value set to `OFF`. 
+
+```{.cmake style=cmakestyle}
+cmake_minimum_required(VERSION 3.21)
+
+project(Greetings LANGUAGES CXX)
+
+# Define a variable to toggle library usage
+set(USE_LIBRARY OFF)
+message(STATUS "Compile sources into a library? 
+                ${USE_LIBRARY}")
+
+add_subdirectory(src)
+```
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [\colorbox{pink}{CMakeLists.txt}, file
+      ]
+      [src
+        [CMakeLists.txt, file
+        ]
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+This example demonstrates how variables can be used to control the build process.
+
+
+## HOW TO DO IT (II)
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="67%"}
+
+2. Introduce a variable `_sources`, listing `greetings.hpp` and `greetings.cpp` 
+
+```{.cmake style=cmakestyle}
+list(APPEND _sources greetings.hpp greetings.cpp)
+```
+
+3. Introduce an `if-else` statement based on the value of `USE_LIBRARY` to toggle between the two behaviours
+
+```{.cmake style=cmakestyle}
+if(USE_LIBRARY)
+  add_library(greetings STATIC ${_sources})
+
+  add_executable(hello hello.cpp)
+  target_link_libraries(hello greetings)
+else()
+  add_executable(hello hello.cpp ${_sources})
+endif()
+
+```
+
+::: 
+::: {.column width="33%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+<!-- 
+  We can again build with the same set of commands. Since USE_LIBRARY is set to
+  OFF, the hello-world executable will be compiled from all sources. This can be
+  verified by running the objdump -x command on GNU/Linux.
+-->
+
+## HOW IT WORKS
+
+
+- The variable `USE_LIBRARY` has been set to `OFF` in the top level CMakeLists.txt file. 
+
+- In the CMake language, true or false values can be expressed in a number of ways. 
+  
+- A logical variable is true if it is set to any of the following: 1, ON, YES, TRUE, Y, or a non-zero number.
+
+- A logical variable is false if it is set to any of the following: 0, OFF, NO, FALSE, N,
+IGNORE, NOTFOUND, an empty string, or it ends in the suffix -NOTFOUND.
+
+This example shows that it is possible to introduce conditionals to control the execution
+flow in CMake. However, the current setup does not allow the toggles to be set from
+outside, that is, without modifying CMakeLists.txt by hand. In principle, we want to be
+able to expose all toggles to the user, so that configuration can be tweaked without
+modifying the code for the build system. We will show how to do that in a moment.
+
+
 ## LOCAL VARIABLES (I)
 
 \vspace{0.5cm}
@@ -69,13 +259,13 @@ Three types of variables: **Local**, **Cache**, **Environment**
   Useful for temporary settings and internal script logic.
 -->
 
-- A local variable can be defined in a CMakeLists.txt file with the `set()` command
+- A local variable can be defined with the `set()` command
 
     ```{.cmake style=cmakestyle}
-    set(varName value...)
+    set(<variable> <value>...)
     ```
 
-- Variable names, `varName`, can contain `A-Za-z0-9_` with letters being
+- Variable names, `variable`, can contain `A-Za-z0-9_` with letters being
 case-sensitive
 
     ```{.cmake style=cmakestyle}
@@ -96,12 +286,13 @@ case-sensitive
 - Variables are expanded using ${}
   
     ```{.cmake style=cmakestyle}
-    message(STATUS FOO=${foo}) # "bar"
+    message(STATUS FOO=${FOO}) # "foo"
+    message(STATUS foo=${foo}) # "bar"
     ```
 
 ## LOCAL VARIABLES (II)
 
-
+\alert{I WOULD PROBABLY REMOVE THIS SCRAP AND YOU SIMPLY MENTION IT}
 
 \vspace{0.5cm}
 
@@ -143,7 +334,7 @@ case-sensitive
   Multiple arguments will be joined as a semicolon-separated list to form the actual variable value to be set.
 -->
 
-## LOCAL VARIABLES - SCOPE (I)
+## LOCAL VARIABLES - DIRECTORY SCOPE (I)
 
 <!--
   SCOPE IS ONE OF THE MOST CONFUSING ASPECTS OF CMAKE
@@ -169,9 +360,9 @@ A local variable has a scope corresponding to the CMakeLists.txt file in which t
 
   ```{.cmake style=cmakestyle}
   # project/CMakeLists.txt
-  message(STATUS ${FOO}} # ""
+  message(STATUS ${FOO}) # ""
   set(FOO "foo")
-  message(STATUS ${FOO}} # "foo"
+  message(STATUS ${FOO}) # "foo"
   ```
 
 :::
@@ -194,7 +385,7 @@ A local variable has a scope corresponding to the CMakeLists.txt file in which t
 :::
 :::::::::::::: 
 
-## LOCAL VARIABLES - SCOPE (II)
+## LOCAL VARIABLES - DIRECTORY SCOPE (II)
 
 \vspace{.5cm}
 
@@ -267,7 +458,7 @@ entry.
 :::
 :::::::::::::: 
 
-## LOCAL VARIABLES - SCOPE (III)
+## LOCAL VARIABLES - DIRECTORY SCOPE (III)
 
 \vspace{.5cm}
 
@@ -319,7 +510,7 @@ The `add_subdirectory()` command creates a new scope for processing that subdire
 :::
 :::::::::::::: 
 
-## LOCAL VARIABLES - SCOPE (IV)
+## LOCAL VARIABLES - DIRECTORY SCOPE (IV)
 
 \vspace{.5cm}
 
@@ -391,7 +582,7 @@ The `add_subdirectory()` command creates a new scope for processing that subdire
 :::
 :::::::::::::: 
 
-## LOCAL VARIABLES - SCOPE (V)
+## LOCAL VARIABLES - FUNCTION SCOPE (V)
 
 
 \vspace{0.5cm}
@@ -409,6 +600,8 @@ test()
 message(STATUS ${TEST}) # ""
 message(STATUS ${TEST_EXTEND}) # "42"
 ```
+
+What about the rest like accessing a pre-defined variable?
 
 ## CACHE VARIABLES (I)
 
@@ -442,12 +635,31 @@ the user experience in GUI tools
 
 CMake **Cache variables** are primarily used to expose build configurations to the user. <!-- User controlled build options -->
 
+\vspace{0.2cm}
+
 - Defining a cache variable requires a special form of the `set` command
 
   ```{.cmake style=cmakestyle}  
   set(<variable> <value>... CACHE <type> <docstring>)
   ```
   
+- Unlike local variables you can ovveride default cache variable values from the CL
+ 
+  ```{.cmake style=cmakestyle}  
+  set(USE_LIBRARY OFF CACHE BOOL "Enable compilation into ...")
+  message(STATUS "Compile sources into a library? ${USE_LIBRARY}")
+  ```
+
+  ```{.bash style=bashstyle}
+  $ cmake -B <...> -S <...> -D USE_LIBRARY:BOOL="ON" 
+  -- Compiles sources into a library 
+  ```
+
+<!-- 
+  CACHE VARIABLES ARE PRIMARILY USED TO EXPOSE BUILD CONFIGURATION/CUSTOMISATION TO THE USER
+-->
+
+## Types
 
 - Cache entries are typed and require a docstring:
   - BOOL ((these are only used by cmake-gui and ccmake to display the appropriate type of edit widget))
