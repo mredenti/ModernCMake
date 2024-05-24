@@ -257,16 +257,18 @@ target_sources(
 3. We define the testing executable, link it to the summation library and define a test case with `add_test()`.
 
 ```{.cmake style=cmakestyle}
-cmake_minimum_required(VERSION 3.21)
+# testing binary
+add_executable(cpp_test test.cpp)
+target_link_libraries(
+    cpp_test 
+    PRIVATE 
+        summation)
 
-project(Summation LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-# enable testing functionality
-enable_testing()
+# define tests
+add_test(
+    NAME test_sum_integers
+    COMMAND cpp_test
+  )
 ```
 
 ::: 
@@ -302,26 +304,57 @@ enable_testing()
 ::: 
 ::::::::::::::
 
-## about tests i
+## RUNNING TESTS
 
-The add_test() command is how a project can define a test case. It supports a couple of different
-forms, but the one shown above with NAME and COMMAND keywords is recommended.
-The argument following NAME should generally contain only letters, numbers, hyphens, and
-underscores. Other characters may be supported if using CMake 3.19 or later, but projects should
-avoid anything complicated and stick with these basic characters in most cases.
-The COMMAND can be any arbitrary command that could be run from a shell or command prompt. As a
-special case, it can also be the name of an executable target defined by the project. CMake will then
-translate that target name into the location of the binary built for that target. In the above example,
-the SomethingWorks test will run the executable built for the testSomething CMake target. The project
-doesn’t have to care where the build will create the binary in the file system, CMake will provide
-that information to ctest automatically.
+We are now ready to configure and build the code 
 
-## about tests ii
+```{.bash style=bashstyle}
+$ cmake -B ./build -S ./summation 
+$ cmake --build ./build 
+```
+
+... and run the test with `ctest`
+
+```{.bash style=bashstyle}
+$ ctest --test-dir ./build
+
+put output here
+```
+
+`ctest`
 
 By default, a test is deemed to pass if it returns an exit code of 0. Much more detailed and flexible
 criteria can be defined, which is covered in Section 27.3, “Pass / Fail Criteria And Other Result
 Types”, but a simple check of the exit code is often sufficient.
 
+## HOW IT WORKS 
+
+Two new key commands were used
+
+```{.cmake style=cmakestyle}
+enable_testing()
+```
+
+instructs CMake to enable testing (create a test target) for the directory in which it was defined and all of its subfolders 
+
+```{.cmake style=cmakestyle}
+add_test(
+    NAME <name> 
+    COMMAND <command> [<arg>...]
+    [WORKING_DIRECTORY <dir>]
+```
+
+defines a new test case and sets the name and the command to run 
+The `<command>` can be any arbitrary command that could be run from a shell or command prompt. 
+As a special case, it can also be the name of an executable target defined by the project. 
+
+<!-- 
+    CMake will then translate that target name into the location of the binary built for that target. 
+    The project doesn’t have to care where the build will create the binary in the file system, CMake will provide
+    that information to ctest automatically.
+-->
+
+## MAKING IT FAIL
 
 ## nuid 
 
