@@ -3,49 +3,331 @@ aspectratio: 169
 ---
 
 
-# TESTING 
-
-## OBJECTIVES
-
-- Learn how to produce test executables with CMake
-
-- Learn how to run your tests through CTest
-
-# CREATING TESTS 
-
-## TESTING 
-
-Testing is an essential activity in the development cycle. A well-designed test suite will help you detect bugs and can also facilitate the onboarding of new developers. In this episode, we will look into how to use CTest to define and run our tests.
-
-# RUNNING TESTS WITH CTEST
-
-
 # CREATING AND RUNNING TESTS
 
-## OVERVIEW 
+## WHY TESTING IS IMPORTANT
 
-Testing is a core component of the code development toolbox. 
-Performing automated testing by unit and integrations tests not only 
-helps the developer to detect functionality regressions early, but can also serve as a starting point for developers joining the project.
+<!--
+    Testing is an essential activity in the development cycle. A well-designed test suite will help you detect bugs and can also facilitate the onboarding of new developers. In this episode, we will look into how to use CTest to define and run our tests.
 
-It can help new developers to submit changes to the code project, with
-assurance that the expected functionality is preserved. For users of the code, automated
-tests can be essential when verifying that the installation preserves the functionality of the
-code. A nice byproduct of employing tests for units, modules, or libraries right from the
-start is that it can guide the programmer towards more modular and less complex code
-structures, using a pure, functional style, that minimizes and localizes global variables and
-the global state.
+    Testing is a core component of the code development toolbox. 
+    Performing automated testing by unit and integrations tests not only 
+    helps the developer to detect functionality regressions early, but can also serve as a starting point for developers joining the project.
 
-- **How do we integrate testing into the CMake build structure?**
+    It can help new developers to submit changes to the code project, with
+    assurance that the expected functionality is preserved. For users of the code, automated
+    tests can be essential when verifying that the installation preserves the functionality of the
+    code. A nice byproduct of employing tests for units, modules, or libraries right from the
+    start is that it can guide the programmer towards more modular and less complex code
+    structures, using a pure, functional style, that minimizes and localizes global variables and
+    the global state.
 
-Objectives:
+-->
 
-- Making it easy for users, developers, and continuous integration services to run the test set. When using Unix Makefiles, it should be as simple as typing make test.
+- Early detection of functionality regressions
 
-- Running tests efficiently by minimizing the total test time, in order to maximize
-the probability that tests are run often-ideally, with each code change.
+- Assurance of code functionality for new developers
 
-## CREATING A SIMPLE UNIT TEST 
+- Verification of installation and deployment
+
+- Encouragement of modular and less complex code
+
+<!--
+    Testing is an essential activity in the development cycle. A well-designed test suite will help you detect bugs and can also facilitate the onboarding of new developers. In this episode, we will look into how to use CTest to define and run our tests.
+-->
+
+## EXAMPLE: CREATING A SIMPLE UNIT TEST (I)
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+```c++
+#include "sum_integers.hpp"
+#include <vector>
+
+using namespace std;
+
+int sum_integers(const vector<int> ints) {
+  auto sum = 0;
+  for (auto i : ints) {
+    sum += i;
+  }
+  return sum;
+}
+```
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [summation
+      [src
+        [sum\_integers.hpp, file
+        ]
+        [\colorbox{pink}{sum\_integers.cpp}, file
+        ]
+      ]
+      [tests
+        [test.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+. . . 
+
+Our objective is to write tests for this function.
+
+## EXAMPLE: CREATING A SIMPLE UNIT TEST (II)
+
+\vspace{.5cm}
+
+In the `test.cpp` we write a `main()` that verifies that `1+2+3+4+5 = 15`.
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+```c++
+#include "sum_integers.hpp"
+#include <vector>
+
+int main() {
+  auto integers = {1, 2, 3, 4, 5};
+
+  if (sum_integers(integers) == 15) {
+    return 0;
+  } else {
+    return 1;
+  }
+}
+```
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [summation
+      [src
+        [sum\_integers.hpp, file
+        ]
+        [sum\_integers.cpp, file
+        ]
+      ]
+      [tests
+        [\colorbox{pink}{test.cpp}, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## HOW TO DO IT (I)
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+\vspace{.5cm}
+
+1. In the top-level CMakeLists.txt file insert a call to `enable_testing()` to instruct CMake to produce an input file for ctest.
+
+```{.cmake style=cmakestyle}
+cmake_minimum_required(VERSION 3.21)
+
+project(Summation LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# enable testing functionality
+enable_testing()
+```
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [summation
+      [\colorbox{pink}{CMakeLists.txt}, file
+      ]
+      [src
+        [CMakeLists.txt, file
+        ]
+        [sum\_integers.hpp, file
+        ]
+        [sum\_integers.cpp, file
+        ]
+      ]
+      [tests
+        [CMakeLists.txt, file
+        ]
+        [test.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+## HOW TO DO IT (II)
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+\vspace{.5cm}
+
+2. We then define the summation OBJECT library 
+
+```{.cmake style=cmakestyle}
+add_library(summation OBJECT "")
+target_sources(
+    summation 
+    PRIVATE 
+        sum_integers.cpp
+    PUBLIC 
+        sum_integers.hpp) # test whether test.cpp gets it
+```
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [summation
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [sum\_integers.hpp, file
+        ]
+        [sum\_integers.cpp, file
+        ]
+      ]
+      [tests
+        [CMakeLists.txt, file
+        ]
+        [test.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+## HOW TO DO IT (III)
+
+:::::::::::::: {.columns}
+::: {.column width="65%"}
+
+\vspace{.5cm}
+
+3. We define the testing executable, link it to the summation library and define a test case with `add_test()`.
+
+```{.cmake style=cmakestyle}
+cmake_minimum_required(VERSION 3.21)
+
+project(Summation LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# enable testing functionality
+enable_testing()
+```
+
+::: 
+::: {.column width="35%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [summation
+      [CMakeLists.txt, file
+      ]
+      [src
+        [CMakeLists.txt, file
+        ]
+        [sum\_integers.hpp, file
+        ]
+        [sum\_integers.cpp, file
+        ]
+      ]
+      [tests
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [test.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## about tests i
+
+The add_test() command is how a project can define a test case. It supports a couple of different
+forms, but the one shown above with NAME and COMMAND keywords is recommended.
+The argument following NAME should generally contain only letters, numbers, hyphens, and
+underscores. Other characters may be supported if using CMake 3.19 or later, but projects should
+avoid anything complicated and stick with these basic characters in most cases.
+The COMMAND can be any arbitrary command that could be run from a shell or command prompt. As a
+special case, it can also be the name of an executable target defined by the project. CMake will then
+translate that target name into the location of the binary built for that target. In the above example,
+the SomethingWorks test will run the executable built for the testSomething CMake target. The project
+doesn’t have to care where the build will create the binary in the file system, CMake will provide
+that information to ctest automatically.
+
+## about tests ii
+
+By default, a test is deemed to pass if it returns an exit code of 0. Much more detailed and flexible
+criteria can be defined, which is covered in Section 27.3, “Pass / Fail Criteria And Other Result
+Types”, but a simple check of the exit code is often sufficient.
+
+
+## nuid 
+
+The following sequence of steps will configure, build, and test a project.
+
+## CREATING A SIMPLE UNIT TEST
 
 put code for a simple program 
 
@@ -62,7 +344,17 @@ will test our code using not only a C++ executable, but also using a Python scri
 script. For simplicity, we will do this without using any testing libraries, but we will
 introduce C++ testing frameworks in later recipes in this chapter
 
- ## Getting ready with the code 
+
+# TEST PROPERTIES: TIMEOUT, COST AND LABELS
+
+## som
+
+
+sdf
+
+<!-- 
+
+## Getting ready with the code 
 
  Finally, the main function is defined in main.cpp, which collects the command-line
 arguments from argv[], converts them into a vector of integers, calls
@@ -253,3 +545,5 @@ very important command
 -L: Lists all variables. When you run this command, it will print out all the cached variables after processing the CMakeLists.txt files. These variables include both user-defined and internal variables.
 -A: This option is related to the list of options provided by -L. In some versions of CMake, -A can be combined with other options to provide additional details, but this is not universally supported across all versions and may be redundant or unrecognized.
 -H: Helps to include help text for each variable when listed. This means that each variable printed by -L will also include a description if available.
+
+-->
