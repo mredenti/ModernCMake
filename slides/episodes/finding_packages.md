@@ -4,99 +4,29 @@ aspectratio: 169
 
 # Finding Packages 
 
-# Overview of CMake Package Definition
-
-## Package Definition Types
-1. **Module**
-   - Defined by CMake or projects themselves.
-   - Harder to keep up to date as the package evolves.
-   - Typically provide variables, macros, and functions.
-   
-2. **Config**
-   - Provided as part of the package itself.
-   - More closely aligned with `find_*()` commands.
-   - Tend to define imported targets.
-
-## Key Components
-- **Variables**: Provide locations of programs, libraries, flags, etc.
-- **Imported Targets**: Preferred due to robustness and better integration with CMake’s transitive dependency features.
-- **Functions and Macros**: Can also be defined within packages.
-
-## Conventions and Documentation
-- **Older Modules**: Tend to provide variables following a consistent pattern.
-- **Newer Modules/Config Implementations**: Usually define imported targets.
-- **Consult Documentation**: Necessary to understand what is provided by each module or package.
-
-## Finding Packages
-- **find_package() Command**
-  - **Short Form**: Preferred for simplicity and support for both module and config packages.
-  - **Long Form**: Offers more control over the search, useful in certain situations, but does not support modules.
-
-
-
-## OVERVIEW 
+## Overview / Motivation
 
 <!--
-  Part V: Deployment And
-  Dependencies
-  For the lucky few, a project may be independent of anything else, having no reliance on any
-  externally provided content. The more likely scenario is that, at some point, the project needs to
-  move beyond its own isolated existence and interact with external entities. This occurs in two
-  directions:
-  Dependencies
-  The project may depend on other externally provided files, libraries, executables, packages, and
-  so on.
-  Consumers
-  Other projects or users may wish to consume the project in a variety of ways. Some may want to
-  incorporate the project at the source level, others may expect a pre-built binary package to be
-  available. Another possibility is the assumption that the project is installed somewhere on the
-  system. End users might just be installing the project to run it, not to build with it.
+    In this chapter we will talk about how to detect external/third party 
+    libraries in CMake. There comes a time where as your project grows 
+    you want to make use of external libraries, programs, files...
 
-  For dependencies, it provides
-  commands that operate at both the package level and at a lower level for finding individual files,
-  libraries, etc. CMake also provides features that give a higher level entry point for dependency
-  management. To support consumers, installation and package creation features are available.
-  Packages can be created in a range of common formats.
-
-  A project of at least modest size will likely rely on things provided by something outside the project
-  itself. For example, it may expect a particular library or tool to be available, or it may need to know
-  the location of a specific configuration or header file for a library it uses. At a higher level, the
-  project may want to find a complete package that potentially defines a range of things including
-  targets, functions, variables and anything else a regular CMake project might define.
-
-  CMake provides a variety of features which enable projects to find things and to be found by or
-  incorporated into other projects. Various find_…() commands provide the ability to search for
-  specific files, libraries or programs, or indeed for an entire package. CMake modules also add the
-  ability to use pkg-config to provide information about external packages, while other modules
-  facilitate writing package files for other projects to consume. This chapter covers CMake’s support
-  for searching for something already available on the file system.
-
-  The basic idea of searching for something is relatively straightforward, but the details of how the
-  search is conducted can be quite involved. In many cases, the default behaviors are appropriate,
-  but an understanding of the search locations and their ordering can allow projects to tailor the
-  search to account for non-standard behaviors and unusual circumstances.
-
-  When you create an imported target, you're telling CMake: I have this { static library | shared library | module library | executable } already built in this location on disk. I want to be able to treat it just like a target built by my own buildsystem, so take note that when I say ImportedTargetName, it should refer to that binary on disk (with the associated import lib if applicable, and so on).
-
-When you create an interface library, you're telling CMake: I have this set of properties (include directories etc.) which clients can use, so if they "link" to my interface library, please propagate these properties to them.
-
-The fundamental difference is that interface libraries are not backed by anything on disk, they're just a set of requirements/properties. You can set the INTERFACE_LINK_LIBRARIES property on an interface library if you really want to, but that's not really what they were designed for. They're to encapsulate client-consumable properties, and make sense primarily for things like header-only libraries in C++.
-
-The various find_…() commands discussed in the preceding sections all focus on finding one
-specific item. Quite often, however, these items are just one part of a larger package. The package
-as a whole may have its own characteristics that projects could be interested in, such as a version
-number, or support for certain features. Projects will generally want to find the package as a single
-unit rather than piece together its different parts manually.
+  \centering Projects often depend on other projects and libraries. 
 -->
 
-## IMPORTANT 
+\vspace{.5cm}
 
-REMEMBER TO ADD IF DEF TO MPI EXAMPLE 
-THIS WAY IT IS CLEAR WHY IT IS WORTH TO LINK DIRECTLY
+\centering
 
-you maybe want to give color to function and macro calls?
+As your project grows, you often need to make use of external libraries, programs, and files to add functionality, improve performance, or integrate with other systems.
 
-## Overview 
+
+\vspace{.5cm}
+
+
+- How can we detect and find third-party libraries?
+  
+- What is the best way to link these external libraries to our project?
 
 <!--
     In this chapter we will talk about how to detect external/third party 
@@ -104,46 +34,9 @@ you maybe want to give color to function and macro calls?
     you want to make use of external libraries, programs, files...
 -->
 
-Projects often depend on other projects and libraries.
+## HELLO WORLD WITH MPI
 
-- How to detect/find third party libraries?
-- How to link to these external libraries?
-
-
-Project may be using external libraries, program, files...
-In CMake 
-Those can be found using the `find_package()` command.
-
-Maybe have a code snippet motivating the example, questions and so on?
-Maybe show a compilation line with manual linking
-
-Should we maybe have an example with the math library?
-maybe replace the above with the math library...!
-
-Highlight that we are not talking about installing them, we assume these libraries 
-ideally already installed on our system 
-
-## Finding Packages in CMake
-
-In CMake there are two ways for searching packages
-
-- **Modules** 
-- **CMake package configurations** 
-- **PkgConfig**
-- **Write your own Find<package>.cmake module**
-
-but both of them use the same inferface `find_package()`
-
-Mention that the way we will present the different approaches is in order of priority...
-
-
-# Find\<PackageName\>.cmake
-
-# find_package(\<PACKAGE_NAME\> MODULE)
-
-## MOTIVATING EXAMPLE - HELLO WORLD WITH MPI
-
-\vspace{.5cm}
+\vspace{.2cm}
 
 <!--
     An alternative and often complementary approach to OpenMP shared-memory parallelism
@@ -156,29 +49,33 @@ Mention that the way we will present the different approaches is in order of pri
 -->
 
 :::::::::::::: {.columns}
-::: {.column width="75%"}
+::: {.column width="70%"}
 
 ```cpp
 #include <iostream>
+#ifdef HAVE_MPI
 #include <mpi.h>
+#endif
 
 int main(int argc, char **argv) {
-
-    MPI_Init(NULL, NULL); 
-
-    // Get the rank of the process
-    int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-
-    // Print off a hello world message
-    call to greetings library
-    
-    MPI_Finalize(); 
+#ifdef HAVE_MPI
+    MPI_Init(&argc, &argv);
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    std::cout << "Hello World \
+            from rank " << rank << std::endl;
+    MPI_Finalize();
+#else
+    std::cout << "Hello World" << std::endl;
+#endif
+    return 0;
 }
 ```
 
 :::
-::: {.column width="25%"}
+::: {.column width="30%"}
+
+\vspace{2cm}
 
 \begin{forest}
   pic dir tree,
@@ -186,14 +83,8 @@ int main(int argc, char **argv) {
     directory,
   },
   [ 
-    [hello-world
-      [greetings.hpp, file
-      ]
-      [greetings.cpp, file
-      ]
-      [main.cpp, file
-      ]
-      [hello-mpi.cpp, file
+    [helloWorldMPI
+      [hello\_mpi.cpp, file
       ]
     ]
   ]
@@ -202,47 +93,92 @@ int main(int argc, char **argv) {
 :::
 ::::::::::::::
 
-## OBJECTIVE / MANUAL COMPILATION / DESIDERATA 
+## COMPILING MANUALLY WITH MPI 
 
+The implementation of the MPI standard consists of the following:
 
-
-MPI is ... a library , compiler wrapper and some other stuff
-
-- How would we do this if we had to compile it manuall?
+\vspace{.2cm}
 
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
 
-maybe show what would be our objective if doing so via manual compilation
-(G100)
-```{.bash style=bashstyle}
-$ module load openmpi
-$ mpic++ ..
-```
+1. Runtime libraries.
+
+2. Header files and Fortran 90 modules.
 
 :::
 ::: {.column width="50%"}
 
-show and highlight where linking takes place
+3. Compiler wrappers (`mpicxx`, `mpifort`, ...)
 
-- It is a compiler wrapper...
-  
-Show command used to invoke real compiler
-```{.bash style=bashstyle}
-$ mpic++ --showme:command
-<>/gcc-10.2.0-<>/bin/gcc
-```
+<!--
+  which invoke the compiler that was used to build the MPI
+  library with additional command-line arguments to take care of include
+  directories and libraries. Usually, the available compiler wrappers are
+  mpic++/mpiCC/mpicxx for C++, mpicc for C, and mpifort for Fortran.
+-->
 
-Show list of include dirs added when compiling
-```{.bash style=bashstyle}
-$ mpic++ --showme:incdirs
-<...>/openmpi-4.1.1<...>/include 
-```
+4. MPI launcher (`mpirun`, `mpiexec`, ...)
+
+<!-- 
+  This is the program you should call to launch a parallel execution
+  of your compiled code. Its name is implementation-dependent and it is usually
+  one of the following: mpirun, mpiexec, or orterun.
+-->
 
 :::
 ::::::::::::::
 
-## HOW TO DO IT - DETECTING MPI
+\vspace{.5cm}
+
+. . . 
+
+- To manually compile the hello world program, you would use the following command:
+
+    ```{.bash style=bashstyle}
+    $ mpic++ -DHAVE_MPI hello_world.cpp -o hello_world
+    ```
+
+- To run the compiled MPI program
+    
+    ```{.bash style=bashstyle}
+    $ mpirun -np 2 ./hello_world
+    ```
+<!--
+  Augments the real compiler with additional arguments.
+Automatically includes necessary paths and libraries.
+-->
+
+## UNDERSTANDING THE MPI COMPILER WRAPPER  
+
+<!--
+
+  Remember that the compiler wrapper is a thin layer around the compiler used to build the
+MPI library. Under the hood, it will call the same compiler and augment it with additional
+arguments, such as include paths and libraries, needed to successfully build a parallel
+program.
+-->
+
+\vspace{.5cm}
+
+- The compiler wrapper is a thin layer around the compiler used to build the MPI library...
+    
+    ```{.bash style=bashstyle}
+    $ mpic++ --showme:command
+    <>/gcc-10.2.0-<>/bin/gcc
+    ```
+- ... and it will augment it with additional arguments, such as include paths and libraries, needed to successfully build a parallel
+program
+
+    ```{.bash style=bashstyle}
+    $ mpic++ --showme:incdirs
+    <...>/openmpi-4.1.1<...>/include 
+
+    $ mpic++ --showme:link
+    <...>/openmpi-4.1.1<...>/include 
+    ```
+
+## HOW TO DO IT - DETECTING MPI IN CMAKE
 
 In this recipe, we set out to find the MPI implementation: library, header files, compiler
 wrappers, and launcher. To do so, we will leverage the FindMPI.cmake standard CMake
@@ -430,6 +366,20 @@ can set to give hints for search directories
 
 - Looks for a file named `find<package_name>.cmake` in the CMake cache variable `CMAKE_MODULE_PATH`
 
+## Using find_package
+
+When attempting dependency detection with find_package, you should make sure that:
+
+A Find<PackageName>.cmake module exists,
+
+Which components, if any, it provides, and
+
+What imported targets it will set up.
+
+A complete list of Find<PackageName>.cmake can be found from the command-line interface:
+
+$ cmake --help-module-list | grep "Find"
+
 ## how does findMPI.cmake works 
 
 also set up a handful of useful variables, reflecting what was actually found, which you can
@@ -483,6 +433,105 @@ find_path to find a directory containing the named file
 find_program to find a program
 
 a list with all cmake modules for a particular version...
+
+
+## RECAP
+
+\centering Projects often depend on other projects and libraries. 
+
+\vspace{.5cm}
+
+In CMake there are two main ways packages are defined and subsequently found:
+<!--
+  CMake provides two main mechanisms to detect and link these dependencies.
+-->
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+1. **Module Packages**
+
+- Defined by CMake or individual projects.
+- Typically provide variables, macros, functions, and imported targets.
+- Example: `FindMPI.cmake`
+
+::: 
+::: {.column width="50%"}
+
+2. **Config Packages**
+
+- Provided as part of the package itself.
+- Tend to define imported targets.
+- Example: `<Package>Config.cmake`
+
+:::
+::::::::::::::
+
+## Finding Packages in CMake
+
+In CMake there are two ways for searching packages
+
+- **Modules** 
+- **CMake package configurations** 
+- **PkgConfig**
+- **Write your own Find<package>.cmake module**
+
+but both of them use the same inferface `find_package()`
+
+<!--
+  Part V: Deployment And
+  Dependencies
+  For the lucky few, a project may be independent of anything else, having no reliance on any
+  externally provided content. The more likely scenario is that, at some point, the project needs to
+  move beyond its own isolated existence and interact with external entities. This occurs in two
+  directions:
+  Dependencies
+  The project may depend on other externally provided files, libraries, executables, packages, and
+  so on.
+  Consumers
+  Other projects or users may wish to consume the project in a variety of ways. Some may want to
+  incorporate the project at the source level, others may expect a pre-built binary package to be
+  available. Another possibility is the assumption that the project is installed somewhere on the
+  system. End users might just be installing the project to run it, not to build with it.
+
+  For dependencies, it provides
+  commands that operate at both the package level and at a lower level for finding individual files,
+  libraries, etc. CMake also provides features that give a higher level entry point for dependency
+  management. To support consumers, installation and package creation features are available.
+  Packages can be created in a range of common formats.
+
+  A project of at least modest size will likely rely on things provided by something outside the project
+  itself. For example, it may expect a particular library or tool to be available, or it may need to know
+  the location of a specific configuration or header file for a library it uses. At a higher level, the
+  project may want to find a complete package that potentially defines a range of things including
+  targets, functions, variables and anything else a regular CMake project might define.
+
+  CMake provides a variety of features which enable projects to find things and to be found by or
+  incorporated into other projects. Various find_…() commands provide the ability to search for
+  specific files, libraries or programs, or indeed for an entire package. CMake modules also add the
+  ability to use pkg-config to provide information about external packages, while other modules
+  facilitate writing package files for other projects to consume. This chapter covers CMake’s support
+  for searching for something already available on the file system.
+
+  The basic idea of searching for something is relatively straightforward, but the details of how the
+  search is conducted can be quite involved. In many cases, the default behaviors are appropriate,
+  but an understanding of the search locations and their ordering can allow projects to tailor the
+  search to account for non-standard behaviors and unusual circumstances.
+
+  When you create an imported target, you're telling CMake: I have this { static library | shared library | module library | executable } already built in this location on disk. I want to be able to treat it just like a target built by my own buildsystem, so take note that when I say ImportedTargetName, it should refer to that binary on disk (with the associated import lib if applicable, and so on).
+
+When you create an interface library, you're telling CMake: I have this set of properties (include directories etc.) which clients can use, so if they "link" to my interface library, please propagate these properties to them.
+
+The fundamental difference is that interface libraries are not backed by anything on disk, they're just a set of requirements/properties. You can set the INTERFACE_LINK_LIBRARIES property on an interface library if you really want to, but that's not really what they were designed for. They're to encapsulate client-consumable properties, and make sense primarily for things like header-only libraries in C++.
+
+The various find_…() commands discussed in the preceding sections all focus on finding one
+specific item. Quite often, however, these items are just one part of a larger package. The package
+as a whole may have its own characteristics that projects could be interested in, such as a version
+number, or support for certain features. Projects will generally want to find the package as a single
+unit rather than piece together its different parts manually.
+-->
 
 
 <!-- 
@@ -846,3 +895,17 @@ provided. As a general guide, older modules tend to provide variables that follo
 pattern, whereas newer modules and config implementations usually define imported targets.
 Where both variables and imported targets are provided, projects should prefer the latter due to
 their superior robustness and better integration with CMake’s transitive dependency features.
+
+## IMPORTANT 
+
+For a large selection of common dependencies, the Find<PackageName>.cmake modules shipped with CMake work flawlessly and are maintained by the CMake developers. This lifts the burden of programming your own dependency detection tricks.
+
+find_package will set up imported targets: targets defined outside your project that you can use with your own targets. The properties on imported targets defines usage requirements for the dependencies. A command such as:
+
+target_link_libraries(your-target
+  PUBLIC
+    imported-target
+  )
+will set compiler flags, definitions, include directories, and link libraries from imported-target to your-target and to all other targets in your project that will use your-target.
+
+These two points simplify enormously the burden of dependency detection and consistent usage within a multi-folder project.
