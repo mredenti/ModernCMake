@@ -4,6 +4,91 @@ aspectratio: 169
 
 # Finding Packages 
 
+# Overview of CMake Package Definition
+
+## Package Definition Types
+1. **Module**
+   - Defined by CMake or projects themselves.
+   - Harder to keep up to date as the package evolves.
+   - Typically provide variables, macros, and functions.
+   
+2. **Config**
+   - Provided as part of the package itself.
+   - More closely aligned with `find_*()` commands.
+   - Tend to define imported targets.
+
+## Key Components
+- **Variables**: Provide locations of programs, libraries, flags, etc.
+- **Imported Targets**: Preferred due to robustness and better integration with CMake’s transitive dependency features.
+- **Functions and Macros**: Can also be defined within packages.
+
+## Conventions and Documentation
+- **Older Modules**: Tend to provide variables following a consistent pattern.
+- **Newer Modules/Config Implementations**: Usually define imported targets.
+- **Consult Documentation**: Necessary to understand what is provided by each module or package.
+
+## Finding Packages
+- **find_package() Command**
+  - **Short Form**: Preferred for simplicity and support for both module and config packages.
+  - **Long Form**: Offers more control over the search, useful in certain situations, but does not support modules.
+
+
+
+## OVERVIEW 
+
+<!--
+  Part V: Deployment And
+  Dependencies
+  For the lucky few, a project may be independent of anything else, having no reliance on any
+  externally provided content. The more likely scenario is that, at some point, the project needs to
+  move beyond its own isolated existence and interact with external entities. This occurs in two
+  directions:
+  Dependencies
+  The project may depend on other externally provided files, libraries, executables, packages, and
+  so on.
+  Consumers
+  Other projects or users may wish to consume the project in a variety of ways. Some may want to
+  incorporate the project at the source level, others may expect a pre-built binary package to be
+  available. Another possibility is the assumption that the project is installed somewhere on the
+  system. End users might just be installing the project to run it, not to build with it.
+
+  For dependencies, it provides
+  commands that operate at both the package level and at a lower level for finding individual files,
+  libraries, etc. CMake also provides features that give a higher level entry point for dependency
+  management. To support consumers, installation and package creation features are available.
+  Packages can be created in a range of common formats.
+
+  A project of at least modest size will likely rely on things provided by something outside the project
+  itself. For example, it may expect a particular library or tool to be available, or it may need to know
+  the location of a specific configuration or header file for a library it uses. At a higher level, the
+  project may want to find a complete package that potentially defines a range of things including
+  targets, functions, variables and anything else a regular CMake project might define.
+
+  CMake provides a variety of features which enable projects to find things and to be found by or
+  incorporated into other projects. Various find_…() commands provide the ability to search for
+  specific files, libraries or programs, or indeed for an entire package. CMake modules also add the
+  ability to use pkg-config to provide information about external packages, while other modules
+  facilitate writing package files for other projects to consume. This chapter covers CMake’s support
+  for searching for something already available on the file system.
+
+  The basic idea of searching for something is relatively straightforward, but the details of how the
+  search is conducted can be quite involved. In many cases, the default behaviors are appropriate,
+  but an understanding of the search locations and their ordering can allow projects to tailor the
+  search to account for non-standard behaviors and unusual circumstances.
+
+  When you create an imported target, you're telling CMake: I have this { static library | shared library | module library | executable } already built in this location on disk. I want to be able to treat it just like a target built by my own buildsystem, so take note that when I say ImportedTargetName, it should refer to that binary on disk (with the associated import lib if applicable, and so on).
+
+When you create an interface library, you're telling CMake: I have this set of properties (include directories etc.) which clients can use, so if they "link" to my interface library, please propagate these properties to them.
+
+The fundamental difference is that interface libraries are not backed by anything on disk, they're just a set of requirements/properties. You can set the INTERFACE_LINK_LIBRARIES property on an interface library if you really want to, but that's not really what they were designed for. They're to encapsulate client-consumable properties, and make sense primarily for things like header-only libraries in C++.
+
+The various find_…() commands discussed in the preceding sections all focus on finding one
+specific item. Quite often, however, these items are just one part of a larger package. The package
+as a whole may have its own characteristics that projects could be interested in, such as a version
+number, or support for certain features. Projects will generally want to find the package as a single
+unit rather than piece together its different parts manually.
+-->
+
 ## IMPORTANT 
 
 REMEMBER TO ADD IF DEF TO MPI EXAMPLE 
@@ -740,3 +825,24 @@ show the cmakelists.txt file as it was before
 and set the compiler from the command line globally
 
 \alert{How to achieve this in CMake?}
+
+
+# RECAP 
+
+## SUMMARY 
+
+There are two main ways packages are defined in CMake, either as a module or through config
+details. Config details are usually provided as part of the package itself, and they are more closely
+aligned with the functionality of the various find_…() commands discussed in the preceding
+sections. Modules, on the other hand, are typically defined by something unrelated to the package,
+usually by CMake or by projects themselves. As a result, modules are harder to keep up to date as
+the package evolves over time.
+Module and config files typically define variables and imported targets for the package. These may
+provide the location of programs, libraries, flags to be used by consuming targets and so on.
+Functions and macros can also be defined. There is no set of requirements for what will be
+provided, but there are some conventions which are stated in the CMake developer manual. Project
+authors must consult the documentation of each module or package to understand what is
+provided. As a general guide, older modules tend to provide variables that follow a fairly consistent
+pattern, whereas newer modules and config implementations usually define imported targets.
+Where both variables and imported targets are provided, projects should prefer the latter due to
+their superior robustness and better integration with CMake’s transitive dependency features.
