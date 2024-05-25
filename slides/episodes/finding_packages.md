@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
   },
   [ 
     [helloWorldMPI
-      [hello\_mpi.cpp, file
+      [\colorbox{pink}{hello.cpp}, file
       ]
     ]
   ]
@@ -136,13 +136,15 @@ The implementation of the MPI standard consists of the following:
 - To manually compile the hello world program, you would use the following command:
 
     ```{.bash style=bashstyle}
-    $ mpic++ -DHAVE_MPI hello_world.cpp -o hello_world
+    $ mpic++ -DHAVE_MPI hello.cpp -o hello_world
     ```
 
 - To run the compiled MPI program
     
     ```{.bash style=bashstyle}
     $ mpirun -np 2 ./hello_world
+    Hello World from rank 1
+    Hello World from rank 0
     ```
 <!--
   Augments the real compiler with additional arguments.
@@ -161,7 +163,7 @@ program.
 
 \vspace{.5cm}
 
-- The compiler wrapper is a thin layer around the compiler used to build the MPI library...
+- The compiler wrapper is just a thin layer around the compiler used to build the MPI library...
     
     ```{.bash style=bashstyle}
     $ mpic++ --showme:command
@@ -171,56 +173,116 @@ program.
 program
 
     ```{.bash style=bashstyle}
-    $ mpic++ --showme:incdirs
+    $ mpicxx --showme:incdirs
     <...>/openmpi-4.1.1<...>/include 
 
-    $ mpic++ --showme:link
-    <...>/openmpi-4.1.1<...>/include 
+    $ mpicxx --showme:libs
+    mpi
     ```
 
 ## HOW TO DO IT - DETECTING MPI IN CMAKE
 
-In this recipe, we set out to find the MPI implementation: library, header files, compiler
-wrappers, and launcher. To do so, we will leverage the FindMPI.cmake standard CMake
-module:
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="70%"}
 
 1. First, we define the minimum CMake version, project name, supported language,
-and language standard:
+and language standard and optionally enable MPI:
+
+    ```{.cmake style=cmakestyle}
+    cmake_minimum_required(VERSION 3.21)
+    project(HelloWorldMPI LANGUAGES CXX)
+
+    # ... set standard
+
+    set(TPL_ENABLE_MPI "OFF" CACHE BOOL "WITH MPI")
+    ```
+
+
+2. We then conditionally call `find_package()` to locate the MPI implementation:
+  
+    ```{.cmake style=cmakestyle}
+    if(TPL_ENABLE_MPI)
+      find_package(MPI REQUIRED)
+    endif()
+    ```
+
+
+:::
+::: {.column width="30%"}
+
+
+\vspace{2cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [helloWorldMPI
+      [\colorbox{pink}{CMakeLists.txt}, file]
+      [hello.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+:::
+::::::::::::::
+
+
+## HOW TO DO IT - LINKING AGAINST MPI
+
+\vspace{.5cm}
+
+3. We define the executable name, source and then conditionally **link against the imported target** and **pass the compile definition**:
+
+:::::::::::::: {.columns}
+::: {.column width="70%"}
 
 ```{.cmake style=cmakestyle}
-cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
-project(hello-mpi LANGUAGES CXX)
+add_executable(hello hello.cpp)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(MPI_FOUND)
+  target_link_libraries(
+      hello
+      PRIVATE
+          MPI::MPI_CXX)
+  target_compile_defintions(
+      hello
+      PRIVATE
+          HAVE_MPI)
+endif()
 ```
-
-2. We then call `find_package()` to locate the MPI implementation:
-```{.cmake style=cmakestyle}
-find_package(MPI REQUIRED)
-```
-
-## HOW TO DO IT (II) - LINKING AGAINST MPI
-
-3. We define the executable name, source and then **link against the imported target**:
-
-```{.cmake style=cmakestyle}
-add_executable(hello-mpi hello-mpi.cpp)
-target_link_libraries(
-    hello-mpi
-    PRIVATE
-        MPI::MPI_CXX
-)
-```
-
-\alert{Is it the case that the private properties become part of the library linking against...explain}
-
-maybe it is worth adding the if(MPI_FOUND) and so on...
-
 <!--
     **Note**: You could also leave it as PRIVATE since we will not be linking against the executable anyhow
 -->
+
+:::
+::: {.column width="30%"}
+
+
+\vspace{1cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [helloWorldMPI
+      [\colorbox{pink}{CMakeLists.txt}, file]
+      [hello.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+:::
+::::::::::::::
+
 
 ## HOW TO DO IT (III) - CONFIGURATION 
 
