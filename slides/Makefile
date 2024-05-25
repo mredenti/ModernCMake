@@ -19,7 +19,8 @@ slides := episodes/introduction.md \
 		episodes/variables.md \
 		episodes/targets.md \
 		episodes/finding_packages.md \
-		episodes/testing.md 
+		episodes/testing.md \
+		episodes/additional_topics.md
 
 slides.pdf: $(slides)
 	docker run --rm \

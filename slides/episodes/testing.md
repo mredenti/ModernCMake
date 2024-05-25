@@ -22,7 +22,12 @@ aspectratio: 169
     structures, using a pure, functional style, that minimizes and localizes global variables and
     the global state.
 
+    In this recipe, we will introduce unit tests using CTest, the testing tool distributed as a part
+    of CMake. In order to keep the focus on the CMake/CTest aspect and to minimize the
+    cognitive load, we wish to keep the code that is to be tested as simple as possible.
 -->
+
+Testing is an essential component of the code development toolbox
 
 - Early detection of functionality regressions
 
@@ -37,6 +42,14 @@ aspectratio: 169
 -->
 
 ## EXAMPLE: CREATING A SIMPLE UNIT TEST (I)
+
+<!--
+  The implementation source
+  file, sum_integers.cpp, does the work of summing up over a vector of integers, and
+  returns the sum:
+
+  The interface is exported to our example library in sum_integers.hpp,
+-->
 
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
@@ -83,15 +96,11 @@ int sum_integers(const vector<int> ints) {
 ::: 
 ::::::::::::::
 
-. . . 
-
-Our objective is to write tests for this function.
-
 ## EXAMPLE: CREATING A SIMPLE UNIT TEST (II)
 
 \vspace{.5cm}
 
-In the `test.cpp` we write a `main()` that verifies that `1+2+3+4+5 = 15`.
+In `test.cpp` we verify that `1+2+3+4+5 = 15` by calling our function.
 
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
@@ -145,7 +154,7 @@ int main() {
 
 \vspace{.5cm}
 
-1. In the top-level CMakeLists.txt file insert a call to `enable_testing()` to instruct CMake to produce an input file for ctest.
+1. In the top-level CMakeLists.txt file insert a call to `enable_testing()` which will instruct CMake to produce an input file for ctest.
 
 ```{.cmake style=cmakestyle}
 cmake_minimum_required(VERSION 3.21)
@@ -263,7 +272,7 @@ target_include_directories(
 
 \vspace{.5cm}
 
-3. We define the testing executable, link it to the summation library and define a test case with `add_test()`.
+3. Then, we define the testing executable, link it to the summation library and define a test case with `add_test()`.
 
 ```{.cmake style=cmakestyle}
 # testing binary
@@ -336,11 +345,19 @@ Test project <>/build
 Total Test time (real) =   0.01 sec
 ```
 
-`ctest`
+By default, a test is deemed to pass if it returns an exit code of 0. 
 
-By default, a test is deemed to pass if it returns an exit code of 0. Much more detailed and flexible
-criteria can be defined, which is covered in Section 27.3, “Pass / Fail Criteria And Other Result
-Types”, but a simple check of the exit code is often sufficient.
+<!-- 
+  It is up to the programmer to define the actual test command, which can be programmed in any language supported by
+  the operating system environment running the test set. The only thing that CTest cares
+  about, in order to decide whether a test has passed or failed, is the return code of the test
+  command. CTest follows the standard convention that a zero return code means success,
+  and a non-zero return code means failure. Any script that can return zero or non-zero can
+  be used to implement a test case.
+
+  Much more detailed and flexible criteria can be defined, which is covered in Section 27.3, “Pass / Fail Criteria And Other Result
+  Types”, but a simple check of the exit code is often sufficient.
+-->
 
 ## HOW IT WORKS 
 
@@ -369,36 +386,113 @@ As a special case, it can also be the name of an executable target defined by th
     that information to ctest automatically.
 -->
 
-## MAKING IT FAIL
+## DIAGNOSING TEST FAILURES (I)
 
-## nuid 
+Let us introduce a bug into our code...
 
-The following sequence of steps will configure, build, and test a project.
+```diff
+-sum += i;
++sum *= i;
+```
 
-## CREATING A SIMPLE UNIT TEST
+...  and let the test fail
 
-put code for a simple program 
+```{.bash style=bashstyle}
+$ cmake --build ./build && ctest --test-dir ./build
+Test project <>/build
+    Start 1: test_sum_integers
+1/1 Test #1: test_sum_integers ................***Failed 0.00 sec
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+
+The following tests FAILED:
+          1 - test_sum_integers (Failed)
+```  
 
 
-Our plan
-is to write and test code that can sum up integers, and nothing more. Just like in primary
-school, when we learned multiplication and division after learning how to add, at this
-point, our example code will only add and will only understand integers; it will not need to
-deal with floating point numbers.
+## DIAGNOSING TEST FAILURES (II)
 
-To show that
-CMake does not impose any restrictions on the language to implement the actual tests, we
-will test our code using not only a C++ executable, but also using a Python script and a shell
-script. For simplicity, we will do this without using any testing libraries, but we will
-introduce C++ testing frameworks in later recipes in this chapter
+- If we then wish to learn more about the failed test, we can inspect the file `Testing/Temporary/LastTestsFailed.log` located under the `build` directory.
 
+
+ This file contains the full output of the test
+commands, and is the first place to look during a postmortem analysis.
+
+- Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.
+ It is possible to
+obtain more verbose test output from CTest by using the following CLI switches:
+--output-on-failure: Will print to the screen anything that the test program
+produces, in case the test fails.
+-V: Will enable verbose output from tests.
+-VV: Enables even more verbose output from tests.
+
+- CTest offers a very handy shortcut to rerun only the tests that have previously failed; the
+CLI switch to use is `--rerun-failed`, and it proves extremely useful during debugging.
+
+
+## TESTING EXPECTED FAILURES 
+
+Use the same code from the CMake cookbook
+
+Using set_tests_properties(example PROPERTIES WILL_FAIL true), we set the
+property WILL_FAIL to true, which inverts success/failure. However, this feature should
+not be used to temporarily fix broken tests.
+
+Many other properties can be set on tests. A full list of available
+properties can be found at https:/ / cmake. org/ cmake/ help/ v3. 5/ manual/ cmakeproperties.
+7. html#properties- on- tests.
+
+
+## VALGRIND EXAMPLE SOMEWHERE
+
+lkl
 
 # TEST PROPERTIES: TIMEOUT, COST AND LABELS
 
-## som
+## Using timeouts for long tests
+
+The code for this recipe is available at https:/ / github. com/ dev- cafe/
+cmake- cookbook/ tree/ v1. 0/ chapter- 04/ recipe- 07. The recipe is valid
+with CMake version 3.5 (and higher), and has been tested on GNU/Linux,
+macOS, and Windows.
+Ideally, the test set should take only a short time, in order to motivate developers to run the
+test set often, and to make it possible (or easier) to test every commit (changeset). However,
+some tests might take longer or get stuck (for instance, due to a high file I/O load), and we
+may need to implement timeouts to terminate tests that go overtime, before they pile up
+and delay the entire test and deploy pipeline. In this recipe, we will demonstrate one way
+of implementing timeouts, which can be adjusted separately for each test.
+
+In addition, we specify a TIMEOUT for the test, and set it to 10 seconds:
+set_tests_properties(example PROPERTIES TIMEOUT 10)
+
+Now, to verify that the TIMEOUT works, we increase the sleep command in
+test.py to 11 seconds, and rerun the test:
+
+## RUNNING TESTS IN PARALLEL
+
+Most modern computers have four or more CPU cores. One fantastic feature of CTest is its
+ability to run tests in parallel, if you have more than one core available. This can
+significantly reduce the total time to test, and reducing the total test time is what really
+counts, to motivate developers to test frequently. In this recipe, we will demonstrate this
+feature and discuss how you can optimize the definition of your tests for maximum
+performance.
+
+## RUNNING A SUBSET OF THE TESTS 
+
+In the previous recipe, we learned how to run tests in parallel with the help of CMake, and
+we discussed that it is advantageous to start with the longest tests. While this strategy
+minimizes the total test time, during the code development of a particular feature, or
+during debugging, we may not wish to run the entire test set. We may prefer to start with
+the longest tests, especially while debugging functionality that is exercised by a short test.
+For debugging and code development, we need the ability to only run a selected subset of
+tests. In this recipe, we will present strategies to accomplish that.
 
 
-sdf
+## ONE LAST SLIDE ON CATCH AND GOOGLE TEST
+
+ok
 
 <!-- 
 
