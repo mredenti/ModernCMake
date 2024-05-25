@@ -8,6 +8,7 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning, shapes.geometric, arrows.meta, decorations.pathreplacing}
 \usepackage{graphicx}
+\usepackage{adjustbox}
 \usepackage{hyperref}
 
 \definecolor{commentgreen}{RGB}{2,112,10}
@@ -91,9 +92,14 @@
               enable_testing,
               add_test,
               foreach,
+              set_target_properties,
               endforeach,
               while,
               endwhile,
+              find_path,
+              find_file,
+              find_program,
+              find_library,
               break,
               continue,
               unset},

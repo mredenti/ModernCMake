@@ -4,7 +4,7 @@ aspectratio: 169
 
 # Finding Packages 
 
-## Overview / Motivation
+## Motivation
 
 <!--
     In this chapter we will talk about how to detect external/third party 
@@ -23,10 +23,11 @@ As your project grows, you often need to make use of external libraries, program
 
 \vspace{.5cm}
 
+. . . 
 
-- How can we detect and find third-party libraries?
+- How can we detect and find third-party libraries in CMake?
   
-- What is the best way to link these external libraries to our project?
+- How do we link these external libraries to our project?
 
 <!--
     In this chapter we will talk about how to detect external/third party 
@@ -493,10 +494,10 @@ set_property(TARGET MPI::MPI_${LANG}
 1. Ensure a `Find<PackageName>.cmake` module exists.
 
   ```{.bash style=bashstyle}
-  $cmake --help-module-list | grep Find<PackageName>
+  $ cmake --help-module-list | grep Find<PackageName>
   ```
 
-1. Consult builtin documentation to identify provided imported targets, useful variables... <!-- that you can use in your CMakeLists.txt  -->
+2. Consult builtin documentation to identify provided imported targets, useful variables... <!-- that you can use in your CMakeLists.txt  -->
 
   ```{.bash style=bashstyle}
   $ cmake --help-module FindMPI
@@ -514,30 +515,325 @@ set_property(TARGET MPI::MPI_${LANG}
 
 ## {.standout}
 
-help
+No CMake Module? No Problem!
 
-## CONFIG
+## CONFIG MODE
 
-provides native CMake support
-This signals to CMake that the package search will not proceed through a FindEigen3.cmake module,
-but rather through the Eigen3Config.cmake, Eigen3ConfigVersion.cmake, and
-Eigen3Targets.cmake files provided by the Eigen3 package in the standard
-location, <installation-prefix>/share/eigen3/cmake. This package location mode
-is called "Config" mode and is more versatile than the Find<package>.cmake approach
-we have been using so far.
+\vspace{.3cm}
 
-## CONFIG 
+- When a `Find<PackageName>.cmake` module doesn't exist, CMake will automatically try to locate a `<PackageName>Config.cmake`, `<PackageName>ConfigVersion.cmake` provided by the package itself.
 
-However, not all libraries and programs are covered and from time to time you will have to provide your own detection scripts
 
-In this
-chapter, we will discuss the necessary tools and discover the find family of CMake
-commands:
-find_file to find a full path to a named file
-find_library to find a library
-find_package to find and load settings from an external project
-find_path to find a directory containing the named file
-find_program to find a program
+<!-- 
+
+  Searches for configuration files in the standard package installation directory.
+  More versatile than the Find<PackageName>.cmake approach.
+  Supports packages with native CMake support.
+  Advantages of Config Mode
+  Directly uses the package's configuration files.
+  Ensures compatibility with the package's installation.
+  Avoids the need for custom Find<PackageName>.cmake modules.
+-->
+
+. . . 
+
+\vspace{.3cm}
+
+**Example. Recent FFTW releases ship with CMake configuration files:**
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+```{.bash style=bashstyle}
+$ ls <>/fftw-/lib/cmake/fftw3/
+FFTW3Config.cmake  
+FFTW3ConfigVersion.cmake 
+FFTW3LibraryDepends.cmake 
+FFTW3fConfig.cmake 
+FFTW3fConfigVersion.cmake
+```
+
+:::
+::: {.column width="50%"}
+
+```{.cmake style=cmakestyle}
+# FFTW3LibraryDepends.cmake
+# . . .
+add_library(FFTW3::fftw3 SHARED
+                        IMPORTED)
+
+set_target_properties(FFTW3::fftw3 
+  PROPERTIES
+    INTERFACE_LINK_LIBRARIES "m")
+# set_properties ...
+```
+:::
+::::::::::::::
+
+
+## PKGCONFIG 
+
+\vspace{.3cm}
+
+- If neither a `Find<PackageName>.cmake` module nor a `<PackageName>Config.cmake` is available, CMake can also use `pkg-config` to find and configure packages. put link
+
+\vspace{.3cm}
+
+**Example. Using `pkg-config` with FFTW**
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+```{.bash style=bashstyle}
+$ ls <>/fftw-/lib/pkgconfig
+fftw3f.pc  fftw3.pc
+```
+
+:::
+::: {.column width="50%"}
+
+```{.bash style=bashstyle}
+$ cat <>/fftw3.pc
+prefix=<path-to-root-fftw>
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Version: 3.3.10
+Libs: -L${libdir} -lfftw3 
+Libs.private: -lm
+Cflags: -I${includedir}
+```
+:::
+::::::::::::::
+
+
+## WRITE YOUR OWN DETECTION SCRIPT
+
+- CMake provides extensive modules for finding many popular software packages. Before writing your own detection scripts, always check the CMake online documentation for existing `Find<PackageName>.cmake` modules.
+
+<!--
+  to enable the discovery of files, programs, libraries...
+--> 
+
+- At times writing your own detection scripts might be the only option. CMake provides a family of `find_*()` commands for this purpose:
+  
+  **find_path()** 
+    : to find a directory containing the named file
+
+  **find_file()**
+    : to find a full path to a named file
+
+  **find_library()**
+    : to find a library
+
+  **find_program()** 
+    : to find a program
+
+<!-- 
+  IMPORTANT AND INTERESTING
+
+  For a large selection of common dependencies, the Find<PackageName>.cmake modules shipped with CMake work flawlessly and are maintained by the CMake developers. This lifts the burden of programming your own dependency detection tricks.
+
+  find_package will set up imported targets: targets defined outside your project that you can use with your own targets. The properties on imported targets defines usage requirements for the dependencies. A command such as:
+
+  target_link_libraries(your-target
+    PUBLIC
+      imported-target
+    )
+  will set compiler flags, definitions, include directories, and link libraries from imported-target to your-target and to all other targets in your project that will use your-target.
+
+  These two points simplify enormously the burden of dependency detection and consistent usage within a multi-folder project.
+-->
+
+## WRITING A FindFFTW3.cmake (I)
+
+:::::::::::::: {.columns}
+::: {.column width="85%"}
+
+1. Check for FFTW environment variables and set them if not already defined.
+
+```{.cmake style=cmakestyle}
+if(NOT FFTW_HOME AND DEFINED ENV{FFTW_HOME} )
+    set(FFTW_ROOT $ENV{FFTW_HOME} )
+endif()
+
+if(NOT FFTW_ROOT AND DEFINED ENV{FFTW_ROOT} )
+    set(FFTW_ROOT $ENV{FFTW_ROOT} )
+endif()
+```
+
+2. Use `find_path()` to locate the directory containing the `fftw3.h` header file.
+   
+```{.cmake style=cmakestyle}
+find_path( 
+    FFTW_INCLUDE_DIR 
+    NAMES fftw3.h
+    PATHS 
+        ${FFTW_ROOT}/include
+        /usr/local/include
+        /usr/include
+    DOC "Path to FFTW include directory")
+```
+
+:::
+::: {.column width="15%"}
+
+\vspace{1cm}
+
+\begin{adjustbox}{margin=-1cm 0cm 0cm 0cm}
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [\colorbox{pink}{FindFFTW3.cmake}, file
+    ]
+  ]
+\end{forest}
+\end{adjustbox}
+
+:::
+::::::::::::::
+
+
+## WRITING A FindFFTW3.cmake (II)
+
+\vspace{0.2cm}
+
+:::::::::::::: {.columns}
+::: {.column width="85%"}
+
+3. Locate the FFTW library file.
+
+```{.cmake style=cmakestyle}
+find_library( 
+    FFTW_LIBRARY 
+    NAMES fftw3
+    PATHS ${FFTW_ROOT}
+    PATH_SUFFIXES "lib" "lib64" 
+    DOC "Path to FFTW library")
+```
+
+4. Include the `FindPackageHandleStandardArgs` module and use `find_package_handle_standard_args()` to validate the found paths.
+   
+```{.cmake style=cmakestyle}
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(
+  FFTW
+  FOUND_VAR 
+    FFTW_FOUND
+  REQUIRED_VARS 
+    FFTW_LIBRARY FFTW_INCLUDE_DIR)
+```
+
+:::
+::: {.column width="15%"}
+
+\vspace{1cm}
+
+\begin{adjustbox}{margin=-1cm 0cm 0cm 0cm}
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [\colorbox{pink}{FindFFTW3.cmake}, file
+    ]
+  ]
+\end{forest}
+\end{adjustbox}
+
+:::
+::::::::::::::
+
+## WRITING A FindFFTW3.cmake (III)
+
+\vspace{0.2cm}
+
+:::::::::::::: {.columns}
+::: {.column width="85%"}
+
+4. Set the `FFTW_LIBRARIES` and `FFTW_INCLUDE_DIRS` if FFTW is found.
+
+```{.cmake style=cmakestyle}
+if(FFTW_FOUND)
+  set(FFTW_LIBRARIES ${FFTW_LIBRARY})
+  set(FFTW_INCLUDE_DIRS ${FFTW_INCLUDE_DIR})
+endif()
+```
+
+5. Create an imported target for FFTW using `add_library()` and set the appropriate properties.
+   
+```{.cmake style=cmakestyle}
+if(FFTW_FOUND AND NOT TARGET FFTW3::fftw3)
+  add_library(FFTW3::fftw3 UNKNOWN IMPORTED)
+  set_target_properties(FFTW3::fftw3 PROPERTIES
+    IMPORTED_LOCATION "${FFTW_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${FFTW_INCLUDE_DIR}")
+endif()
+
+set_target_properties(FFTW3::fftw3 PROPERTIES
+  INTERFACE_LINK_LIBRARIES "m")
+```
+
+:::
+::: {.column width="15%"}
+
+\vspace{1cm}
+
+\begin{adjustbox}{margin=-1cm 0cm 0cm 0cm}
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [\colorbox{pink}{FindFFTW3.cmake}, file
+    ]
+  ]
+\end{forest}
+\end{adjustbox}
+
+:::
+::::::::::::::
+
+## RECAP 
+
+\vspace{.3cm}
+
+In CMake, packages are defined and found in two primary ways:
+
+**Module Packages**: Defined by CMake or individual projects, typically providing variables, macros, functions, and imported targets. Example: FindMPI.cmake.
+
+**Config Packages**: Provided by the package itself, usually defining imported targets. Example: <Package>Config.cmake.
+
+\vspace{.2cm}
+
+Modules: Defined by CMake or projects, harder to keep up to date as packages evolve.
+
+Config: Provided by the package itself, closely aligned with CMake's find commands, ensuring compatibility and ease of use.
+Projects should prefer imported targets due to their robustness and better integration with CMake’s transitive dependency features.
+
+<!--
+
+There are two main ways packages are defined in CMake, either as a module or through config
+details. Config details are usually provided as part of the package itself, and they are more closely
+aligned with the functionality of the various find_…() commands discussed in the preceding
+sections. Modules, on the other hand, are typically defined by something unrelated to the package,
+usually by CMake or by projects themselves. As a result, modules are harder to keep up to date as
+the package evolves over time.
+Module and config files typically define variables and imported targets for the package. These may
+provide the location of programs, libraries, flags to be used by consuming targets and so on.
+Functions and macros can also be defined. There is no set of requirements for what will be
+provided, but there are some conventions which are stated in the CMake developer manual. Project
+authors must consult the documentation of each module or package to understand what is
+provided. As a general guide, older modules tend to provide variables that follow a fairly consistent
+pattern, whereas newer modules and config implementations usually define imported targets.
+Where both variables and imported targets are provided, projects should prefer the latter due to
+their superior robustness and better integration with CMake’s transitive dependency features.
 
 ## RECAP
 
@@ -546,9 +842,8 @@ find_program to find a program
 \vspace{.5cm}
 
 In CMake there are two main ways packages are defined and subsequently found:
-<!--
+
   CMake provides two main mechanisms to detect and link these dependencies.
--->
 
 \vspace{.5cm}
 
@@ -584,7 +879,6 @@ In CMake there are two ways for searching packages
 
 but both of them use the same inferface `find_package()`
 
-<!--
   Part V: Deployment And
   Dependencies
   For the lucky few, a project may be independent of anything else, having no reliance on any
@@ -683,16 +977,6 @@ a C or Fortran project.
 
 -->
 
-# LAST RESORT
-
-## CONFIGURATION MODE
-
-CMake has modules for finding many widespread software packages. We
-recommend to always search the CMake online documentation for
-existing Find<package>.cmake modules and to read their
-documentation before using them. The documentation for the
-find_package command can be found at https:/ / cmake. org/ cmake/
-help/ v3. 5/ command/ find_ package. html. A
 
 
 <!-- 
@@ -943,38 +1227,3 @@ This should define some variables starting PC_Foo_ that contain the information 
 Just add a simple example with fftw
 
 -->
-
-
-# RECAP 
-
-## SUMMARY 
-
-There are two main ways packages are defined in CMake, either as a module or through config
-details. Config details are usually provided as part of the package itself, and they are more closely
-aligned with the functionality of the various find_…() commands discussed in the preceding
-sections. Modules, on the other hand, are typically defined by something unrelated to the package,
-usually by CMake or by projects themselves. As a result, modules are harder to keep up to date as
-the package evolves over time.
-Module and config files typically define variables and imported targets for the package. These may
-provide the location of programs, libraries, flags to be used by consuming targets and so on.
-Functions and macros can also be defined. There is no set of requirements for what will be
-provided, but there are some conventions which are stated in the CMake developer manual. Project
-authors must consult the documentation of each module or package to understand what is
-provided. As a general guide, older modules tend to provide variables that follow a fairly consistent
-pattern, whereas newer modules and config implementations usually define imported targets.
-Where both variables and imported targets are provided, projects should prefer the latter due to
-their superior robustness and better integration with CMake’s transitive dependency features.
-
-## IMPORTANT 
-
-For a large selection of common dependencies, the Find<PackageName>.cmake modules shipped with CMake work flawlessly and are maintained by the CMake developers. This lifts the burden of programming your own dependency detection tricks.
-
-find_package will set up imported targets: targets defined outside your project that you can use with your own targets. The properties on imported targets defines usage requirements for the dependencies. A command such as:
-
-target_link_libraries(your-target
-  PUBLIC
-    imported-target
-  )
-will set compiler flags, definitions, include directories, and link libraries from imported-target to your-target and to all other targets in your project that will use your-target.
-
-These two points simplify enormously the burden of dependency detection and consistent usage within a multi-folder project.
