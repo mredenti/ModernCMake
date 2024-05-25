@@ -451,7 +451,13 @@ set_property(TARGET MPI::MPI_${LANG}
 
 **IMPORTED** libraries are pseudotargets that fully encode usage requirements for dependencies outside our own project. 
 
-<!-- 
+<!--
+  When you create an imported target, you're telling CMake: I have this { static library | shared library | module library | executable } already built in this location on disk. I want to be able to treat it just like a target built by my own buildsystem, so take note that when I say ImportedTargetName, it should refer to that binary on disk (with the associated import lib if applicable, and so on).
+
+  When you create an interface library, you're telling CMake: I have this set of properties (include directories etc.) which clients can use, so if they "link" to my interface library, please propagate these properties to them.
+
+  The fundamental difference is that interface libraries are not backed by anything on disk, they're just a set of requirements/properties. You can set the INTERFACE_LINK_LIBRARIES property on an interface library if you really want to, but that's not really what they were designed for. They're to encapsulate client-consumable properties, and make sense primarily for things like header-only libraries in C++.
+
   To use MPI one needs to set compiler flags, include directories, and link libraries. 
   All of these are set as properties on the MPI::MPI_CXX pseudotarget and transitively 
   applied to our example target simply by using the target_link_libraries command. 
@@ -474,53 +480,53 @@ set_property(TARGET MPI::MPI_${LANG}
 
 ## Using find_package
 
-When attempting dependency detection with find_package, you should make sure that:
+<!-- 
+  When attempting dependency detection with `find_package()`, you should make sure that:
 
-A Find<PackageName>.cmake module exists,
+  A `Find<PackageName>.cmake` module exists, which components, if any, it provides, and what imported targets it will set up.
 
-Which components, if any, it provides, and
+  A complete list of Find<PackageName>.cmake can be found from the command-line interface:
+-->
 
-What imported targets it will set up.
+\vspace{.3cm}
 
-A complete list of Find<PackageName>.cmake can be found from the command-line interface:
+1. Ensure a `Find<PackageName>.cmake` module exists.
 
-```
-$ cmake --help-module-list | grep "Find"
-```
+  ```{.bash style=bashstyle}
+  $cmake --help-module-list | grep Find<PackageName>
+  ```
 
-also set up a handful of useful variables, reflecting what was actually found, which you can
-use in your own CMakeLists.txt.
+1. Consult builtin documentation to identify provided imported targets, useful variables... <!-- that you can use in your CMakeLists.txt  -->
 
-##  Finding Packages - Modules 
+  ```{.bash style=bashstyle}
+  $ cmake --help-module FindMPI
+  FindMPI
+  -------
+  Find a Message Passing Interface (MPI) implementation.
 
-Find modules usually defines standard variables (for module XXX)
-1 XXX FOUND: Set to false, or undefined, if we haven’t found, or don’t
-want to use XXX.
-2 XXX INCLUDE DIRS: The final set of include directories listed in one
-variable for use by client code.
-3 XXX LIBRARIES: The libraries to link against to use XXX. These
-should include full paths.
-4 XXX DEFINITIONS: Definitions to use when compiling code that uses
-XXX.
-5 XXX EXECUTABLE: Where to find the XXX tool.
-6 XXX LIBRARY DIRS: Optionally, the final set of library directories
-listed in one variable for use by client code.
-See doc cmake --help-module FindLibXml2
-Many modules are provided by CMake (130 as of CMake 2.8.7)
-CMake
+  Variables for using MPI
+  ^^^^^^^^^^^^^^^^^^^^^^^
+  The module exposes components ``C``, ``CXX``, ``MPICXX`` ...
 
-- Also show how they can query about these variables with 
-
-cmake --help-module name_of_module
-
-- Add a word that these modules may define some additional variables that we 
-can set to give hints for search directories 
+  ``MPI_FOUND``
+  . . . <some other output>
+  ```
 
 ## {.standout}
 
 help
 
-## WHAT IF ?
+## CONFIG
+
+provides native CMake support
+This signals to CMake that the package search will not proceed through a FindEigen3.cmake module,
+but rather through the Eigen3Config.cmake, Eigen3ConfigVersion.cmake, and
+Eigen3Targets.cmake files provided by the Eigen3 package in the standard
+location, <installation-prefix>/share/eigen3/cmake. This package location mode
+is called "Config" mode and is more versatile than the Find<package>.cmake approach
+we have been using so far.
+
+## CONFIG 
 
 However, not all libraries and programs are covered and from time to time you will have to provide your own detection scripts
 
@@ -532,14 +538,6 @@ find_library to find a library
 find_package to find and load settings from an external project
 find_path to find a directory containing the named file
 find_program to find a program
-
-a list with all cmake modules for a particular version...
-
-## CONFIG 
-
-- Looks for a file named `find<package_name>.cmake` in the CMake cache variable `CMAKE_MODULE_PATH`
-- The CMake scripts define variables and imported targets
-
 
 ## RECAP
 
@@ -626,11 +624,6 @@ but both of them use the same inferface `find_package()`
   but an understanding of the search locations and their ordering can allow projects to tailor the
   search to account for non-standard behaviors and unusual circumstances.
 
-  When you create an imported target, you're telling CMake: I have this { static library | shared library | module library | executable } already built in this location on disk. I want to be able to treat it just like a target built by my own buildsystem, so take note that when I say ImportedTargetName, it should refer to that binary on disk (with the associated import lib if applicable, and so on).
-
-When you create an interface library, you're telling CMake: I have this set of properties (include directories etc.) which clients can use, so if they "link" to my interface library, please propagate these properties to them.
-
-The fundamental difference is that interface libraries are not backed by anything on disk, they're just a set of requirements/properties. You can set the INTERFACE_LINK_LIBRARIES property on an interface library if you really want to, but that's not really what they were designed for. They're to encapsulate client-consumable properties, and make sense primarily for things like header-only libraries in C++.
 
 The various find_…() commands discussed in the preceding sections all focus on finding one
 specific item. Quite often, however, these items are just one part of a larger package. The package
@@ -690,9 +683,9 @@ a C or Fortran project.
 
 -->
 
-# find_package(\<PACKAGE_NAME\> CONFIG)
+# LAST RESORT
 
-## alternatives
+## CONFIGURATION MODE
 
 CMake has modules for finding many widespread software packages. We
 recommend to always search the CMake online documentation for
@@ -701,26 +694,6 @@ documentation before using them. The documentation for the
 find_package command can be found at https:/ / cmake. org/ cmake/
 help/ v3. 5/ command/ find_ package. html. A
 
-## CONFIGURATION MODE
-
-Eigen provides native CMake support, which makes it easy to set up a C++ project using it.
-Starting from version 3.3, Eigen ships CMake modules that export the appropriate
-target, Eigen3::Eigen, which we have used here.
-You will have noticed the CONFIG option to the find_package command. This signals to
-CMake that the package search will not proceed through a FindEigen3.cmake module,
-but rather through the Eigen3Config.cmake, Eigen3ConfigVersion.cmake, and
-Eigen3Targets.cmake files provided by the Eigen3 package in the standard
-location, <installation-prefix>/share/eigen3/cmake. This package location mode
-is called "Config" mode and is more versatile than the Find<package>.cmake approach
-we have been using so far. For more information about "Module" mode versus "Config"
-mode, please consult the official documentation at https:/ / cmake. org/ cmake/ help/ v3. 5/
-command/ find_ package. html.
-
-
-## FINDFFTW.CMAKE
-
-- Looks for a file named `find<package_name>.cmake` in the CMake cache variable `CMAKE_MODULE_PATH`
-- The CMake scripts define variables and imported targets
 
 <!-- 
 
