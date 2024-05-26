@@ -1,8 +1,12 @@
 ---
 title: Introduction to Modern CMake
 subtitle: Introduction to Build Systems (Generators) and Package Managers in HPC
-author: Michael Redenti \and Mandana Safari
-institute: m.redenti@cineca.it \and m.safari@cineca.it 
+author: 
+  - Michael Redenti 
+  - Mandana Safari
+institute: 
+  - m.redenti@cineca.it 
+  - m.safari@cineca.it 
 date: \today
 aspectratio: 169
 ---
@@ -42,7 +46,7 @@ aspectratio: 169
 
 \centering 
 
-**Spend time on software development, not on software building!**
+**\underline{OBJECTIVE} Spend time on software development, not on software building!**
 
 ## TRADITIONAL BUILD SYSTEMS - CHALLENGES
 
@@ -169,6 +173,10 @@ generators
 ## BUILD SYSTEM GENERATOR
 
 <!--
+  CMake is a tool designed to help you build and test your software. It is now more popular than ever and is now supported by some major IDEs and libraries, including Android Studio, CLion, QtCreator or Visual Studio.
+
+  Let's cover the basics, understand how CMake works and how to write modern and extensible cross-platform build scripts with CMake.
+
   CMake as a Scripting Language
   CMake is a tool designed to manage the build process of software projects. It uses a scripting language to define the build process in CMakeLists.txt files. Here’s how it fits the characteristics of a scripting language:
 
@@ -327,6 +335,12 @@ VS <-- visual
 
 \vspace{0.2cm}
 
+**Test frameworks integration**
+
+- Dash, GoogleTest
+
+\vspace{0.2cm}
+
 **CMake scripting language**
 <!-- 
 
@@ -369,14 +383,14 @@ Discussion on how CMake fits into the software development process, its role in 
 ::::::::::::::
   
 
-## CMAKE LANGUAGE OVERVIEW 
+## CMAKE LANGUAGE OVERVIEW (I)
 
 \vspace{.5cm}
 
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
 
-Command based, one per line 
+**Command based, one per line** 
 
 ```{.cmake style=cmakestyle}
 set(FOO "bar")
@@ -384,42 +398,70 @@ add_executable(foo bar.cpp)
 if(FOO)
 ```
 
-Numerous commands
+\vspace{.2cm}
 
-```{.bash style=bashstyle}
-$ cmake --help-command-list | wc -l
-```
+**Commands do not return values, no nesting**
 
-Commands do not return values, no nesting
+\vspace{.2cm}
 
-Commands may have arguments and overloads 
+**Commands may have arguments and overloads** 
 
 ```{.cmake style=cmakestyle}
 file(WRITE <file> <content>)
 file(READ <file> <variable>)
 ```
 
-link to documentation
+\vspace{.2cm}
+
+**link to documentation**
+
+. . . 
 
 :::
 ::: {.column width="50%"}
 
-Variables are set with command `set()`, removed with `unset()`
+**Variables are set with command `set()`**
+
+\vspace{.2cm}
+
+**Variables are all strings**
+
+```{.cmake style=cmakestyle}
+set(FOO "a")
+set(FOO a)
+set(FOO 42)
+```
+
+\vspace{.2cm}
+
+**Lists are semicolon-separated strings**
+
+```{.cmake style=cmakestyle}
+set(FOO "a;b;c")
+set(FOO a b c)
+```
 
 
-Variables are all strings
+\vspace{.2cm}
+
+**Variables are read using `${}`**
+
+```{.cmake style=cmakestyle}
+list(APPEND FOO "d") # FOO="a;b;c;d"
+```
+
 :::
 ::::::::::::::
 
 
 ## CMAKE LANGUAGE OVERVIEW (II)
 
-\vspace{.5cm}
+\vspace{.2cm}
 
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
 
-Control flow
+**Control flow**
 
 ```{.cmake style=cmakestyle}
 if() / elseif() / else() / endif()
@@ -437,9 +479,9 @@ while() / endwhile()
 break() / continue()
 ```
 
-\vspace{.5cm}
+\vspace{.2cm}
 
-Comments start with #
+**Comments start with #**
 
 ```{.cmake style=cmakestyle}
 # I am a single line comment
@@ -448,24 +490,24 @@ Comments start with #
 :::
 ::: {.column width="50%"}
 
-Read another CMake file in the same context
+**Read another CMake file in the same context**
 
 ```{.cmake style=cmakestyle}
 include(<file>)
 ```
 
-\vspace{.5cm}
+\vspace{.2cm}
 
 
-Read another `CMakeLists.txt` file in `<dir>` in a new context
+**Read another `CMakeLists.txt` file in `<dir>` in a new context**
 
 ```{.cmake style=cmakestyle}
 add_subdirectory(<dir>)
 ```
 
-\vspace{.5cm}
+\vspace{.2cm}
 
-Print a message 
+**Print a message**
 <!-- 
   Usefule for displaying status, progress, warning or errors 
 -->
@@ -474,11 +516,113 @@ Print a message
 message(<text>)
 ```
 
+:::
+::::::::::::::
 
+## CMAKE LANGUAGE OVERVIEW (III)
+
+<!--
+  Looking back on the material covered in this book so far, CMake’s syntax is already starting to look
+  a lot like a programming language in its own right. It supports variables, if-then-else logic, looping
+  and inclusion of other files to be processed. It should be no surprise to learn that CMake also
+  supports the common programming concepts of functions and macros too. Much like their role in
+  other programming languages, functions and macros are the primary mechanism for projects and
+  developers to extend CMake’s functionality and to encapsulate repetitive tasks in a natural way.
+  They allow the developer to define reusable blocks of CMake code which can be called just like
+  regular built-in CMake commands. They are also a cornerstone of CMake’s own module system
+-->
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+**FUNCTIONS**
+
+
+**Defined using the `function()` command**
+
+```{.cmake style=cmakestyle}
+function(name [arg1 [arg2 [...]]])
+# Function body (i.e. commands) ...
+endfunction()
+```
+
+\vspace{.2cm}
+
+**Example**
+
+```{.cmake style=cmakestyle}
+function(func_name arg1 arg2)
+  # function body
+  message("Argument 1: ${arg1}")
+  message("Argument 2: ${arg2}")
+endfunction()
+
+# Calling the function
+func_name("value1" "value2")
+```
+
+:::
+::: {.column width="50%"}
+
+. . . 
+
+**MACROS**
+
+**Defined using the `macro()` command**
+
+```{.cmake style=cmakestyle}
+macro(name [arg1 [arg2 [...]]])
+# Macro body (i.e. commands) ...
+endmacro()
+```
+
+\vspace{.2cm}
+
+**Example**
+
+```{.cmake style=cmakestyle}
+macro(macro_name arg1 arg2)
+  # macro body
+  message("Argument 1: ${arg1}")
+  message("Argument 2: ${arg2}")
+endmacro()
+
+# Calling the macro
+macro_name("value1" "value2")
+```
 
 :::
 ::::::::::::::
 
+## CMAKE LANGUAGE OVERVIEW (IV)
+
+\centering The CMake language is very rich in features and capabilities!
+
+\vspace{0.3cm}
+
+**COMMANDS**
+
+Numerous commands to handle various build system tasks
+  
+```{.bash style=bashstyle}
+$ cmake --help-command-list | wc -l
+```
+
+A multitude of variables control the build process
+
+## CMAKE MODULES OVERVIEW
+
+- A set of predefined scripts (Modules)  <!-- CMake modules extend the functionality of the language by providing -->
+
+- CMake modules extend the functionality of the language by providing predefined scripts that simplify complex tasks.
+
+CMake modules extend the functionality of the language by providing predefined scripts that simplify complex tasks.
+
+- Example: `FindPackage` modules help in locating and configuring dependencies.
+
+- Provide a list of modules organised by objective
 
 <!-- 
 
