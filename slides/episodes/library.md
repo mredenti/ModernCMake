@@ -361,7 +361,6 @@ We can configure and build with the same commands as before
     
 ```{.bash style=bashstyle}
 $ cmake -B ../build --trace-source=CMakeLists.txt 
-
 <>/greetings/CMakeLists.txt(1): cmake_minimum_required(VERSION 3.21)
 <>/greetings/CMakeLists.txt(3): project(Greetings LANGUAGES CXX)
 -- The CXX compiler identification is GNU 8.4.1
