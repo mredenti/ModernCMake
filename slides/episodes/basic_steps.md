@@ -240,8 +240,17 @@ add_executable(hello hello.cpp)
 - Adds the `hello` executable **TARGET** to be built from the source file `hello.cpp`
 
 <!--
+
+- `main` is both the name of the executable file generated and the name of the **CMake target** created (we will talk about targets in more depth)
+- The source file list comes next, and you can list as many as you'd like
+- CMake is smart, and will only compile source file extensions. The headers will be, for most intents and purposes, ignored; the only reason to list them is to get them to show up in IDEs
   The simple example given previously required defining a target name for the executable
 and listing the source files to be compiled
+
+We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
+
+In the above example, note that .h header files were specified as sources too, not just the .cpp implementation files. Headers listed as sources don’t get compiled directly on their own, but the effect of adding them is for the benefit of IDE generators like Visual Studio, Xcode, Qt Creator, etc. This causes those headers to be listed in the project’s file list within the IDE, even if no source file refers to it via #include. This can make those headers easier to find during development and potentially aid things like refactoring functionality
+s.
 -->
 
 - Known extensions to CMake:
@@ -464,7 +473,7 @@ On GNU/Linux, CMake will by default generate Unix Makefiles to build the project
 
 \centering Once the project files have been generated, we direct CMake to invoke the appropriate build tool.
 
-\vspace{.5cm}
+\vspace{.3cm}
 
 ```{.bash style=bashstyle}
 $ cmake --build ./build 
@@ -634,6 +643,10 @@ $ cmake --build ./build --target hello
 
 ## (CONFIGURE $\Rightarrow$ GENERATE) $\Rightarrow$ BUILD $\Rightarrow$ RUN
 
+<!-- 
+  From the programmer's perspective, using CMake through the CLI is a two step process
+-->
+
 1. **Generate** the build files 
  
     ```{.bash style=bashstyle}
@@ -652,11 +665,14 @@ $ cmake --build ./build --target hello
     $ ./build/hello
     ```
 
-
-<!-- 
-  From the programmer's perspective, using CMake through the CLI is a two step process
--->
-
 ## CONFIGURE $\Rightarrow$ GENERATE $\Rightarrow$ BUILD $\Rightarrow$ RUN
 
-- Maybe show how using ccmake it is actually two distinct steps... maybe on the screen/interactively
+
+- oik 
+
+Maybe show how using ccmake it is actually two distinct steps... maybe on the screen interactively
+
+
+<!--
+fd
+-->

@@ -1211,3 +1211,115 @@ cache editors by default
 options to be hidden from users
 - Cache variables of the INTERNAL type are
 never shown in cache editors
+
+
+<!--
+## Motivation 
+
+Build configuration is a critical aspect of software development, particularly in the context of compiled languages such as C, C++, and Fortran. 
+
+Effective build configuration is crucial for several reasons:
+
+Performance: Properly optimized build configurations can significantly improve the performance of the final product.
+Portability: Ensures that the software can be built and run on different platforms and environments.
+Debugging and Testing: Different configurations can be tailored for more effective debugging and testing.
+Reproducibility: Ensures that builds are consistent and reproducible, which is essential for collaborative development and for maintaining stable production environments.
+
+Understanding and managing build configurations is a foundational skill in software engineering, particularly when dealing with complex systems or when targeting multiple platforms. It is about balancing the needs for development efficiency, performance, and maintainability of the codebase.
+
+## Motivation II
+Build Configuration often includes:
+
+Compiler Settings:
+Choice of Compiler: Determining which compiler (e.g., GCC, Clang, MSVC) is best suited for the project based on platform, performance needs, or specific feature requirements.
+Compiler Options: Configuring compiler flags that affect optimization levels, debugging information, and more.
+Build Types:
+Development Builds: Often have debugging enabled (more verbose logging, no optimization) to facilitate easier tracing of errors and bugs.
+Release Builds: Optimized for performance and may include additional changes like disabling logging or assertions to enhance speed and reduce binary size.
+Other specialized builds like Test builds (which might include instrumentation for better testing coverage) or Profile builds (used for performance analysis).
+Linker Settings:
+Static vs. Dynamic Linking: Deciding whether libraries used in the project should be linked statically or dynamically.
+Linker Flags: Customizing how the linker behaves, which can affect the final executable's performance and size.
+Platform-Specific Configurations:
+Tailoring the build process to different operating systems (Linux, Windows, macOS) or even specific versions or distributions of these OSes.
+Configuring builds for different hardware architectures (x86, ARM, etc.).
+Optimization Settings:
+Setting compiler flags that control optimization levels, such as -O2 or -O3 for GCC and Clang, or /O2 for MSVC.
+Other optimizations like link time code generation (LTCG) or profile-guided optimizations (PGO).
+Environment Variables:
+Using environment variables to influence the build process, such as PATH, LD_LIBRARY_PATH, or specific toolchain variables like CC and CXX for defining the C and C++ compilers, respectively.
+
+
+
+
+  CMake is aware of the environment and many options can either be
+  set via the -D switch of its CLI or via an environment variable. The former
+  mechanism overrides the latter, but we suggest to always set options
+  explicitly with -D. Explicit is better than implicit, since environment
+  variables might be set to values that are not suitable for the project at
+  hand.
+
+  We recommend to set the compilers using the -D
+  CMAKE_<LANG>_COMPILER CLI options instead of exporting CXX, CC, and
+  FC. This is the only way that is guaranteed to be cross-platform and
+  compatible with non-POSIX shells. It also avoids polluting your
+  environment with variables, which may affect the environment for
+  external libraries built together with your project.
+
+
+CMake stores compilers for each language in the `CMAKE_<LANG>_COMPILER` variable. This variable can be set in one of two ways:
+
+1. By using the `-D` option in the CLI
+
+    ```{.bash style=bashstyle}
+    $ module load intel-oneapi-compilers # just mention the path to...
+    $ cmake -D CMAKE_CXX_COMPILER=icpp
+    ```
+
+2. [Discouraged] By exporting the environment variables `CXX` (`CC`, `FC`, `NVCC`)
+   
+    ```{.bash style=bashstyle}
+    $ env CXX=clang++ cmake ..
+    ```
+
+I am not convinced, there should also be a way to set it in the CMakeLists.txt file for instance when I want to use different compilers...
+-->
+
+<!--
+
+  How it works
+  At configure time, CMake performs a series of platform tests to determine which compilers
+  are available and if they are suitable for the project at hand. A suitable compiler is not only
+  determined by the platform we are working on, but also by the generator we want to use.
+  The first test CMake performs is based on the name of the compiler for the project
+  language. For example, if cc is a working C compiler, then that is what will be used as the
+  default compiler for a C project. On GNU/Linux, using Unix Makefiles or Ninja, the
+  compilers in the GCC family will be most likely chosen by default for C++, C, and Fortran.
+  On Microsoft Windows, the C++ and C compilers in Visual Studio will be selected,
+  provided Visual Studio is the generator. MinGW compilers are the default if MinGW or
+  MSYS Makefiles were chosen as generators.
+
+  DEFAULTS 
+
+  Where can we find which default compilers and compiler flags will be picked up by CMake
+  for our platform? CMake offers the --system-information flag, which will dump all
+  information about your system to the screen or a file. To see this, try the following:
+  $ cmake --system-information information.txt
+  Searching through the file (in this case, information.txt), you will find the default
+  values for the CMAKE_CXX_COMPILER, CMAKE_C_COMPILER, and
+  CMAKE_Fortran_COMPILER options, together with their default flags. We will have a look
+  at the flags in the next recipe.
+
+## Extracting compiler information 
+
+```{.cmake style=cmakestyle}
+# CMakeLists.txt 
+...
+message(STATUS "Is the C++ compiler loaded? ${CMAKE_CXX_COMPILER_LOADED}")
+if(CMAKE_CXX_COMPILER_LOADED)
+  message(STATUS "The C++ compiler ID is: ${CMAKE_CXX_COMPILER_ID}")
+  message(STATUS "Is the C++ from GNU? ${CMAKE_COMPILER_IS_GNUCXX}")
+  message(STATUS "The C++ compiler version is: ${CMAKE_CXX_COMPILER_VERSION}")
+endif()
+```
+-->

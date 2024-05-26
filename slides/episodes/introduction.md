@@ -640,52 +640,20 @@ CMake modules extend the functionality of the language by providing predefined s
 
 ## Agenda 
 
-:::::::::::::: {.columns}
-::: {.column width="50%"}
+| MORNING                               | AFTERNOON                  |
+| ------------------------------------- | -------------------------- |
+| **Introduction**                      | **Finding dependencies**   |
+| - Overview of the CMake Language      | - Modules                  |
+| **Basic Steps with CMake**            | - Config                   |
+|                                       |                            |
+| **Variables**                         | **Testing**                |
+| - Local, Cache, Environment variables |                            |
+| - Compilation                         |                            |
+| **Targets**                           | **Generator expressions**  |
+| - Targets have properties             | **Conclusion and wrap up** |
+| - Visibility Levels  and Inheritance  |                            |
+| **Hands on**                          | **Hands on**               |
 
-Introduction 
-  - Overview of the CMake Language
-
-- Basic Steps with CMake
-  - Hello World with CMake
-    - Build project files 
-    - Compile
-  - Creating a static library and linking
-  
-- Variables 
-  - Local variables 
-  - Cache variables 
-  - Environment variables 
-  - CMakeCache.txt and CMakeWorkflow
-  - Compilation
-
-:::
-::: {.column width="50%"}
-
-
-- Targets
-  - Targets have properties
-  - Setting the compiler on a target
-  - Visibility Levels
-  - Inheritance
-
-- Finding dependencies
-  - Modules 
-  - Configuration 
-  - PkgConfig
-
-- Testing 
-
-- Installing
-
-- Generator expressions
-
-- Conclusion and wrap up
-
-- Hands on
-
-:::
-::::::::::::::
 
 
 <!-- 

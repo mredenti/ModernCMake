@@ -3,9 +3,6 @@ aspectratio: 169
 ---
 
 
-# CREATING A LIBRARY 
-
-
 ## A LIST 
 
 of additional topics
