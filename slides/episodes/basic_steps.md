@@ -221,32 +221,40 @@ project(<PROJECT-NAME>
 
 - Initializes various project-level settings, variables (`PROJECT_NAME`, `PROJECT_SOURCE_DIR`, ...) and the languages enabled for the build
 
-- Invocation of the `project()` command triggers a series of internal CMake scripts (Modules) that primarily
-  - Determine Operating System Information 
-  - Find and Test Compilers  
+- Invocation of the `project()` command triggers a series of internal **Modules** inclusion that primarily:
+  - Determine Operating System Information (`CMakeDetermineSystem.cmake`, ...)
+  - Find and Test Compilers (`CMakeDetermineCXXCompiler.cmake`, `CMakeCXXCompiler.cmake`, .)
 
+<!--
+  CMakeDetermineCXXCompiler.cmake: Determines the C++ compiler to use.
+  CMakeCXXCompiler.cmake: Sets up the compiler flags and other configurations specific to the C++ compiler.
+  CMakeCXXInformation.cmake: Sets up C++ specific information, such as default include directories and standard flags.
+-->
 
 ## ADD_EXECUTABLE()
 
 ```{.cmake style=cmakestyle}
-add_executable(hello_world hello.cpp)
+add_executable(hello hello.cpp)
 ```
 
-- Add the `hello_world` executable **TARGET** to be built from `hello.cpp`
+- Adds the `hello` executable **TARGET** to be built from the source file `hello.cpp`
 
-- CMake is about targets .... the hello_world target ...
+<!--
+  The simple example given previously required defining a target name for the executable
+and listing the source files to be compiled
+-->
 
 - Known extensions to CMake:
   
   **C** 
-    : .c .C .h
+    : .c .C \text{ } .h
   
   **CXX**
-    : .c++ .cc .cpp .cxx .hpp .h++ .hxx
+    : .c++ .cc .cpp .cxx \text{ } .hpp .h++ .hxx
   
   **Fortran**
-    : .f .F .for .f77 .f90 .f95 .f03 .F90
-    
+    : .f .F .f77 .f90 .f95 .f03 .F90
+
 <!-- 
   We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables.
 
