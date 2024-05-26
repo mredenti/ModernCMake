@@ -76,7 +76,9 @@ GNU Make
   cross-platform or IDE integrations would require manual updates across different build tools and IDEs respective configuration files
 -->
 
-
+<!--
+  CMake is particularly favored for its cross-platform capabilities and ease of managing complex projects. GNU Make remains a staple in Unix-like environments for its simplicity and power. 
+-->
 
 . . . 
 
@@ -93,11 +95,22 @@ Autotools <!-- a.k.a. Autohell -->
 
   : Poor IDE integration
 
-  : Manual ordering of Fortran module files 
+  : Maintenance Overhead
+  
+  <!-- 
+    Keeping the Autotools scripts up to date and working correctly can require significant maintenance effort.
+
+    Manual ordering of Fortran module files 
+  -->
+  
   <!-- 
     You need to make sure that the module files are created before they are referenced 
   --> 
 
+
+## CMAKE POPULARITY
+
+![](./fig/GoogleTrends.png){ width=100% }
 
 
 # INTRODUCTION TO CMAKE
@@ -141,9 +154,26 @@ Autotools <!-- a.k.a. Autohell -->
   Enable building (CMake), testing (CTest, CDash) and packaging (CPack) of software
 -->
 
+## CMAKE'S POSITION AMONG BUILD SYSTEMS
+
+standalone
+  : Make, NMake, SCons, Ninja
+
+integrated
+  : Visual Studio, Xcode, Eclipse
+
+generators
+  : Autotools (a.k.a. Autohell), **CMake**, Meson, Bazel
 
 
 ## BUILD SYSTEM GENERATOR
+
+<!--
+  CMake as a Scripting Language
+  CMake is a tool designed to manage the build process of software projects. It uses a scripting language to define the build process in CMakeLists.txt files. Here’s how it fits the characteristics of a scripting language:
+
+  Interpreted Execution: CMake processes the CMakeLists.txt files line by line to generate build instructions (e.g., Makefiles or Visual Studio project files).
+-->
 
 CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build tools.
 
@@ -204,6 +234,26 @@ VS <-- visual
 
 ## CMAKE FEATURES 
 
+<!-- 
+
+## WHY SHOULD YOU USE CMAKE 
+
+- You want to avoid hard-coding paths
+
+- You need to build a package on more than one computer
+- You want to use CI (continuous integration)
+- You need to support different OSs (maybe even just flavors of Unix)
+- You want to support multiple compilers
+- You want to use an IDE, but maybe not all of the time
+- You want to describe how your program is structured logically, not flags and commands
+- You want to use a library
+- You want to use tools, like Clang-Tidy, to help you code
+- You want to use a debugger
+
+-->
+
+\vspace{.3cm}
+
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
 
@@ -238,6 +288,23 @@ VS <-- visual
 
 ::: {.column width="50%"}
 
+<!--
+
+  High-Level Abstractions: CMake provides commands and functions that abstract complex build tasks. For example, add_executable is a high-level command that simplifies the process of defining an executable target.
+
+  Ease of Use: Writing CMake scripts is generally straightforward, focusing on specifying what to build and how, without delving into the details of the build system being generated.
+
+  Importance of Order in CMakeLists.txt
+  In scripting languages, the order of commands can be crucial because the interpreter executes them sequentially. This is also true for CMake:
+
+  Sequential Execution: Commands in CMakeLists.txt are executed in the order they appear. This means that each command can depend on the results of the commands that preceded it.
+  Dependencies and Definitions: If a command relies on a variable or target defined by a previous command, changing the order could result in errors or unexpected behavior.
+  Scope and Visibility: The scope of variables and targets can be influenced by their position in the script. For example, a variable defined within a function or block may not be accessible outside of it.
+
+
+  perhaps add support with google test and dynamic analysis - general support for test frameworks, static and dynamic analysis of your code
+-->
+
 
 **Dependency discovery made easy**
 
@@ -262,6 +329,12 @@ VS <-- visual
 
 **CMake scripting language**
 <!-- 
+
+  CMake as a Scripting Language
+  CMake is a tool designed to manage the build process of software projects. It uses a scripting language to define the build process in CMakeLists.txt files. Here’s how it fits the characteristics of a scripting language:
+
+  Interpreted Execution: CMake processes the CMakeLists.txt files line by line to generate build instructions (e.g., Makefiles or Visual Studio project files).
+  
   Automatic ordering of Fortran files based on `use` statements in the code for a library
 
   CMake is an open-source project that serves as a tool for building, testing, packaging, and distributing cross-platform software
@@ -271,40 +344,31 @@ VS <-- visual
     cmake: for generating compiler-independent build instruction
     ctest: for detecting and running tests
     cpack: for packing the software project into convenient installers
+
+    Compiler indipendent configuration files (need example)
+
+Uses CMake language
+
+- Automatic dependency generation 
+- 
+- **Single description file** generate builds for many build systems and platforms from one description file 
+  
+- **Integration** easy to build end-to-end build systems using CTest and CPack
+- It's platform- and - compiler-agnostic, allowing reuse of CMake scripts across different platforms.
+- facilitate generation of files for different build systems across various platforms and IDEs
+- automatically track and propagate internal dependencies
+- Graphviz output for visualizing dependency trees
+- Full cross platform install() system
+- Compute link depend information, and chaining of dependent libraries
+
+Discussion on how CMake fits into the software development process, its role in streamlining development, testing, deployment, and complex use cases like large-scale projects and cross-platform development.
+
 -->
 
 :::
 ::::::::::::::
-
-## CMAKE POPULARITY
-
-interest over time and its relevance as the predominant build systems in C++ projects
-
-**CMAKE'S POSITION AMONG BUILD SYSTEMS**
-
-standalone
-  : Make, NMake, SCons, Ninja
-
-integrated
-  : Visual Studio, Xcode, Eclipse
-
-generators
-  : Autotools (a.k.a. Autohell), **CMake**, Meson, Bazel
-
-
-## WHY SHOULD YOU USE CMAKE 
-
-You want to avoid hard-coding paths
-You need to build a package on more than one computer
-You want to use CI (continuous integration)
-You need to support different OSs (maybe even just flavors of Unix)
-You want to support multiple compilers
-You want to use an IDE, but maybe not all of the time
-You want to describe how your program is structured logically, not flags and commands
-You want to use a library
-You want to use tools, like Clang-Tidy, to help you code
-You want to use a debugger
   
+
 ## CMAKE LANGUAGE OVERVIEW 
 
 \vspace{.5cm}
@@ -416,23 +480,6 @@ message(<text>)
 ::::::::::::::
 
 
-## Key Features
-
-Compiler indipendent configuration files (need example)
-
-Uses CMake language
-
-- Automatic dependency generation 
-- 
-- **Single description file** generate builds for many build systems and platforms from one description file 
-  
-- **Integration** easy to build end-to-end build systems using CTest and CPack
-- It's platform- and - compiler-agnostic, allowing reuse of CMake scripts across different platforms.
-- facilitate generation of files for different build systems across various platforms and IDEs
-- automatically track and propagate internal dependencies
-
-
-
 <!-- 
 
   ## The complexity of the build process (compiled languages (C/C++/Fortran))
@@ -447,49 +494,7 @@ Uses CMake language
 
 -->
 
-
-## 6. CMake's Relevance in HPC 
-
-Color and progress output for make
-- Graphviz output for visualizing dependency trees
-- Full cross platform install() system
-- Compute link depend information, and chaining of
-dependent libraries
-- make help, make foo.o, make foo.i, make foo.s
-29
-
-Discussion on how CMake fits into the software development process, its role in streamlining development, testing, deployment, and complex use cases like large-scale projects and cross-platform development.
-
 # Workshop Outline and Setup
-
-## Setup
-
-<!-- 
-  Details on required software installations, system configurations, how to access materials, and initial setup instructions.
-
--->
-
-
-Logging into G100 Cineca cluster
-
-```{.bash style=bashstyle}
-$ ssh <username>@login.g100.cineca.it
-```
-
-Clone the exercises repository
-
-```{.bash style=bashstyle}
-$ git clone ...
-```
-
-Loading the cmake module
-
-```{.bash style=bashstyle}
-$ module load cmake/3.21.4
-```
-
-
-
 
 ## Agenda 
 
@@ -569,29 +574,30 @@ General tips and tricks
 - Additional resources for further learning
 
 
-## More
+<!-- 
+  Details on required software installations, system configurations, how to access materials, and initial setup instructions.
 
-CMake as a Scripting Language
-CMake is a tool designed to manage the build process of software projects. It uses a scripting language to define the build process in CMakeLists.txt files. Here’s how it fits the characteristics of a scripting language:
+-->
 
-Interpreted Execution: CMake processes the CMakeLists.txt files line by line to generate build instructions (e.g., Makefiles or Visual Studio project files).
+## Setup
 
-High-Level Abstractions: CMake provides commands and functions that abstract complex build tasks. For example, add_executable is a high-level command that simplifies the process of defining an executable target.
+Logging into G100 Cineca cluster
 
-Ease of Use: Writing CMake scripts is generally straightforward, focusing on specifying what to build and how, without delving into the details of the build system being generated.
+```{.bash style=bashstyle}
+$ ssh <username>@login.g100.cineca.it
+```
 
-Importance of Order in CMakeLists.txt
-In scripting languages, the order of commands can be crucial because the interpreter executes them sequentially. This is also true for CMake:
+Clone the exercises repository
 
-Sequential Execution: Commands in CMakeLists.txt are executed in the order they appear. This means that each command can depend on the results of the commands that preceded it.
-Dependencies and Definitions: If a command relies on a variable or target defined by a previous command, changing the order could result in errors or unexpected behavior.
-Scope and Visibility: The scope of variables and targets can be influenced by their position in the script. For example, a variable defined within a function or block may not be accessible outside of it.
+```{.bash style=bashstyle}
+$ git clone ...
+```
 
+Loading the cmake module
 
-## Maybe 
-
-add support with testing frameworks GoogleTest as well as static and dynamic analysis
-
+```{.bash style=bashstyle}
+$ module load cmake/3.21.4
+```
 
 
 <!--
