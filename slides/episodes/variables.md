@@ -1190,11 +1190,6 @@ Prefer to provide cache variables for controlling whether to enable optional par
 
 modern-cmake/episodes/03-variables.md at main · mredenti/modern-cmake
 
-## IMPORTANT
-
-known extensions to CMake: .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h
-  .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc
-
 ## {.standout}
 
 However, this will set the flags for the entire project. If you want fine-grained control, a nicer way is to define compile flags per target like in this example (here we want to lower the optimization level for mytarget to -O1):

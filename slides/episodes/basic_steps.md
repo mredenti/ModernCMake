@@ -79,7 +79,7 @@ end program hello
   Remember that it can only be named CMakeLists.txt.
 -->
 
-\vspace{.5cm}
+\vspace{.4cm}
 
 \centering
 
@@ -116,7 +116,7 @@ add_executable(hello hello.cpp)
   },
   [ 
     [hello-world
-      [CMakeLists.txt, file
+      [\colorbox{pink}{CMakeLists.txt}, file
       ]
       [hello.cpp, file
       ]
@@ -147,7 +147,7 @@ add_executable(hello hello.F90)
   },
   [ 
     [hello-world
-      [CMakeLists.txt, file
+      [\colorbox{pink}{CMakeLists.txt}, file
       ]
       [hello.F90, file
       ]
@@ -187,7 +187,9 @@ cmake_minimum_required(VERSION <min>)
 
 - CMake will stop processing and a fatal error will be issued if the running version of CMake is lower than the `<min>` required.
 
-- Which version should you set? Don't worry about it, there are tools that automatically test your project to determine the minimum CMake version required.
+<!--
+  Which version should you set? Don't worry about it, there are tools that automatically test your project to determine the minimum CMake version required.
+-->
 
 <!-- 
   The CMake language is case insensitive, but the arguments are
@@ -234,13 +236,22 @@ add_executable(hello_world hello.cpp)
 
 - CMake is about targets .... the hello_world target ...
 
+- Known extensions to CMake:
+  
+  **C** 
+    : .c .C .h
+  
+  **CXX**
+    : .c++ .cc .cpp .cxx .hpp .h++ .hxx
+  
+  **Fortran**
+    : .f .F .for .f77 .f90 .f95 .f03 .F90
+    
 <!-- 
   We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables.
 
   All the above are built-in commands provided by CMake, part of CMake's internal implementation and one of its core commands.
 -->
-
-- say something about the recognised extension of the file
 
 ## RUNNING CMAKE 
 

@@ -46,7 +46,7 @@ aspectratio: 169
 
 \centering 
 
-**\underline{OBJECTIVE} Spend time on software development, not on software building!**
+**OBJECTIVE** Spend time on software development, not on software building!
 
 ## TRADITIONAL BUILD SYSTEMS - CHALLENGES
 
@@ -112,9 +112,11 @@ Autotools <!-- a.k.a. Autohell -->
   --> 
 
 
-## CMAKE POPULARITY
+## BUILD SYSTEMS POPULARITY
 
-![](./fig/GoogleTrends.png){ width=100% }
+\begin{center}
+    \includegraphics[width=1.2\paperwidth,height=0.8\paperheight]{./fig/GoogleTrends.png}
+\end{center}
 
 
 # INTRODUCTION TO CMAKE
@@ -554,12 +556,10 @@ endfunction()
 
 ```{.cmake style=cmakestyle}
 function(func_name arg1 arg2)
-  # function body
   message("Argument 1: ${arg1}")
   message("Argument 2: ${arg2}")
 endfunction()
 
-# Calling the function
 func_name("value1" "value2")
 ```
 
@@ -580,16 +580,14 @@ endmacro()
 
 \vspace{.2cm}
 
-**Example**
+**Example** - please show the scope difference in the example
 
 ```{.cmake style=cmakestyle}
 macro(macro_name arg1 arg2)
-  # macro body
   message("Argument 1: ${arg1}")
   message("Argument 2: ${arg2}")
 endmacro()
 
-# Calling the macro
 macro_name("value1" "value2")
 ```
 
@@ -642,30 +640,28 @@ CMake modules extend the functionality of the language by providing predefined s
 
 ## Agenda 
 
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
 Introduction 
-  - Overview of the CMake Language - commands and variables (+ functions, macros)
+  - Overview of the CMake Language
 
 - Basic Steps with CMake
   - Hello World with CMake
     - Build project files 
     - Compile
   - Creating a static library and linking
-
+  
 - Variables 
   - Local variables 
   - Cache variables 
   - Environment variables 
-  - CMakeCache.txt 
-  - CMakeWorkflow
-  - Variables and the Cache
-  - Setting the Compiler
-  - Setting the standard 
-  - Recap: local vs cache variables 
+  - CMakeCache.txt and CMakeWorkflow
+  - Compilation
 
-- Conditional Logic 
-  - if() endif() 
-  - Build configurations (Release, Debug, ...)
-  - Controlling compiler flags depending on compiler ID
+:::
+::: {.column width="50%"}
+
 
 - Targets
   - Targets have properties
@@ -678,44 +674,18 @@ Introduction
   - Configuration 
   - PkgConfig
 
-
-LUNCH BREAK
-
-- Structuring a large projects (?)
-
 - Testing 
 
 - Installing
 
 - Generator expressions
 
-- Functions and Macros
+- Conclusion and wrap up
 
-- Testing with CMake
-  - Adding tests with CTest
-  - Test-driven development with CMake
-  - Exercise: Write and add several tests to the existing CMake project.
+- Hands on
 
-- Installing with CMake
-  - Install commands
-  - Write CMake install rules and generate a package.
-
-- Managing Large Projects
-  - Organizing a project with subdirectories
-  - Exercise: Refactor the project to use subdirectories.
-
-- Modern CMake Practices
-  - Usage of modern CMake commands and targets
-
-General tips and tricks
-
-  - Avoiding common pitfalls
-
-- Conclusion and Wrap-Up
-
-- Recap of the workshop
-
-- Additional resources for further learning
+:::
+::::::::::::::
 
 
 <!-- 
