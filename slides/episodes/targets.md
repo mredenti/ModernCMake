@@ -18,6 +18,12 @@ A CMake target has dependencies and properties.
 4 You may create custom targets: add custom target
 CMake
 
+## TARGETS
+
+Target properties and variables
+You have seen targets; they have properties attached that control their behavior. Properties are a form of variable that is attached to a target; you can use [get_property][] and [set_property][], or [get_target_properties][] and [set_target_properties][] (stylistic preference) to access and set these. You can see a list of all properties by CMake version; there is no way to get this programmatically. Many of these properties, such as [CXX_EXTENSIONS][], have a matching variable that starts with CMAKE_, such as [CMAKE_CXX_EXTENSIONS][], that will be used to initialize them. So you can using set property on each target by setting a variable before making the targets.
+
+
 ## TARGET DEPENDENCIES AND PROPERTIES 
 
 Target dependencies and properties I
