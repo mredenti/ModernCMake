@@ -112,7 +112,7 @@
     morestring=[b]",
     morestring=[b]',
 }
-
+\definecolor{CustomViolet}{RGB}{106, 0, 183}
 
 \lstdefinestyle{cmakestyle}{
   language=CMake,
@@ -136,10 +136,11 @@
                 MODULE,
                 IMPORTED,
                 STATUS,
-                NAME, 
                 COMMAND,
                 WORKING_DIRECTORY,
                 NOT,
+                DESCRIPTION, 
+                HOMEPAGE_URL,
                 READ,
                 WRITE,
                 MATCHES,
@@ -155,7 +156,7 @@
                 INTERFACE,
                 TARGETS,
                 PROPERTIES},  % List of additional keywords
-  keywordstyle=\color{red},           % Style for additional keywords
+  keywordstyle=\color{teal}\bfseries,           % Style for additional keywords
   classoffset=0,                      % Resetting classoffset to zero
   xleftmargin=0.06\linewidth,         % Left margin
   xrightmargin=0.06\linewidth  

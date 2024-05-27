@@ -206,7 +206,7 @@ cmake_minimum_required(VERSION <min>)
 
   
 ```{.cmake style=cmakestyle}
-project(<PROJECT-NAME>
+project(<project-name>
         [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
         [DESCRIPTION <project-description-string>]
         [HOMEPAGE_URL <url-string>]
