@@ -586,7 +586,7 @@ The `add_subdirectory()` command creates a new scope for processing that subdire
 
 \vspace{0.5cm}
 
-Local variables are also scoped by functions (not by macro) - same arguments as before apply
+- Local variables are also scoped by functions (not by macro) - same arguments as before apply
 
 ```{.cmake style=cmakestyle}  
 # CMakeLists.txt file
@@ -600,21 +600,32 @@ message(STATUS ${TEST}) # ""
 message(STATUS ${TEST_EXTEND}) # "42"
 ```
 
-What about the rest like accessing a pre-defined variable?
+\alert{What about the rest like accessing a pre-defined variable? -> show that you can still read directory scoped variables}
 
 
 ## {.standout}
-Too .. you would need to modify the CMakeLists.txt file directly.
 
-Local variables are used to handle internal logic. How do we expose configuration options to the end user?
+<!-- 
+  This example shows that it is possible to introduce conditionals to control the execution
+  flow in CMake. However, the current setup does not allow the toggles to be set from
+  outside, that is, without modifying CMakeLists.txt by hand. In principle, we want to be
+  able to expose all toggles to the user, so that configuration can be tweaked without
+  modifying the code for the build system. 
 
-## HOW TO TIE/INTRODUCE CACHE VARIABLES
+  Too .. you would need to modify the CMakeLists.txt file directly.
 
-This example shows that it is possible to introduce conditionals to control the execution
-flow in CMake. However, the current setup does not allow the toggles to be set from
-outside, that is, without modifying CMakeLists.txt by hand. In principle, we want to be
-able to expose all toggles to the user, so that configuration can be tweaked without
-modifying the code for the build system. We will show how to do that in a moment.
+  Local variables are used to handle internal logic. How do we expose configuration options to the end user?
+-->
+
+How can we enable users to adjust configuration toggles without altering the CMakeLists.txt directly?
+
+<!-- 
+  This example shows that it is possible to introduce conditionals to control the execution
+  flow in CMake. However, the current setup does not allow the toggles to be set from
+  outside, that is, without modifying CMakeLists.txt by hand. In principle, we want to be
+  able to expose all toggles to the user, so that configuration can be tweaked without
+  modifying the code for the build system. We will show how to do that in a moment.
+-->
 
 ## CACHE VARIABLES (I)
 
