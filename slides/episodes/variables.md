@@ -1008,18 +1008,18 @@ This is the command that will be used as the ``<LANG>`` compiler.
 
 CMake stores compilers for each language in the `CMAKE_<LANG>_COMPILER` variable, where `<LANG>` is any of the supported languages.
 
-The user can set this variable in one of two ways
+The user can set this variable in one of two ways:
 
 1. [preferred] By using the `-D` option in the CLI
 
   ```{.bash style=bashstyle}
-  $ cmake -D CMAKE_CXX_COMPILER:FILEPATH=icpp ... (intel compiler)
+  $ cmake -D CMAKE_CXX_COMPILER:FILEPATH=clang++
   ```
 
-2. By exporting the environment variables `CXX` for the C++ compiler, `CC` for the C compiler and `FC` for the Fortran compiler.
+2. By exporting the environment variable `CXX` (`CC`, `FC`) 
   
   ```{.bash style=bashstyle}
-  $ env CXX=icpc cmake (intel compiler)
+  $ env CXX=clang++ cmake 
   ```
 
 **Note:** We have here assumed that the additional compilers are available in the standard paths
@@ -1035,18 +1035,22 @@ to the compiler executable or wrapper.
   external libraries built together with your project.
 -->
 
-## CMAKE COMPILER SELECTION 
+## SPECIFYING THE COMPILER (Cont.)
 
-CMake caches the compiler for a build directory on the first invocation.
+CMake caches the compiler for a build directory on the first invocation...
 
+```{.bash style=bashstyle}
+$ cmake -B ./build -S <...> -DCMAKE_CXX_COMPILER:FILEPATH=$(which clang++)
+-- The CXX compiler identification is Clang 14.0.0
+. . . 
+```
 
-show cache or use of -LAH flags
- 
-- CMake caches the compiler for a build directory on the first invocation
-- CMake compiler detection has the following preference 
-  - env variables (CC, CXX)
-  - cc and cxx path entries
-  - gcc and g++ path entries
+... such that on a second invocation 
+
+```{.bash style=bashstyle}
+$ cmake -B ./build -S <...> -LAH | grep "CMAKE_CXX_COMPILER"
+CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
+```
 
 ## SETTING THE STANDARD 
 
@@ -1056,10 +1060,15 @@ show cache or use of -LAH flags
   setting the appropriate compiler flag.
 -->
 
-setting the C++ standard is often a decision driven by the project's code requirements.
+- Setting the C++ standard is often a decision driven by the project's code requirements.
 
-CMake offers platform- and compiler-independent mechanism for setting the language standard for `CXX`
-and `C: `CMAKE_<LANG>_STANDARD` property for targets.
+- CMake offers a platform- and compiler-independent mechanism for setting the language standard for `CXX`
+and `C:
+
+<!-- 
+  : `CMAKE_<LANG>_STANDARD` property for targets.
+-->
+
 
 
 :::::::::::::: {.columns}
