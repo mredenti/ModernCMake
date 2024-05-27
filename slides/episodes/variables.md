@@ -956,7 +956,7 @@ set(ENV{PATH} "$ENV{PATH}:/opt/myDir")
 
 \vspace{.5cm}
 
-CMake already defines a list of variables internally (170+)
+CMake already defines a list of variables internally that can be used by the project
 
 ```{.bash style=bashstyle}
 $ cmake --help-variable-list | wc -l
@@ -981,22 +981,22 @@ This is the command that will be used as the ``<LANG>`` compiler.
 - Non user settable variables
 
   `PROJECT_SOURCE_DIR`
-    : folder to the top level `CMakeLists.txt` 
+    : source directory of the most recent call to `project()` 
 
   `PROJECT_BINARY_DIR`
-    : build folder (`-B`) for the project
+    : build directory (`-B`) 
 
-  `PROJECT_CURRENT_LIST_DIR`
-    : folder to the current `CMakeLists.txt` being processed
+  `CMAKE_CURRENT_LIST_DIR`
+    : directory of the current `CMakeLists.txt` file being processed 
 
 \vspace{.5cm}
 
 - User settable variables
 
-  `BUILD_SHARED_LIBS` 
+  `CMAKE_<LANG>_COMPILER` 
     : DFD
 
-  `CMAKE_INSTALL_PREFIX`
+  `CMAKE_<LANG>_STANDARD`
     : JK
 
   `CMAKE_<LANG>_FLAGS`
