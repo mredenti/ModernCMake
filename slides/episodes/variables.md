@@ -648,7 +648,7 @@ How can we enable users to adjust configuration toggles without altering the CMa
 
 ## CACHE VARIABLES 
 
-\vspace{0.5cm}
+\vspace{0.3cm}
 
 <!--
   In the previous recipe, we introduced conditionals in a rather rigid fashion: by introducing variables with a given truth value hardcoded. This can be useful sometimes, but it prevents users of your code from easily toggling these variables. Another disadvantage of the rigid approach is that the CMake code does not communicate to the reader that this is a value that is expected to be modified from outside. The recommended way to toggle behavior in
@@ -697,7 +697,9 @@ the user experience in GUI tools
 
   ```{.bash style=bashstyle}
   $ cmake -B <...> -S <...> -D USE_LIBRARY:BOOL="ON" 
-  -- Compiles sources into a library MISSING OUTPUT
+  . . . 
+  -- Compiles sources into a library? ON
+  . . .
   ```
 
 <!-- 
@@ -706,7 +708,7 @@ the user experience in GUI tools
 
 ## CACHE VARIABLE TYPES
 
-\vspace{.5cm}
+\vspace{.4cm}
 
 ```{.cmake style=cmakestyle}  
 set(<variable> <value>... CACHE <type> <docstring>)
@@ -714,12 +716,30 @@ set(<variable> <value>... CACHE <type> <docstring>)
 
 - Cache entries are `<type>`d and require a `<docstring>`:
   
-  - BOOL 
-  - FILEPATH
-  - PATH 
-  - STRING <missing some description text>
-  - INTERNAL
- 
+<!--
+    string <value> held by the variable conforms to one of the ways CMake represents booleans as strings ( )
+-->
+
+**BOOL**
+  : corresponding string `<value>` can be **ON**/**OFF**, **TRUE**/**FALSE**, **1/0**, etc...
+
+**FILEPATH**
+  : a path to a file on disk <!--  GUI tools present a file dialog to the user for modifying the variable’s value. -->
+
+**PATH**
+  : GUI tools present a dialog that selects a directory rather than a file
+
+**STRING** 
+  : an arbitrary string 
+
+**INTERNAL**
+  : hidden from the user by GUI tools 
+  <!--
+    Internal cache variables are sometimes used to persistently record internal information by the project, such as caching the result of an intensive query or computation. 
+  -->
+
+\vspace{.1cm}
+
 - These are only used by `cmake-gui` and `ccmake` to display the appropriate type of edit widget
 
 ## EXAMPLE: CACHE VARIABLES OF TYPE STRING
