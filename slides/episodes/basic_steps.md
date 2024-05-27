@@ -79,7 +79,7 @@ end program hello
   Remember that it can only be named CMakeLists.txt.
 -->
 
-\vspace{.4cm}
+\vspace{.3cm}
 
 \centering
 
@@ -88,12 +88,11 @@ The root of a project using CMake must contain a **CMakeLists.txt** file.
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
 
-\vspace{.5cm}
+\vspace{.4cm}
 
 **CPP**
 
 ```{.cmake style=cmakestyle}
-# CMakeLists.txt
 cmake_minimum_required(VERSION 3.21)
 
 project(HelloWorld LANGUAGES CXX)
@@ -127,12 +126,11 @@ add_executable(hello hello.cpp)
 ::: 
 ::: {.column width="50%"}
 
-\vspace{.5cm}
+\vspace{.4cm}
 
 **FORTRAN**
 
 ```{.cmake style=cmakestyle}
-# CMakeLists.txt
 cmake_minimum_required(VERSION 3.21)
 
 project(HelloWorld LANGUAGES Fortran)
@@ -221,7 +219,7 @@ project(<PROJECT-NAME>
 
 - Initializes various project-level settings, variables (`PROJECT_NAME`, `PROJECT_SOURCE_DIR`, ...) and the languages enabled for the build
 
-- Invocation of the `project()` command triggers a series of internal **Modules** inclusion that primarily:
+- Invocation of the `project()` command triggers a series of internal **Modules** inclusion that:
   - Determine Operating System Information (`CMakeDetermineSystem.cmake`, ...)
   - Find and Test Compilers (`CMakeDetermineCXXCompiler.cmake`, `CMakeCXXCompiler.cmake`, .)
 

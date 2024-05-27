@@ -164,7 +164,9 @@ add_subdirectory(src)
 ::::::::::::::
 
 
-This example demonstrates how variables can be used to control the build process.
+<!-- 
+  This example demonstrates how variables can be used to control the build process.
+-->
 
 
 ## HOW TO DO IT (II)
@@ -184,11 +186,12 @@ list(APPEND _sources greetings.hpp greetings.cpp)
 
 ```{.cmake style=cmakestyle}
 if(USE_LIBRARY)
-  add_library(greetings STATIC ${_sources})
 
+  add_library(greetings STATIC ${_sources})
   add_executable(hello hello.cpp)
   target_link_libraries(hello greetings)
 else()
+
   add_executable(hello hello.cpp ${_sources})
 endif()
 
@@ -230,17 +233,17 @@ endif()
   verified by running the objdump -x command on GNU/Linux.
 -->
 
-## HOW IT WORKS
-
+## HOW IT WORKS (I)
 
 - The variable `USE_LIBRARY` has been set to `OFF` in the top level CMakeLists.txt file. 
 
-- In the CMake language, true or false values can be expressed in a number of ways. 
+- In the CMake language, true or false values can be expressed in a number of ways:
   
-- A logical variable is true if it is set to any of the following: 1, ON, YES, TRUE, Y, or a non-zero number.
+  - A logical variable is **true** if it is set to any of the following: **1**, **ON**, **YES**, **TRUE**, **Y**, or a **non-zero number**.
+  
+  - A logical variable is **false** if it is set to any of the following: **0**, **OFF**, **NO**, **FALSE**, **N**, **IGNORE**, **NOTFOUND**, an empty string **""**, or it ends in the suffix **-NOTFOUND**.
 
-- A logical variable is false if it is set to any of the following: 0, OFF, NO, FALSE, N,
-IGNORE, NOTFOUND, an empty string, or it ends in the suffix -NOTFOUND.
+## HOW TO TIE/INTRODUCE CACHE VARIABLES
 
 This example shows that it is possible to introduce conditionals to control the execution
 flow in CMake. However, the current setup does not allow the toggles to be set from
@@ -249,15 +252,14 @@ able to expose all toggles to the user, so that configuration can be tweaked wit
 modifying the code for the build system. We will show how to do that in a moment.
 
 
-## LOCAL VARIABLES (I) - REMOVE THIS SLIDE AND SIMPLY MENTION THE PROPERTIES EARLIER
+<!-- MENTION THE PROPERTIES EARLIER --> 
 
-\vspace{0.5cm}
-<!--
+
+<!-- 
   Key Points:
   Local variables are declared using the set() command.
   Scope limited to the directory where they are defined.
   Useful for temporary settings and internal script logic.
--->
 
 - A local variable can be defined with the `set()` command
 
@@ -273,15 +275,11 @@ case-sensitive
     set(foo "bar")  
     ```
 
-<!--
   - The ${} operator can be used recursively
 
   - A new user-defined local variable can be created with the `set` command
 
   -  Variable names are case sensitive, values can only contain [A-Za-z0-9_]
--->
-
-<!-- - `set()` to create a new local variable -->
 
 - Variables are expanded using ${}
   
@@ -290,16 +288,14 @@ case-sensitive
     message(STATUS foo=${foo}) # "bar"
     ```
 
-## LOCAL VARIABLES (II)
+
 
 \alert{I WOULD PROBABLY REMOVE THIS SCRAP AND YOU SIMPLY MENTION IT}
 
 \vspace{0.5cm}
 
 - CMake treats all variables as strings 
-<!-- 
-  but ultimately, they are just strings.
--->
+
     
     ```{.cmake style=cmakestyle}
     set(FOO "bar") # "bar"
@@ -318,7 +314,6 @@ case-sensitive
   set(FOO "1;2;3")     # "1;2;3" 
   ```
 
-<!--
   the resultant string is how CMake represents lists.
 
   - The ${} operator can be used recursively
@@ -326,12 +321,12 @@ case-sensitive
   - A new user-defined local variable can be created with the `set` command
 
   -  Variable names are case sensitive, values can only contain [A-Za-z0-9_]
--->
 
-<!-- 
   Be careful with variables which contain whitespace (PATH) 
 
   Multiple arguments will be joined as a semicolon-separated list to form the actual variable value to be set.
+
+
 -->
 
 ## LOCAL VARIABLES: SCOPE
@@ -892,8 +887,6 @@ CMAKE_<LANG>_COMPILER
 The full path to the compiler for ``LANG``.
 
 This is the command that will be used as the ``<LANG>`` compiler.  
-Once set, you can not change this variable.
-
 . . . 
 ```
 
@@ -934,7 +927,7 @@ The user can set this variable in one of two ways
 1. [preferred] By using the `-D` option in the CLI
 
   ```{.bash style=bashstyle}
-  $ cmake -D CMAKE_CXX_COMPILER=icpp ... (intel compiler)
+  $ cmake -D CMAKE_CXX_COMPILER:FILEPATH=icpp ... (intel compiler)
   ```
 
 2. By exporting the environment variables `CXX` for the C++ compiler, `CC` for the C compiler and `FC` for the Fortran compiler.

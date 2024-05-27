@@ -1,6 +1,6 @@
-slides := $(wildcard *.md)
+CMake := $(wildcard *.md)
 
-all: $(slides:.md=.pdf)
+all: $(CMake:.md=.pdf)
 
 %.pdf: episodes/%.md
 	docker run --rm \
@@ -13,7 +13,7 @@ all: $(slides:.md=.pdf)
 	--pdf-engine-opt=-shell-escape \
 	--pdf-engine=xelatex $< -o ./pdf/$@ 
 
-slides := episodes/introduction.md \
+CMake := episodes/introduction.md \
 		episodes/basic_steps.md \
 		episodes/library.md \
 		episodes/variables.md \
@@ -22,7 +22,7 @@ slides := episodes/introduction.md \
 		episodes/testing.md \
 		episodes/additional_topics.md
 
-slides.pdf: $(slides)
+CMake.pdf: $(CMake)
 	docker run --rm \
 	-v $(shell pwd):/source \
 	-w /source slides-builder \
@@ -31,7 +31,7 @@ slides.pdf: $(slides)
 	--listings \
 	--include-in-header=header.tex \
 	--pdf-engine-opt=-shell-escape \
-	--pdf-engine=xelatex $(slides) -o ./pdf/$@
+	--pdf-engine=xelatex $(CMake) -o ./pdf/$@
 
 clean:
 	rm -f *.pdf
