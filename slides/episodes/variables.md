@@ -243,13 +243,14 @@ endif()
   
   - A logical variable is **false** if it is set to any of the following: **0**, **OFF**, **NO**, **FALSE**, **N**, **IGNORE**, **NOTFOUND**, an empty string **""**, or it ends in the suffix **-NOTFOUND**.
 
-## HOW TO TIE/INTRODUCE CACHE VARIABLES
+. . . 
 
-This example shows that it is possible to introduce conditionals to control the execution
-flow in CMake. However, the current setup does not allow the toggles to be set from
-outside, that is, without modifying CMakeLists.txt by hand. In principle, we want to be
-able to expose all toggles to the user, so that configuration can be tweaked without
-modifying the code for the build system. We will show how to do that in a moment.
+\vspace{.2cm}
+
+$\Rightarrow$ show the output where everything is compiled without creating a library
+
+## HOW IT WORKS (II)
+
 
 
 <!-- MENTION THE PROPERTIES EARLIER --> 
@@ -614,6 +615,14 @@ What about the rest like accessing a pre-defined variable?
 Too .. you would need to modify the CMakeLists.txt file directly.
 
 Local variables are used to handle internal logic. How do we expose configuration options to the end user?
+
+## HOW TO TIE/INTRODUCE CACHE VARIABLES
+
+This example shows that it is possible to introduce conditionals to control the execution
+flow in CMake. However, the current setup does not allow the toggles to be set from
+outside, that is, without modifying CMakeLists.txt by hand. In principle, we want to be
+able to expose all toggles to the user, so that configuration can be tweaked without
+modifying the code for the build system. We will show how to do that in a moment.
 
 ## CACHE VARIABLES (I)
 
