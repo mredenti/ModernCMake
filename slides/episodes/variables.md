@@ -21,6 +21,8 @@ aspectratio: 169
 
 **Variables** are the basic unit of storage in CMake.
 
+\vspace{.2cm}
+
 <!-- 
   **Variables** and commands are the only two syntactic elements of the CMaka language. 
 -->
@@ -38,6 +40,7 @@ aspectratio: 169
   
 -  **Customisation:** manage and control the build process based on different criteria (target platform, build type, compiler ID, user-specific options)
 
+\vspace{.3cm}
 
 Three types of variables: **Local**, **Cache**, **Environment**
 
@@ -62,7 +65,7 @@ Three types of variables: **Local**, **Cache**, **Environment**
 
 ## MOTIVATING EXAMPLE: TOGGLE LIBRARY USAGE 
 
-\vspace{.5cm}
+\vspace{.3cm}
 
 \centering Consider the same source code as for the greetings project.
 
@@ -247,7 +250,17 @@ endif()
 
 \vspace{.2cm}
 
-$\Rightarrow$ show the output where everything is compiled without creating a library
+$\Rightarrow$ At build time...
+
+```{.bash style=bashstyle}
+$ cmake --build ./build --verbose
+...
+[100%] Linking CXX executable hello
+cd <>/build/src ...
+/usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o 
+            CMakeFiles/hello.dir/greetings.cpp.o -o hello 
+```
+
 
 <!-- MENTION THE PROPERTIES EARLIER --> 
 
@@ -341,11 +354,11 @@ case-sensitive
   One of the most confusing aspects of CMake is the scoping of variables. 
 -->
 
-\vspace{0.5cm}
+\vspace{0.4cm}
 
 A local variable has a scope corresponding to the CMakeLists.txt file in which the variable is defined (**directory scope**)...
 
-\vspace{0.5cm}
+\vspace{0.3cm}
 
 
 ... but **you can read the intended value of a local variable only after you have set it**.
@@ -382,7 +395,13 @@ A local variable has a scope corresponding to the CMakeLists.txt file in which t
 
 . . .
 
-- Use `--warn-unitialised` flag to ... (test this...)
+- Use `--warn-uninitialized` to warn about uninitialised values
+  ```{.bash style=bashstyle}
+  $ cmake -B ./build --warn-uninitialized
+  CMake Warning (dev) at CMakeLists.txt:6 (message):
+    uninitialized variable 'FOO'
+  . . . 
+  ```
 
 ## LOCAL VARIABLES - DIRECTORY SCOPE (II)
 
