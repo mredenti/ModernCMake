@@ -911,27 +911,25 @@ Although rarely useful, CMake also allows the value of environment variables to 
 
 **READ**
 
-You can check to see if an environment variable is defined with if(DEFINED ENV{name}) (notice the missing $).
-
 ```{.cmake style=cmakestyle}
-if()
+if(DEFINED ENV{PATH}) # notice the missing $
+  message(STATUS "PATH is set to: $ENV{PATH}")
+endif()
 ```
-
 
 **WRITE**
 
 ```{.cmake style=cmakestyle}
-if()
-
 set(ENV{PATH} "$ENV{PATH}:/opt/myDir")
 ```
-
 
 **\underline{Note}**
   Setting an environment variable like this only affects the currently running CMake instance. 
   <!-- 
     As soon as the CMake run is finished, the change to the environment variable is lost. In particular, the change to the environment variable will not be visible at build time.
   -->
+
+<!-- 
 
 ## RECAP: VARIABLE SCOPE
 
@@ -944,6 +942,8 @@ set(ENV{PATH} "$ENV{PATH}:/opt/myDir")
 **Cache**. These variables are persistent across calls to cmake and available to all scopes in the project. Modifying a cache variable requires using a special form of the set function.
 
 **Environment**
+
+-->
 
 # COMPILATION 
 
