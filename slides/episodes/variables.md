@@ -723,14 +723,14 @@ set(<variable> <value>... CACHE <type> <docstring>)
 **BOOL**
   : corresponding string `<value>` can be **ON**/**OFF**, **TRUE**/**FALSE**, **1/0**, etc...
 
-**FILEPATH**
-  : a path to a file on disk <!--  GUI tools present a file dialog to the user for modifying the variable’s value. -->
+**STRING** 
+  : an arbitrary string 
 
 **PATH**
   : GUI tools present a dialog that selects a directory rather than a file
 
-**STRING** 
-  : an arbitrary string 
+**FILEPATH**
+  : a path to a file on disk <!--  GUI tools present a file dialog to the user for modifying the variable’s value. -->
 
 **INTERNAL**
   : hidden from the user by GUI tools 
@@ -738,7 +738,7 @@ set(<variable> <value>... CACHE <type> <docstring>)
     Internal cache variables are sometimes used to persistently record internal information by the project, such as caching the result of an intensive query or computation. 
   -->
 
-\vspace{.1cm}
+\vspace{.2cm}
 
 - These are only used by `cmake-gui` and `ccmake` to display the appropriate type of edit widget
 
@@ -764,7 +764,7 @@ set(<variable> <value>... CACHE <type> <docstring>)
   -- GO
   ```
 
-## EXAMPLE: BOOLEAN SPECIALISATION
+## BOOLEAN SPECIALISATION
 
 <!-- 
   Setting a boolean cache variable is such a common need that CMake provides a separate command for it.
@@ -772,7 +772,7 @@ set(<variable> <value>... CACHE <type> <docstring>)
 
 \vspace{.3cm}
 
-- Setting a boolean cache variable is such a common need that CMake provides a separate command for it 
+- Setting a boolean cache variable is such a common need that CMake provides a shortcut 
     
   ```{.cmake style=cmakestyle}  
   # set(USE_LIBRARY "OFF" CACHE BOOL "Build project with library")
@@ -903,21 +903,39 @@ Local variables hide cache variables
 
 ## ENVIRONMENT VARIABLES 
 
-Although rarely useful, CMake also allows the value of environment variables to be retrieved and set using a modified form of the CMake variable notation. The following example shows how to retrieve and set an environment variable:
+Although rarely useful, CMake also allows the value of environment variables to be retrieved and set using a modified form of the CMake variable notation. 
 
-set(ENV{PATH} "$ENV{PATH}:/opt/myDir")
+<!-- 
+  The following example shows how to retrieve and set an environment variable:
+-->
+
+**READ**
+
 You can check to see if an environment variable is defined with if(DEFINED ENV{name}) (notice the missing $).
 
-Note:
-Setting an environment variable like this only affects the currently running CMake instance. As soon as the CMake run is finished, the change to the environment variable is lost. In particular, the change to the environment variable will not be visible at build time.
+```{.cmake style=cmakestyle}
+if()
+```
 
-READ 
 
-WRITE 
+**WRITE**
 
-EXAMPLES
+```{.cmake style=cmakestyle}
+if()
+
+set(ENV{PATH} "$ENV{PATH}:/opt/myDir")
+```
+
+
+**\underline{Note}**
+  Setting an environment variable like this only affects the currently running CMake instance. 
+  <!-- 
+    As soon as the CMake run is finished, the change to the environment variable is lost. In particular, the change to the environment variable will not be visible at build time.
+  -->
 
 ## RECAP: VARIABLE SCOPE
+
+\alert{MOST LIKELY WILL SKIP THIS SLIDE}
 
 **Function**. In effect when a variable is set within a function: the variable will be visible within the function, but not outside.
 
