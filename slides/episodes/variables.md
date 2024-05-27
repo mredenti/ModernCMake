@@ -581,7 +581,7 @@ The `add_subdirectory()` command creates a new scope for processing that subdire
 :::
 :::::::::::::: 
 
-## LOCAL VARIABLES - FUNCTION SCOPE (V)
+## LOCAL VARIABLES - FUNCTION SCOPE 
 
 
 \vspace{0.5cm}
@@ -627,7 +627,7 @@ How can we enable users to adjust configuration toggles without altering the CMa
   modifying the code for the build system. We will show how to do that in a moment.
 -->
 
-## CACHE VARIABLES (I)
+## CACHE VARIABLES 
 
 \vspace{0.5cm}
 
@@ -657,7 +657,7 @@ CMake will always treat a variable as a string during processing. The type is us
 the user experience in GUI tools
 -->
 
-CMake **Cache variables** are primarily used to expose build configurations to the user. <!-- User controlled build options -->
+**Cache variables** are primarily used to expose build configurations to the user. <!-- User controlled build options -->
 
 \vspace{0.2cm}
 
@@ -666,43 +666,44 @@ CMake **Cache variables** are primarily used to expose build configurations to t
   ```{.cmake style=cmakestyle}  
   set(<variable> <value>... CACHE <type> <docstring>)
   ```
-  
+
+. . . 
+
 - Unlike local variables you can ovveride default cache variable values from the CL
  
   ```{.cmake style=cmakestyle}  
   set(USE_LIBRARY OFF CACHE BOOL "Enable compilation into ...")
-  message(STATUS "Compile sources into a library? ${USE_LIBRARY}")
+  message(STATUS "Compile sources into a library? ${USE_LIBRARY}") 
   ```
 
   ```{.bash style=bashstyle}
   $ cmake -B <...> -S <...> -D USE_LIBRARY:BOOL="ON" 
-  -- Compiles sources into a library 
+  -- Compiles sources into a library MISSING OUTPUT
   ```
 
 <!-- 
   CACHE VARIABLES ARE PRIMARILY USED TO EXPOSE BUILD CONFIGURATION/CUSTOMISATION TO THE USER
 -->
 
-## Types
+## CACHE VARIABLE TYPES
+
+\vspace{.5cm}
 
 ```{.cmake style=cmakestyle}  
 set(<variable> <value>... CACHE <type> <docstring>)
 ```
 
-- Cache entries are typed and require a docstring:
+- Cache entries are `<type>`d and require a `<docstring>`:
+  
   - BOOL 
   - FILEPATH
   - PATH 
-  - STRING just put the test from the book
+  - STRING <missing some description text>
   - INTERNAL
  
-((these are only used by cmake-gui and ccmake to display the appropriate type of edit widget))
+- These are only used by `cmake-gui` and `ccmake` to display the appropriate type of edit widget
 
-```{.bash style=bashstyle}  
-$ cmake -LAH ...
-```
-
-## CACHE VARIABLES (II)
+## EXAMPLE: CACHE VARIABLES OF TYPE STRING
 
 - You can override default cache variable values through the command line 
   
@@ -724,13 +725,15 @@ $ cmake -LAH ...
   -- GO
   ```
 
-## CACHE VARIABLES (III)
+## EXAMPLE: BOOLEAN SPECIALISATION
 
 <!-- 
   Setting a boolean cache variable is such a common need that CMake provides a separate command for it.
 -->
 
-- Boolean specialisation 
+\vspace{.3cm}
+
+- Setting a boolean cache variable is such a common need that CMake provides a separate command for it 
     
   ```{.cmake style=cmakestyle}  
   # set(USE_LIBRARY "OFF" CACHE BOOL "Build project with library")
@@ -740,11 +743,11 @@ $ cmake -LAH ...
   Setting a boolean cache variable is such a common need that CMake provides a separate command for it.
 -->
 
+. . . 
+
 - Enable CUDA language if required
     
   ```{.cmake style=cmakestyle}  
-  # ...
-
   # set(ENABLE_CUDA "OFF" CACHE BOOL "Build project with CUDA enabled")
   option(ENABLE_CUDA "Build project X with CUDA support" OFF)
 
@@ -755,7 +758,7 @@ $ cmake -LAH ...
 
   ```{.bash style=bashstyle}
   $ cmake -B <...> -S <...> -D ENABLE_CUDA=ON 
-  -- GO
+  -- nvcc .. missing output
   ```
 
 ## CACHE VARIABLES - GLOBAL SCOPE (?) 
