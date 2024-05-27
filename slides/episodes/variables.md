@@ -233,7 +233,7 @@ endif()
   verified by running the objdump -x command on GNU/Linux.
 -->
 
-## HOW IT WORKS (I)
+## HOW IT WORKS 
 
 - The variable `USE_LIBRARY` has been set to `OFF` in the top level CMakeLists.txt file. 
 
@@ -248,10 +248,6 @@ endif()
 \vspace{.2cm}
 
 $\Rightarrow$ show the output where everything is compiled without creating a library
-
-## HOW IT WORKS (II)
-
-
 
 <!-- MENTION THE PROPERTIES EARLIER --> 
 
@@ -330,16 +326,6 @@ case-sensitive
 
 -->
 
-## LOCAL VARIABLES: SCOPE
-
-One of the most confusing aspects of CMake is the scoping of variables. 
-
-Function. In effect when a variable is set within a function: the variable will be visible within the function, but not outside.
-
-Directory. In effect when processing a CMakeLists.txt in a directory: variables in the parent folder will be available, but any that is set in the current folder will not be propagated to the parent.
-
-Cache. These variables are persistent across calls to cmake and available to all scopes in the project. Modifying a cache variable requires using a special form of the set function.
-
 
 ## LOCAL VARIABLES - DIRECTORY SCOPE (I)
 
@@ -351,6 +337,8 @@ Cache. These variables are persistent across calls to cmake and available to all
   Scopes created by add_subdirectory() or custom function call
   Top level scope is the CACHE, can serve as global variables. Values are kept between runs.
   Can prepopulate the cache variables with -D<var>=<val> on the command line
+
+  One of the most confusing aspects of CMake is the scoping of variables. 
 -->
 
 \vspace{0.5cm}
@@ -391,6 +379,10 @@ A local variable has a scope corresponding to the CMakeLists.txt file in which t
 
 :::
 :::::::::::::: 
+
+. . .
+
+- Use `--warn-unitialised` flag to ... (test this...)
 
 ## LOCAL VARIABLES - DIRECTORY SCOPE (II)
 
@@ -872,6 +864,15 @@ WRITE
 
 EXAMPLES
 
+## RECAP: VARIABLE SCOPE
+
+**Function**. In effect when a variable is set within a function: the variable will be visible within the function, but not outside.
+
+**Directory**. In effect when processing a CMakeLists.txt in a directory: variables in the parent folder will be available, but any that is set in the current folder will not be propagated to the parent.
+
+**Cache**. These variables are persistent across calls to cmake and available to all scopes in the project. Modifying a cache variable requires using a special form of the set function.
+
+**Environment**
 
 # COMPILATION 
 
