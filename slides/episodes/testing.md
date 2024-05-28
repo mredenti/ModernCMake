@@ -78,7 +78,7 @@ int sum_integers(const vector<int> ints) {
     directory,
   },
   [ 
-    [summation
+    [Summation
       [src
         [sum\_integers.hpp, file
         ]
@@ -108,14 +108,15 @@ In `test.cpp` we verify that `1+2+3+4+5 = 15` by calling our function.
 ```c++
 #include "sum_integers.hpp"
 #include <vector>
+#include <cstdlib>
 
 int main() {
   auto integers = {1, 2, 3, 4, 5};
 
   if (sum_integers(integers) == 15) {
-    return 0;
+    return EXIT_SUCCESS;
   } else {
-    return 1;
+    return EXIT_FAILURE;
   }
 }
 ```
@@ -129,7 +130,7 @@ int main() {
     directory,
   },
   [ 
-    [summation
+    [Summation
       [src
         [sum\_integers.hpp, file
         ]
@@ -181,7 +182,7 @@ add_subdirectory(tests)
     directory,
   },
   [ 
-    [summation
+    [Summation
       [\colorbox{pink}{CMakeLists.txt}, file
       ]
       [src
@@ -220,9 +221,7 @@ add_library(summation OBJECT)
 target_sources(
     summation 
     PRIVATE 
-        sum_integers.cpp
-    PUBLIC 
-        sum_integers.hpp) 
+        sum_integers.cpp) 
 
 # Include directory for the summation target
 target_include_directories(
@@ -324,14 +323,14 @@ add_test(
 
 ## RUNNING TESTS
 
-We are now ready to configure and build the code 
+We are now ready to build the code... 
 
 ```{.bash style=bashstyle}
 $ cmake -B ./build -S ./summation 
 $ cmake --build ./build 
 ```
 
-... and run the test with `ctest`
+...and run the test with `ctest`
 
 ```{.bash style=bashstyle}
 $ ctest --test-dir ./build
@@ -434,15 +433,33 @@ CLI switch to use is `--rerun-failed`, and it proves extremely useful during deb
 
 ## TESTING EXPECTED FAILURES 
 
-Use the same code from the CMake cookbook
+<!-- 
+  Ideally, we want all of our tests to always pass on every platform. However, we may want
+  to test whether an expected failure or exception will occur in a controlled setting, and in
+  that case, we would define the expected failure as a successful outcome. We believe that
+  typically, this is a task that should be given to the test framework (such as Catch2 or Google
+  Test), which should check for the expected failure and report successes to CMake. But,
+  there may be situations where you wish to define a non-zero return code from a test as
+  success; in other words, you may want to invert the definitions of success and failure. In
+  this recipe, we will demonstrate such a situation.
+-->
 
-Using set_tests_properties(example PROPERTIES WILL_FAIL true), we set the
-property WILL_FAIL to true, which inverts success/failure. However, this feature should
+\alert{come up with a clear example, as otherwise it is not clear}
+
+
+- Usually we want all of our tests to always pass on every platform.
+
+```{.cmake style=cmakestyle}
+add_test(NAME example
+        COMMAND ...)
+
+set_tests_properties(example PROPERTIES WILL_FAIL true)
+```
+
+- The property `WILL_FAIL` set to true inverts success/failure. However, this feature should
 not be used to temporarily fix broken tests.
 
-Many other properties can be set on tests. A full list of available
-properties can be found at https:/ / cmake. org/ cmake/ help/ v3. 5/ manual/ cmakeproperties.
-7. html#properties- on- tests.
+Many other properties can be set on tests... 
 
 
 ## VALGRIND EXAMPLE SOMEWHERE
