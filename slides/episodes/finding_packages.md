@@ -350,12 +350,13 @@ $ mpirun -np 2 ./build/hello
 
 We have found linking to MPI to be extremely compact. We did not have to worry about compile flags, include directories, ...
 ```{.cmake style=cmakestyle}
-# . . .
 target_link_libraries(
     hello_world
     PUBLIC
         MPI::MPI_CXX)
 ```
+
+. . . 
 
 ... these settings and dependencies are encoded in the definition of the `IMPORTED` library `MPI::MPI_CXX`.
 
@@ -679,7 +680,7 @@ find_path(
 :::
 ::: {.column width="15%"}
 
-\vspace{1cm}
+\vspace{2.5cm}
 
 \begin{adjustbox}{margin=-1cm 0cm 0cm 0cm}
 \begin{forest}
@@ -731,7 +732,8 @@ find_package_handle_standard_args(
 :::
 ::: {.column width="15%"}
 
-\vspace{1cm}
+\vspace{2.5cm}
+
 
 \begin{adjustbox}{margin=-1cm 0cm 0cm 0cm}
 \begin{forest}
@@ -782,7 +784,8 @@ set_target_properties(FFTW3::fftw3 PROPERTIES
 :::
 ::: {.column width="15%"}
 
-\vspace{1cm}
+\vspace{2.5cm}
+
 
 \begin{adjustbox}{margin=-1cm 0cm 0cm 0cm}
 \begin{forest}
