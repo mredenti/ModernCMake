@@ -120,15 +120,16 @@ In `test.cpp` we verify that `1+2+3+4+5 = 15` by calling our function.
 ```c++
 #include "sum_integers.hpp"
 #include <vector>
-#include <cstdlib>
+#include <iostream>
 
 int main() {
   auto integers = {1, 2, 3, 4, 5};
 
   if (sum_integers(integers) == 15) {
-    return EXIT_SUCCESS;
+    return 0;
   } else {
-    return EXIT_FAILURE;
+    std::cout << "Wrong result\n";
+    return 1;
   }
 }
 ```
@@ -386,25 +387,32 @@ By default, a test will be deemed to pass if the command returns an exit code of
 
 ## HOW IT WORKS 
 
-Two new key commands were used
+- The command
 
-```{.cmake style=cmakestyle}
-enable_testing()
-```
+  ```{.cmake style=cmakestyle}
+  enable_testing()
+  ```
 
-instructs CMake to enable testing (create a test target) for the directory in which it was defined and all of its subfolders 
+  instructs CMake to write out a CTest input file in the `CMAKE_CURRENT_BINARY_DIR`, which will contain details of all the tests defined in the project.
 
-```{.cmake style=cmakestyle}
-add_test(
-    NAME <name> 
-    COMMAND <command> [<arg>...]
-    [WORKING_DIRECTORY <dir>]
-```
+- Defining individual tests is done with the `add_test()` command
 
-defines a new test case and sets the name and the command to run 
-The `<command>` can be any arbitrary command (eg. full path to an executable) that could be run from a shell or command prompt. 
-As a special case, it can also be the name of an executable target defined by the project. 
+  ```{.cmake style=cmakestyle}
+  add_test(
+      NAME <name> 
+      COMMAND <command> [<arg>...]
+      [WORKING_DIRECTORY <dir>]) 
+  ```
+
+  which adds a new test case and the associated command to run.
+  The `<command>` can be any arbitrary command (eg. full path to an executable) that could be run from a shell or command prompt. 
+  As a special case, it can also be the name of an executable target defined by the project. 
 <!-- 
+  # By default, the test will run in the CMAKE_CURRENT_BINARY_DIR. The WORKING_DIRECTORY option 
+  can be used to make the test run in some other location. An example where this can be useful 
+  is to run the same executable in different directories to pick up different sets of input files,
+  without having to specify them as command-line arguments.
+
   When a target name is used, CMake automatically substitutes the real path to the executable. 
   The automatic substitution of a target with its real location does not extend to the command
   arguments, only the command itself supports such substitution. If the location of a target needs to
@@ -420,6 +428,8 @@ As a special case, it can also be the name of an executable target defined by th
 ## CTEST 
 
 - The CTest is the testing tool used to control how tests execute
+
+- By default, `ctest` will execute all defined tests one at a time, logging a status message as each test is started and completed, but hiding all test output. An overall summary of the tests will be printed at the end.
 
 - Rich features are provided for defining how tests use resources, constraints between tests, and controlling how
 tests execute.
@@ -445,32 +455,76 @@ Test project <>/build
 
 0% tests passed, 1 tests failed out of 1
 
-Total Test time (real) =   0.01 sec
-
 The following tests FAILED:
           1 - test_sum_integers (Failed)
+
+Errors while running CTest
+Output from tests in: <>/build/Testing/Temporary/LastTest.log
 ```  
 
 
 ## DIAGNOSING TEST FAILURES (II)
 
-- If we then wish to learn more about the failed test, we can inspect the file `Testing/Temporary/LastTestsFailed.log` located under the `build` directory.
+Different ways to inspect the output of the failed tests:
+
+1. Inspect the file `Testing/Temporary/LastTestsFailed.log` located under the `build` directory
+  ```{.bash style=bashstyle}
+  Start testing: May 28 18:19 CEST
+  ----------------------------------------------------------
+  1/1 Testing: test_sum_integers
+  1/1 Test: test_sum_integers
+  Command: "<>/build/tests/cpp_test"
+  Directory: <>/build/tests
+  "test_sum_integers" start time: May 28 18:19 CEST
+  Output:
+  ----------------------------------------------------------
+  Wrong result
+  <end of output>
+  Test time =   0.00 sec
+  ----------------------------------------------------------
+  Test Failed.
+  ----------------------------------------------------------
+  ```
 
 
- This file contains the full output of the test
+<!--
+   This file contains the full output of the test
 commands, and is the first place to look during a postmortem analysis.
+-->
 
-- Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.
- It is possible to
-obtain more verbose test output from CTest by using the following CLI switches:
---output-on-failure: Will print to the screen anything that the test program
-produces, in case the test fails.
--V: Will enable verbose output from tests.
--VV: Enables even more verbose output from tests.
 
-- CTest offers a very handy shortcut to rerun only the tests that have previously failed; the
+
+## DIAGNOSING TEST FAILURES (III)
+
+
+<!-- 
+  It is possible to obtain more verbose test output from CTest by using the following CLI switches:
+  --output-on-failure: Will print to the screen anything that the test program
+  produces, in case the test fails.
+
+  - CTest offers a very handy shortcut to rerun only the tests that have previously failed; the
 CLI switch to use is `--rerun-failed`, and it proves extremely useful during debugging.
+-->
 
+2. Use `--rerun-failed --output-on-failure` to re-run the failed cases with output enabled.
+  ```{.bash style=bashstyle}
+  $ ctest --test-dir ./build/ --rerun-failed --output-on-failure
+  Internal ctest changing into directory: <>/build
+  Test project <>/build
+      Start 1: test_sum_integers
+  1/1 Test #1: test_sum_integers ................***Failed 0.00 sec
+  Wrong result
+
+  0% tests passed, 1 tests failed out of 1
+
+  Total Test time (real) =   0.05 sec
+
+  The following tests FAILED:
+            1 - test_sum_integers (Failed)
+  Errors while running CTest
+  ```
+
+- `--stop-on-failure` to end the test run at the first error encountered (CMake > 3.18) 
 
 ## TESTING EXPECTED FAILURES 
 
