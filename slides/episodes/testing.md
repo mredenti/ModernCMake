@@ -3,9 +3,21 @@ aspectratio: 169
 ---
 
 
+<!-- 
+  TESTING and CODE ANALYSIS are important parts of the complete software cycle (mention the static and dynamic analysis as a final slide)
+
+  CMake has direct support for defining test cases, which are executed with a dedicated testing tool, ctest.
+-->
+
 # CREATING AND RUNNING TESTS
 
 ## WHY TESTING IS IMPORTANT
+
+<!--
+A natural follow-on to building a project is to test the artifacts it created. The CMake software suite
+includes the ctest tool, which can be used to automate the testing phase. This chapter covers the
+fundamental aspects of testing. It discusses how to define tests and execute them using the ctest
+command-line tool. -->
 
 <!--
     Testing is an essential activity in the development cycle. A well-designed test suite will help you detect bugs and can also facilitate the onboarding of new developers. In this episode, we will look into how to use CTest to define and run our tests.
@@ -155,7 +167,13 @@ int main() {
 
 \vspace{.5cm}
 
-1. In the top-level CMakeLists.txt file insert a call to `enable_testing()` which will instruct CMake to produce an input file for ctest.
+<!-- 
+  enable_testing() can be
+called in a subdirectory without error, but without a call to enable_testing() at the top level, the
+ctest input file will not be created at the top of the build tree where it is normally expected to be
+-->
+
+1. In the top-level CMakeLists.txt file insert a call to `enable_testing()` which will instruct CMake to produce an input file for CTest in the `CMAKE_CURRENT_BINARY_DIR`.
 
 ```{.cmake style=cmakestyle}
 cmake_minimum_required(VERSION 3.21)
@@ -344,7 +362,15 @@ Test project <>/build
 Total Test time (real) =   0.01 sec
 ```
 
-By default, a test is deemed to pass if it returns an exit code of 0. 
+\centering 
+By default, a test will be deemed to pass if the command returns an exit code of 0.
+
+<!-- 
+
+  More flexible pass/fail handling is supported...
+
+-->
+
 
 <!-- 
   It is up to the programmer to define the actual test command, which can be programmed in any language supported by
@@ -376,14 +402,29 @@ add_test(
 ```
 
 defines a new test case and sets the name and the command to run 
-The `<command>` can be any arbitrary command that could be run from a shell or command prompt. 
+The `<command>` can be any arbitrary command (eg. full path to an executable) that could be run from a shell or command prompt. 
 As a special case, it can also be the name of an executable target defined by the project. 
+<!-- 
+  When a target name is used, CMake automatically substitutes the real path to the executable. 
+  The automatic substitution of a target with its real location does not extend to the command
+  arguments, only the command itself supports such substitution. If the location of a target needs to
+  be given as a command line argument, generator expressions can be used.  
+-->
 
 <!-- 
     CMake will then translate that target name into the location of the binary built for that target. 
     The project doesn’t have to care where the build will create the binary in the file system, CMake will provide
     that information to ctest automatically.
 -->
+
+## CTEST 
+
+- The CTest is the testing tool used to control how tests execute
+
+- Rich features are provided for defining how tests use resources, constraints between tests, and controlling how
+tests execute.
+
+- Reporting options include support for a dedicated dashboard server (CDash) or file ouptput in the widely used JUnit XML format.
 
 ## DIAGNOSING TEST FAILURES (I)
 
@@ -462,6 +503,14 @@ not be used to temporarily fix broken tests.
 Many other properties can be set on tests... 
 
 
+## USING TIMEOUTS FOR LONG TESTS
+
+- Ideally tests should take only a short time in order to motivate the developers to run the test often, and to encourage testing every commit. 
+
+- At times, tests might take longer or get stuck (eg. high file I/O load) and we may need to implement timeouts to termitate tests that go overtime before they pile up and delay the entire terst and deploy pipeline.
+
+- Implementing timeouts can be achieved with properties too...
+
 ## VALGRIND EXAMPLE SOMEWHERE
 
 lkl
@@ -507,9 +556,24 @@ For debugging and code development, we need the ability to only run a selected s
 tests. In this recipe, we will present strategies to accomplish that.
 
 
-## ONE LAST SLIDE ON CATCH AND GOOGLE TEST
+## INTEGRATED SUPPORT FOR TESTING FRAMEWORKS AND STATIC CODE ANALYSIS
 
-ok
+- Support is also provided for the popular GoogleTest framework
+
+- While GoogleTest can be used standalone, CTest can drive the tests defined with the GoogleTest framework, taking over how tests are scheduled to run and the environment they run in.
+
+List of testing frameworks:
+  - fdfd
+  - fdfd
+
+- CMake also has direct support for a number of popular static code analysis tools
+
+  - clang-tidy
+  - cppcheck
+  - include-what-you-use 
+
+The above complement tests by providing additional verification of the code quality, adherence to relevant standards and catching common programming models.
+Dynamic code analysis is also possible with CMake projects.
 
 <!-- 
 
