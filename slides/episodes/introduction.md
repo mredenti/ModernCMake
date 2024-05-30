@@ -11,6 +11,15 @@ date: \today
 aspectratio: 169
 ---
 
+## IMPORTANT (IMPORTED LIBRARIES)
+
+Just like executables, libraries may be defined as imported targets. These are heavily used 
+by config files created during packaging or find module implementations. 
+
+They do not define a library to be built by the project, rather they act as a reference to a library 
+that is provided externally, eg. it already exists on the system, is built by some process outside 
+the current CMake project, or is provided by the package that a config file is part of...
+
 ## WHY EFFICIENT BUILD SYSTEMS MATTER
 
 <!-- 
