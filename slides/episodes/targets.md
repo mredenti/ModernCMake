@@ -2,11 +2,31 @@
 aspectratio: 169
 ---
 
-# Targets
+# TARGETS
+
+## WHAT IS A TARGET
+
+\centering
+
+**GNU Make** 
+
+A target is essentially a recipe that a buildsystem uses to compile a list of files into another file. It can be a `.cpp` implementation file compiled into an `.o` object file, a group of `.o` files packaged into an `.a` static library, and many other combinations.
+
+**CMake**
+
+A target is a logical unit that encapsulates the properties and dependencies required to build a component of your software project.
+
+It works on a higher level of abstraction. It understands how to build an executable directly from source files. So, you don't need to write an explicit recipe to compile any object files. All that's required is an `add_executable()` or `add_library` command with the name of the executable target and a list of the files that are to be its elements:
+
+All that's required is to tell CMake about the structure of your project, and it will help you build it. 
+We use target to tell CMake about the structure of our project and `target_link_libraries()` to express the dependencies between them.
+
 
 ## OVERVIEW 
 
 <!-- 
+    Targets are fundamental concept in CMake
+
     Next, we'll explain in detail all the steps that the toolchain takes to build a binary artifact from a target. That's the part many books about C++ are missing: how to configure and use preprocessors, compilers, and linkers properly, as well as how to optimize their behavior.
 
     Lastly, this section will cover all the different ways in which CMake offers to manage dependencies, and will explain how to pick the best one for your specific use case.
@@ -23,6 +43,10 @@ aspectratio: 169
         3. There exist some builtin targets: install, clean, package, . . .
         4.  You may create custom targets: add custom target
 
+In CMake, a target is a core concept that represents a buildable entity within a project. Targets are used to define the final products that CMake generates, such as executables, libraries, or custom commands. Understanding and effectively using targets is crucial for managing complex build systems, especially in larger projects. Here’s a detailed description of the concept of targets in CMake:
+
+1. Definition of a Target
+A target in CMake is essentially a logical unit that encapsulates the settings and dependencies required to build a component of your software project. It can be an executable, a library, or even a custom command.
 -->
 
 - With the advent of CMake 3.0, also known as Modern CMake, there has been a significant shift in the way the CMake domain-specific language (DSL) is structured. Rather than relying on variables to convey information in a project, we should shift to using **targets** and **properties**.
@@ -35,38 +59,72 @@ aspectratio: 169
 
 - A target maps to a build artifact in the project (think back to the targets encountered in Make)
 
-- A target is the basic element in the CMake DSL.
-Targets are one of the fundamental concepts in CMake. They denote the final products built by CMake, and can be executables, libraries, or custom commands.
-
-## THE CONCEPT OF A TARGET 
-
-If you have ever used GNU Make, you will have already seen the concept of a target. Essentially, it's a recipe that a buildsystem uses to compile a list of files into another file. It can be a .cpp implementation file compiled into an .o object file, a group of .o files packaged into an .a static library, and many other combinations.
-
-CMake, however, allows you to save time and skip the intermediate steps of those recipes; it works on a higher level of abstraction. It understands how to build an executable directly from source files. So, you don't need to write an explicit recipe to compile any object files. All that's required is an `add_executabl()` command with the name of the executable target and a list of the files that are to be its elements:
-
-
 ## TARGETS ARE OBJECTS WITH PROPERTIES 
 
 - Targets have properties that work in a similar way to fields of C++ objects. We can modify some of these properties and others are read-only.  
 
 - These collection of properties define **how** the build "artifact" should be produced and how it should be used by other dependent targets in the project (usage requirements)
 
-```plantuml
-object TARGET{
-    TYPE
-    SOURCES
-    COMPILE_DEFINITIONS
-    INCLUDE_DIRECTORIES
-    <LANG>_STANDARD
-    COMPILE_OPTIONS
-    LINK_LIBRARIES
-    ...
-}
-```
 
-**Put a link to the full list of properties**
+## DEFINITION OF A TARGET - WHAT IS A TARGET
+
+A target in CMake is essentially a logical unit that encapsulates the settings and dependencies required to build a component of your software project. It can be an executable, a library, or even a custom command.
+
+
+xecutable Targets: Represent a binary that can be run. Defined using add_executable().
+Library Targets: Represent shared or static libraries. Defined using add_library().
+Custom Targets: Represent custom build steps or commands. Defined using add_custom_target().
+
+## DECLARING TARGETS 
+
+To declare a target in CMake, specific commands are used:
+
+add_executable():
+
+add_executable(myApp main.cpp)
+This command creates an executable target named myApp from the source file main.cpp.
+
+add_library():
+
+add_library(myLib STATIC lib.cpp)
+This command creates a static library target named myLib from the source file lib.cpp.
+
+## PROPERTIES OF TARGETS 
+
+Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. Properties can be set and queried using specific commands
+
+
+## DEPENDENCIES BETWEEN TARGETS 
+
+Targets can depend on one another. For example, an executable might depend on a library. Dependencies are specified using the target_link_libraries() command, which also allows defining how properties should propagate between targets.
+
+## USAGE REQUIREMENT AND VISIBILITY
+
+When specifying dependencies, it’s important to define how properties should propagate. CMake uses visibility levels to control this:
+
+PRIVATE: Properties are applied only to the target itself.
+
+PUBLIC: Properties are applied to the target and propagated to dependents.
+
+INTERFACE: Properties are not used by the target itself but are propagated to dependents.
+
+This command makes the include/ directory available to any target that links to myLib.
+
+## TRANSITIVE PROPERTIES 
+
+Properties set on a target can be transitive, meaning they propagate through the dependency graph. This helps manage complex dependencies and ensures that all required settings are consistently applied.
+
+## SUMMARY  
+
+In summary, targets in CMake are the building blocks of the build system, representing the various components of a software project. They encapsulate source files, build settings, and dependencies, providing a structured and maintainable way to manage the build process. By understanding and effectively using targets, developers can create robust and flexible build systems for their projects
+
+put a graph here ...
 
 ## TARGET PROPERTIES - EXAMPLE
+
+\vspace{1.5cm}
+
+Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. 
 
 ```{.cmake style=cmakestyle}
 add_library(greetings STATIC greeting.hpp greetings.cpp)
@@ -85,11 +143,67 @@ $ cmake -B <build-tree> -S <source-tree>
 -- greeting.SOURCES : greetings.cpp;greetings.hpp 
 ```
 
+## TARGET PROPERTIES - EXAMPLE (Cont.)
+
+\vspace{1.5cm}
+
+```{.cmake style=cmakestyle}
+add_executable(hello hello.cpp)
+target_link_libraries(hello greetings)
+
+get_target_property(_hello_type hello TYPE)
+get_target_property(_hello_sources hello SOURCES)
+get_target_property(_hello_link_lib hello LINK_LIBRARIES)
+
+message(STATUS "greetings.TYPE : ${_hello_type}") 
+message(STATUS "greeting.SOURCES : ${_hello_sources}")
+message(STATUS "greeting.LINK_LIBRARIES : ${_hello_link_lib}")
+```
+
+```{.bash style=bashstyle}
+$ cmake -B <build-tree> -S <source-tree>
+...
+-- hello.TYPE : EXECUTABLE
+-- hello.SOURCES : hello.cpp 
+-- hello.LINK_LIBRARIES : greetings
+```
+
+## TARGET PROPERTIES - COMPILER FLAGS
+
 <!-- 
     To print a target property on screen, we first need to store it in the `<var>` variable and then message() it to the user; we have to read them one by one. 
 -->
 
 \vspace{1cm}
+
+The most fundamental target properties for controlling compiler flags are the following
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+```plantuml
+object TARGET{
+    INCLUDE_DIRECTORIES
+    COMPILE_DEFINITIONS
+    <LANG>_STANDARD
+    COMPILE_OPTIONS
+    . . .
+}
+```
+
+::: 
+::: {.column width="50%"}
+
+
+::: 
+::::::::::::::
+
+
+## TARGET PROPERTIES - LINK FLAGS 
+
+The target properties associated with linker flags
+
+**Put a link to the full list of properties**
 
 **Footnote: CMake defines a large list of "known properties" (see the Further reading section) that are available depending on the type of the target (executable, library, or custom).**
 
