@@ -47,6 +47,8 @@ BUT WHY DO WE NEED LIBRARIES? THAT AIN'T CLEAR!
 
 Mature applications are often built from many components, and I don't mean external dependencies here. Specifically, I'm talking about internal libraries. Adding them to the project is useful from a structural perspective, as related things are packaged together in a single logical entity. And they can be linked with other targets – another library or an executable. This is especially convenient when multiple targets are using the same library.
 
+As software developers, we deliberately draw boundaries and designate components to group one or more units of translation (.cpp files). We do it for multiple reasons: to increase code readability, manage coupling and connascence, speed up the build process, and finally, extract the reusable components.
+
 ## A GREETINGS LIBRARY - SET UP (I)
 
 :::::::::::::: {.columns}

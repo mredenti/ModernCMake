@@ -37,6 +37,10 @@ If you're in a rush, you can even run Graphviz straight from your browser at thi
 
 https://dreampuf.github.io/GraphvizOnline/
 
+## EXTREMELY IMPORTANT TO ADD 
+
+To reiterate, a library is a collection of files without an entry point whereas an executable is a program with an entry point defined in the main function.
+
 ## WHY EFFICIENT BUILD SYSTEMS MATTER
 
 <!-- 
