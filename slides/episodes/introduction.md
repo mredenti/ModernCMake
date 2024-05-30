@@ -20,6 +20,23 @@ They do not define a library to be built by the project, rather they act as a re
 that is provided externally, eg. it already exists on the system, is built by some process outside 
 the current CMake project, or is provided by the package that a config file is part of...
 
+- Tip 
+  ```{.cmake style=cmakestyle}
+  cmake -B <build tree> -S <source tree>
+  ```
+
+We connect our libraries with executables by using the target_link_libraries() command. Without it, the compilation for executables would fail because of undefined symbols. Have you noticed that we invoked this command before actually declaring any of the libraries? When CMake configures the project, it collects the information about targets and their properties – their names, dependencies, source files, and other details.
+
+After parsing all the files, CMake will attempt to build a dependency graph. And like with all valid dependency graphs, they're directional acyclic graphs. This means that there is a clear direction of which target depends on which, and such dependencies cannot form cycles.
+
+## OTHER 
+
+The module will produce a text file that we can import to the Graphviz visualization software, which can render an image or produce a PDF or SVG file that can be stored as part of the software documentation. Everybody loves great documentation, but hardly anyone likes to create it – now, you don't need to!
+
+If you're in a rush, you can even run Graphviz straight from your browser at this address:
+
+https://dreampuf.github.io/GraphvizOnline/
+
 ## WHY EFFICIENT BUILD SYSTEMS MATTER
 
 <!-- 

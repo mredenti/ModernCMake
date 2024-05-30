@@ -20,7 +20,7 @@ CMake := episodes/introduction.md \
 		episodes/targets.md \
 		episodes/finding_packages.md \
 		episodes/testing.md \
-		episodes/generator_expressions \
+		episodes/generator_expressions.md \
 		episodes/additional_topics.md
 
 CMake.pdf: $(CMake)

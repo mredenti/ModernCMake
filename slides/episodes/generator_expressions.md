@@ -1,4 +1,11 @@
-## Getting ready
+---
+aspectratio: 169
+---
+
+# GENERATOR EXPRESSIONS  
+
+
+## Example 
 
 We will compile the following example source code (example.cpp):
 #include <iostream>
@@ -160,3 +167,11 @@ commands or combined with other generator expressions. For example, -
 I$<JOIN:$<TARGET_PROPERTY:INCLUDE_DIRECTORIES>, -I> will generate a
 string containing the include directories for the target being processed, each
 prependend by -I.
+
+## OVERVIEW 
+
+CMake builds the solution in three stages – configuration, generation, and running the build tool. Generally, we have all the required data during the configuration stage. But every once in a while, we encounter the chicken and the egg problem. Take an example from the previous section – a target needs to know the path of a binary artifact of another target. But that information is only available after all the list files are parsed and the configuration stage is complete.
+
+How do we deal with that kind of problem? We could create a placeholder for that information and postpone its evaluation to the next stage – the generation stage.
+
+This is what generator expressions (sometimes called genexes) do. They are built around target properties such as LINK_LIBRARIES, INCLUDE_DIRECTORIES, COMPILE_DEFINITIONS, propagated properties, and many others, but not all. They follow rules similar to conditional statements and variable evaluation...
