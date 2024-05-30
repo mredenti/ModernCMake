@@ -4,12 +4,6 @@ aspectratio: 169
 
 # Targets
 
-## MOTIVATION FOR USING LIBRARIES 
-
-Mature applications are often built from many components, and I don't mean external dependencies here. Specifically, I'm talking about internal libraries. Adding them to the project is useful from a structural perspective, as related things are packaged together in a single logical entity. And they can be linked with other targets – another library or an executable. This is especially convenient when multiple targets are using the same library.
-
-
-
 ## OVERVIEW 
 
 Next, we'll explain in detail all the steps that the toolchain takes to build a binary artifact from a target. That's the part many books about C++ are missing: how to configure and use preprocessors, compilers, and linkers properly, as well as how to optimize their behavior.

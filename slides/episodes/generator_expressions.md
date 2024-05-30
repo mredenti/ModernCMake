@@ -4,6 +4,70 @@ aspectratio: 169
 
 # GENERATOR EXPRESSIONS  
 
+## OVERVIEW 
+
+CMake is a two step process:
+
+- Configuration 
+- Generation 
+
+Show the output... 
+
+Generally we have all the required data during the configuration stage...
+
+...but every once in a while ...example
+
+
+## EXAMPLE 
+
+Consider once again the MPI hello world 
+and use the generator expressions in that context with the code side by side
+
+## SYNTAX OF A GENERATOR EXPRESSION 
+
+```{.cmake style=cmakestyle}
+$<EXPRESSION:arg1,arg2,arg3>
+```
+
+- If an expression requires an argument, add a colon `:`  and provide the `arg1, arg2, arg3` values, separated with a comma `,`
+
+## NESTING 
+
+DFJDKS
+
+## CONDITIONAL EXPRESSIONS
+
+```{.cmake style=cmakestyle}
+$<IF:condition,true_string,false_string>
+```
+
+The second form is a shorthand for the preceding; it will only expand to a string if the condition is met:
+
+```{.cmake style=cmakestyle}
+$<condition:true_string >
+```
+
+As you can see, it breaks the convention of providing the EXPRESSION name as the first token. I assume that the intention here was to shorten the expression and skip those precious three characters, but the outcome can be really hard to rationalize
+
+## TYPES OF EVALUATION 
+
+- Generator expressions are evaluated to one of two types – Boolean or string. Boolean is represented by 1 (true) and 0 (false). Everything else is just a string.
+
+- It's important to remember that nested expressions passed as conditions in conditional expressions are explicitly required to evaluate to Boolean.
+
+## GENERATOR EXPRESSIONS 
+
+Generator expression 
+
+...
+
+is evaluated during the generation stage, once the configuration is complete and the internal build system representation is created. This has a number of implications:
+
+- You can not capture their output into a variable and print it to the console with the `message()`
+ command
+
+- To debug them (write it to a file where the overload GENERATE of the file command supports this)
+- or add a custom target
 
 ## Example 
 
