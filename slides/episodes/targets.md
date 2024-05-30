@@ -59,11 +59,138 @@ A target in CMake is essentially a logical unit that encapsulates the settings a
 
 - A target maps to a build artifact in the project (think back to the targets encountered in Make)
 
-## TARGETS ARE OBJECTS WITH PROPERTIES 
+## TARGETS ARE OBJECTS WITH PROPERTIES (I)
 
-- Targets have properties that work in a similar way to fields of C++ objects. We can modify some of these properties and others are read-only.  
+\vspace{.5cm}
 
-- These collection of properties define **how** the build "artifact" should be produced and how it should be used by other dependent targets in the project (usage requirements)
+Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. 
+
+\vspace{.4cm}
+
+:::::::::::::: {.columns}
+::: {.column width="80%"}
+
+
+```{.cmake style=cmakestyle}
+add_library(greetings STATIC greetings.hpp greetings.cpp) 
+
+get_target_property(_greetings_type greetings TYPE)
+get_target_property(_greetings_sources greetings SOURCES)
+
+message(STATUS "greetings.TYPE : ${_greetings_type}") 
+message(STATUS "greeting.SOURCES : ${_greetings_sources}")
+```
+
+```{.bash style=bashstyle}
+$ cmake -B <build-tree> -S <source-tree>
+...
+-- greetings.TYPE : STATIC_LIBRARY
+-- greeting.SOURCES : greetings.cpp;greetings.hpp 
+```
+
+::: 
+::: {.column width="10%"}
+
+
+\scalebox{0.7}{
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+}
+
+::: 
+::: {.column width="10%"}
+
+::: 
+::::::::::::::
+
+<!-- 
+  These collection of properties define **how** the build "artifact" should be produced and how it should be used by other dependent targets in the project (usage requirements)
+-->
+
+## TARGETS ARE OBJECTS WITH PROPERTIES (II)
+
+\vspace{.35cm}
+
+Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. 
+
+\vspace{.3cm}
+
+:::::::::::::: {.columns}
+::: {.column width="80%"}
+
+
+```{.cmake style=cmakestyle}
+include(CMakePrintHelpers)
+
+add_executable(hello hello.cpp)
+target_link_libraries(hello greetings)
+
+cmake_print_properties(TARGETS hello
+                    PROPERTIES TYPE SOURCES LINK_LIBRARIES)
+```
+
+```{.bash style=bashstyle}
+$ cmake -B <build-tree> -S <source-tree>
+...
+-- hello.TYPE : EXECUTABLE
+-- hello.SOURCES : hello.cpp 
+-- hello.LINK_LIBRARIES : greetings
+```
+
+::: 
+::: {.column width="10%"}
+
+
+\scalebox{0.7}{
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.hpp, file
+        ]
+        [greetings.cpp, file
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+}
+
+::: 
+::: {.column width="10%"}
+
+::: 
+::::::::::::::
 
 
 ## DEFINITION OF A TARGET - WHAT IS A TARGET
@@ -100,6 +227,8 @@ Targets can depend on one another. For example, an executable might depend on a 
 
 ## USAGE REQUIREMENT AND VISIBILITY
 
+Targets have properties that work in a similar way to fields of C++ objects. 
+
 When specifying dependencies, it’s important to define how properties should propagate. CMake uses visibility levels to control this:
 
 PRIVATE: Properties are applied only to the target itself.
@@ -119,54 +248,6 @@ Properties set on a target can be transitive, meaning they propagate through the
 In summary, targets in CMake are the building blocks of the build system, representing the various components of a software project. They encapsulate source files, build settings, and dependencies, providing a structured and maintainable way to manage the build process. By understanding and effectively using targets, developers can create robust and flexible build systems for their projects
 
 put a graph here ...
-
-## TARGET PROPERTIES - EXAMPLE
-
-\vspace{1.5cm}
-
-Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. 
-
-```{.cmake style=cmakestyle}
-add_library(greetings STATIC greeting.hpp greetings.cpp)
-
-get_target_property(_greetings_type greetings TYPE)
-get_target_property(_greetings_sources greetings SOURCES)
-
-message(STATUS "greetings.TYPE : ${_greetings_type}") 
-message(STATUS "greeting.SOURCES : ${_greetings_sources}")
-```
-
-```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-...
--- greetings.TYPE : STATIC_LIBRARY
--- greeting.SOURCES : greetings.cpp;greetings.hpp 
-```
-
-## TARGET PROPERTIES - EXAMPLE (Cont.)
-
-\vspace{1.5cm}
-
-```{.cmake style=cmakestyle}
-add_executable(hello hello.cpp)
-target_link_libraries(hello greetings)
-
-get_target_property(_hello_type hello TYPE)
-get_target_property(_hello_sources hello SOURCES)
-get_target_property(_hello_link_lib hello LINK_LIBRARIES)
-
-message(STATUS "greetings.TYPE : ${_hello_type}") 
-message(STATUS "greeting.SOURCES : ${_hello_sources}")
-message(STATUS "greeting.LINK_LIBRARIES : ${_hello_link_lib}")
-```
-
-```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-...
--- hello.TYPE : EXECUTABLE
--- hello.SOURCES : hello.cpp 
--- hello.LINK_LIBRARIES : greetings
-```
 
 ## TARGET PROPERTIES - COMPILER FLAGS
 
