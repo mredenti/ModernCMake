@@ -311,7 +311,325 @@ object mylib{
 SHOW OUTPUT
 
 
-## EXTRA
+# UNDERSTANDING VISIBILITY LEVELS: PRIVATE, INTERFACE, PUBLIC
+
+## EXAMPLE
+
+\vspace{.3cm}
+
+For sake of argument let us move the `greetings.hpp` header file into an `include/` folder.
+
+\vspace{.3cm}
+
+:::::::::::::: {.columns}
+::: {.column width="67%"}
+
+```c++
+// greetings/src/greetings.cpp
+#include <iostream>
+#include "greetings.hpp" // <-- !!!!!
+
+// . . . some other stuff 
+```
+
+```c++
+// greetings/src/hello.cpp
+#include <cstdlib>
+#include "greetings.hpp" // <-- !!!!!
+
+int main() {
+
+ // . . . some other stuff
+```
+
+::: 
+::: {.column width="33%"}
+
+\vspace{-.5cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [CMakeLists.txt, file
+        ]
+        [\colorbox{pink}{greetings.cpp}, file
+        ]
+        [include
+          [greetings.hpp, file
+          ]
+        ]
+        [\colorbox{pink}{hello.cpp}, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+## EXAMPLE - HEADER NOT FOUND
+
+\vspace{.3cm}
+
+some missing test
+
+\vspace{.3cm}
+
+:::::::::::::: {.columns}
+::: {.column width="67%"}
+
+```{.cmake style=cmakestyle}
+add_library(greetings 
+                STATIC 
+                    greetings.hpp greetings.cpp) 
+add_executable(hello hello.cpp) 
+target_link_libraries(hello PRIVATE greetings)
+```
+
+$\Rightarrow$
+
+```{.bash style=bashstyle}
+$ cmake -B <build-tree> -S <source-tree>
+$ cmake --build ./build
+errro
+```
+
+::: 
+::: {.column width="33%"}
+
+\vspace{-.5cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.cpp, file
+        ]
+        [include
+          [greetings.hpp, file
+          ]
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+
+## PRIVATE
+
+\vspace{.3cm}
+
+Let us set the header search path as a build requirement of the `greetings` library
+
+\vspace{.3cm}
+
+:::::::::::::: {.columns}
+::: {.column width="67%"}
+
+```{.cmake style=cmakestyle}
+add_library(greetings 
+            STATIC 
+              greetings.hpp greetings.cpp) 
+target_include_directories(greetings 
+            PRIVATE 
+              ${CMAKE_CURRENT_LIST_DIR}/include)
+add_executable(hello hello.cpp) 
+target_link_libraries(hello PRIVATE greetings)
+```
+
+$\Rightarrow$
+
+```{.bash style=bashstyle}
+$ cmake -B <build-tree> -S <source-tree>
+$ cmake --build ./build
+errro
+```
+
+::: 
+::: {.column width="33%"}
+
+\vspace{-.5cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.cpp, file
+        ]
+        [include
+          [greetings.hpp, file
+          ]
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+## INTERFACE
+
+\vspace{.3cm}
+
+Let us set the header search path as a build requirement of the `greetings` library
+
+\vspace{.3cm}
+
+:::::::::::::: {.columns}
+::: {.column width="67%"}
+
+```{.cmake style=cmakestyle}
+add_library(greetings 
+            STATIC 
+              greetings.hpp greetings.cpp) 
+target_include_directories(greetings 
+            PRIVATE 
+              ${CMAKE_CURRENT_LIST_DIR}/include)
+add_executable(hello hello.cpp) 
+target_link_libraries(hello PRIVATE greetings)
+```
+
+$\Rightarrow$
+
+```{.bash style=bashstyle}
+$ cmake -B <build-tree> -S <source-tree>
+$ cmake --build ./build
+errro
+```
+
+::: 
+::: {.column width="33%"}
+
+\vspace{-.5cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.cpp, file
+        ]
+        [include
+          [greetings.hpp, file
+          ]
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+## PUBLIC
+
+\vspace{.3cm}
+
+Let us set the header search path as a build requirement of the `greetings` library
+
+\vspace{.3cm}
+
+:::::::::::::: {.columns}
+::: {.column width="67%"}
+
+```{.cmake style=cmakestyle}
+add_library(greetings 
+            STATIC 
+              greetings.hpp greetings.cpp) 
+target_include_directories(greetings 
+            PRIVATE 
+              ${CMAKE_CURRENT_LIST_DIR}/include)
+add_executable(hello hello.cpp) 
+target_link_libraries(hello PRIVATE greetings)
+```
+
+$\Rightarrow$
+
+```{.bash style=bashstyle}
+$ cmake -B <build-tree> -S <source-tree>
+$ cmake --build ./build
+errro
+```
+
+::: 
+::: {.column width="33%"}
+
+\vspace{-.5cm}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [greetings
+      [CMakeLists.txt, file
+      ]
+      [src
+        [\colorbox{pink}{CMakeLists.txt}, file
+        ]
+        [greetings.cpp, file
+        ]
+        [include
+          [greetings.hpp, file
+          ]
+        ]
+        [hello.cpp, file
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
+## RECAP
 
 TARGETS ARE LIKE OBJECTS WITH PROPERTIES
 
@@ -329,6 +647,9 @@ INTERFACE libraries have no build specification.
 ## target_link_libraries()
 
 - Use `target_link_libraries()` to express direct dependencies
+
+
+# STOP HERE
 
 ## Example 
 
