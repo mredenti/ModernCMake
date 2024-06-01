@@ -2,7 +2,41 @@
 aspectratio: 169
 ---
 
-# TARGETS
+# TARGETS AND PROPERTIES
+
+
+## TARGETS ARE LIKE OBJECTS WITH PROPERTIES
+
+fdf 
+
+## BUILD SPECIFICATION AND USAGE REQUIREMENTS
+
+- Private populates the non interface property
+- INTERFACE populates the INTERFACE_ property.
+- PUBLIC populates both.
+
+## INTERFACE
+
+INTERFACE libraries have no build specification.
+• They only have usage requirements.
+
+## target_link_libraries()
+
+- Use `target_link_libraries()` to express direct dependencies
+
+## Example 
+
+- target_link_libraries(Foo
+  PUBLIC Bar::Bar
+  PRIVATE Cow::Cow)
+
+- Adds Bar::Bar to the target properties LINK_LIBRARIES and
+INTERFACE_LINK_LIBRARIES.
+- Adds Cow::Cow to the target property LINK_LIBRARIES.
+- Effectively adds all INTERFACE_<property> of Bar::Bar to
+<property> and INTERFACE_<property>.
+- Effectively adds all INTERFACE_<property> of Cow::Cow to
+<property>.
 
 ## WHAT IS A TARGET
 
@@ -21,6 +55,33 @@ It works on a higher level of abstraction. It understands how to build an execut
 All that's required is to tell CMake about the structure of your project, and it will help you build it. 
 We use target to tell CMake about the structure of our project and `target_link_libraries()` to express the dependencies between them.
 
+
+
+## WHAT IS A TARGET
+
+- A target is a node inside the dependecy graph of your project
+
+- Target-centric approach. Each target carries its own 
+
+**build requirements**
+ : Everything that is needed to (successfully) build that target 
+
+**usage requirements**
+ : Everything that is needed to (successfully) use that target as a dependency of another target (propagation occurs by ...)
+
+
+## BUILD REQUIREMENTS 
+
+dfd 
+
+## SETTING TARGET PROPERTIES 
+
+Setting Target Properties
+Target properties are a powerful feature of CMake that allow you to control how a target is built. You can set properties such as the include directories, compile options, and link flags for a target.
+
+target_include_directories(), target_compile_options(), and target_link_libraries() are some of the functions used to set target properties.
+
+By setting these properties, you can customize the build process for each target, giving you fine-grained control over how your project is built.
 
 ## OVERVIEW 
 
@@ -59,138 +120,69 @@ A target in CMake is essentially a logical unit that encapsulates the settings a
 
 - A target maps to a build artifact in the project (think back to the targets encountered in Make)
 
-## TARGETS ARE OBJECTS WITH PROPERTIES (I)
 
-\vspace{.5cm}
+## TARGETS
 
-Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. 
+- A target is declared by either `add_executable()` or `add_library()` commands
 
-\vspace{.4cm}
-
-:::::::::::::: {.columns}
-::: {.column width="80%"}
+- Any target has a collection of properties, which define which define how the build recipe should be produced and how it should be used by other dependent targets in the project.
 
 
-```{.cmake style=cmakestyle}
-add_library(greetings STATIC greetings.hpp greetings.cpp) 
-
-get_target_property(_greetings_type greetings TYPE)
-get_target_property(_greetings_sources greetings SOURCES)
-
-message(STATUS "greetings.TYPE : ${_greetings_type}") 
-message(STATUS "greeting.SOURCES : ${_greetings_sources}")
-```
-
-```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-...
--- greetings.TYPE : STATIC_LIBRARY
--- greeting.SOURCES : greetings.cpp;greetings.hpp 
-```
-
-::: 
-::: {.column width="10%"}
 
 
-\scalebox{0.7}{
-\begin{forest}
-  pic dir tree,
-  where level=0{}{
-    directory,
-  },
-  [ 
-    [greetings
-      [CMakeLists.txt, file
-      ]
-      [src
-        [\colorbox{pink}{CMakeLists.txt}, file
-        ]
-        [greetings.hpp, file
-        ]
-        [greetings.cpp, file
-        ]
-        [hello.cpp, file
-        ]
-      ]
-    ]
-  ]
-\end{forest}
-}
+## TARGET PROPERTIES 
 
-::: 
-::: {.column width="10%"}
+Many CMake objects such as targets, directories and source files have properties associated with them. A property is a key-value pair attached to a specific object. The most generic way to access properties is through the set_property and get_property commands. These commands allow you to set or get a property from any object in CMake that has properties.
 
-::: 
-::::::::::::::
+Any target has a collection of **properties** which define 
+
+- **how** the build artifact should be produced **and**
+- **how** it should be used by other targets in the project that depend on it
+
+## TARGET PROPERTIES (I)
+
+
+
+## TARGET PROPERTIES - COMPILER FLAGS
 
 <!-- 
-  These collection of properties define **how** the build "artifact" should be produced and how it should be used by other dependent targets in the project (usage requirements)
+    To print a target property on screen, we first need to store it in the `<var>` variable and then message() it to the user; we have to read them one by one. 
 -->
 
-## TARGETS ARE OBJECTS WITH PROPERTIES (II)
+\vspace{1cm}
 
-\vspace{.35cm}
-
-Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. 
-
-\vspace{.3cm}
+The most fundamental target properties for controlling compiler flags are the following
 
 :::::::::::::: {.columns}
-::: {.column width="80%"}
+::: {.column width="50%"}
 
-
-```{.cmake style=cmakestyle}
-include(CMakePrintHelpers)
-
-add_executable(hello hello.cpp)
-target_link_libraries(hello greetings)
-
-cmake_print_properties(TARGETS hello
-                    PROPERTIES TYPE SOURCES LINK_LIBRARIES)
-```
-
-```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-...
--- hello.TYPE : EXECUTABLE
--- hello.SOURCES : hello.cpp 
--- hello.LINK_LIBRARIES : greetings
-```
-
-::: 
-::: {.column width="10%"}
-
-
-\scalebox{0.7}{
-\begin{forest}
-  pic dir tree,
-  where level=0{}{
-    directory,
-  },
-  [ 
-    [greetings
-      [CMakeLists.txt, file
-      ]
-      [src
-        [\colorbox{pink}{CMakeLists.txt}, file
-        ]
-        [greetings.hpp, file
-        ]
-        [greetings.cpp, file
-        ]
-        [hello.cpp, file
-        ]
-      ]
-    ]
-  ]
-\end{forest}
+```plantuml
+object TARGET{
+    INCLUDE_DIRECTORIES
+    COMPILE_DEFINITIONS
+    <LANG>_STANDARD
+    COMPILE_OPTIONS
+    . . .
 }
+```
 
 ::: 
-::: {.column width="10%"}
+::: {.column width="50%"}
+
 
 ::: 
 ::::::::::::::
+
+
+## TARGET PROPERTIES - LINK FLAGS 
+
+The target properties associated with linker flags
+
+**Put a link to the full list of properties**
+
+**Footnote: CMake defines a large list of "known properties" (see the Further reading section) that are available depending on the type of the target (executable, library, or custom).**
+
+
 
 
 ## DEFINITION OF A TARGET - WHAT IS A TARGET
@@ -248,45 +240,6 @@ Properties set on a target can be transitive, meaning they propagate through the
 In summary, targets in CMake are the building blocks of the build system, representing the various components of a software project. They encapsulate source files, build settings, and dependencies, providing a structured and maintainable way to manage the build process. By understanding and effectively using targets, developers can create robust and flexible build systems for their projects
 
 put a graph here ...
-
-## TARGET PROPERTIES - COMPILER FLAGS
-
-<!-- 
-    To print a target property on screen, we first need to store it in the `<var>` variable and then message() it to the user; we have to read them one by one. 
--->
-
-\vspace{1cm}
-
-The most fundamental target properties for controlling compiler flags are the following
-
-:::::::::::::: {.columns}
-::: {.column width="50%"}
-
-```plantuml
-object TARGET{
-    INCLUDE_DIRECTORIES
-    COMPILE_DEFINITIONS
-    <LANG>_STANDARD
-    COMPILE_OPTIONS
-    . . .
-}
-```
-
-::: 
-::: {.column width="50%"}
-
-
-::: 
-::::::::::::::
-
-
-## TARGET PROPERTIES - LINK FLAGS 
-
-The target properties associated with linker flags
-
-**Put a link to the full list of properties**
-
-**Footnote: CMake defines a large list of "known properties" (see the Further reading section) that are available depending on the type of the target (executable, library, or custom).**
 
 ## TARGETS ARE OBJECTS WITH PROPERTIES 
 
@@ -533,3 +486,22 @@ The concept of properties isn't unique to targets; CMake supports setting proper
 ```{.cmake style=cmakestyle}
 set_property(TARGET <target> PROPERTY <name> <value>)
 ```
+
+
+## UNDERSTANDING VISIBILITY LEVELS 
+
+dfdkfjd
+
+
+## PRIVATE 
+
+
+D;FDKFLDF 
+
+
+## INTERFACE
+
+
+FDFSDF
+
+## PUBLIC

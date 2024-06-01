@@ -1,3 +1,57 @@
+## WHY EFFICIENT BUILD SYSTEMS MATTER 
+
+
+- Today we are going to talk about CMake
+- Good tools matter when it comes to building software
+- The thing about CMake is very flexible, you can do a lot of things in order to boost productivity
+
+
+## POPULARITY 
+
+- Given its popularity ...
+
+
+## WHAT IS CMAKE 
+
+- CMake is a BUILD FILE generator, meaning it generates files; it does not build. 
+
+- The CMake language is platform and compiler indipendent language
+
+- Not the nicest language, too many features, ...
+
+- The CMake ecocsystem is a family of tools for building, testing and packaging your software
+
+- CMake puts a lot of effort on backwards compatibility, so that old CMake scripts should work
+
+## CMAKE FEATURES 
+
+- CMake itself is a cross--platform software, meaning that it will run on a lot different platforms: OS, Windows, Linux
+
+- Multiple Generators: As we already mentioned CMake is a build file generator and so it will build files for many IDEs and build tools
+
+- Direct CMake integration: given its popularity it is now directly supported and bundled with major IDEs; you can build CMake projects directly from the IDE..
+
+
+- Language is quite flexible and also works in scripting mode as if it was bash; but if you were on windows you do not want to write in power shell or whatever
+
+
+
+## CMAKE LANGUAGE 
+
+- The CMake language is **command based**, one command per line
+  
+- All of these commands are procedures, they do not return values. And so you can not nest them
+
+
+- Command may have many arguments and overloads. For instance, the command `file()` has multiple profiles, one allows to write data to file, another will read data from file. 
+
+- The CMake documentation will show you all the different variants, examples with the different parameters that you can pass
+
+## BASIC STEPS WITH CMAKE 
+
+- Detection of the compiler, build flags, configuration
+
+
 # Introduction to CMake
 
 ## MOTIVATION 

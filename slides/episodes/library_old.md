@@ -511,6 +511,13 @@ add_library(greetings STATIC greetings.hpp greetings.cpp)
 target_link_libraries(hello-world greetings)
 ```
 
+- Links the library into the executable. 
+  
+    ```{.bash style=bashstyle}
+    $ cmake --build ./build --target greetings
+    ... libgreetings.a
+    ```
+
 <!--
   We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
 
@@ -545,273 +552,7 @@ $\Rightarrow$ the **greetings** library is always built before being linked it t
   library (on GNU/Linux) and the hello-world executable
 -->
 
-## HOW IT WORKS - TARGET PROPERTIES (I)
-
-\vspace{.4cm}
-
-A target is a logical unit that encapsulates the **properties** required to build a component of your software project.
-
-\vspace{.3cm}
-
-:::::::::::::: {.columns}
-::: {.column width="80%"}
-
-
-```{.cmake style=cmakestyle}
-add_library(greetings STATIC greetings.hpp greetings.cpp) 
-
-get_target_property(_greetings_type greetings TYPE)
-get_target_property(_greetings_sources greetings SOURCES)
-
-message(STATUS "greetings.TYPE : ${_greetings_type}") 
-message(STATUS "greeting.SOURCES : ${_greetings_sources}")
-```
-
-```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-...
--- greetings.TYPE : STATIC_LIBRARY
--- greeting.SOURCES : greetings.cpp;greetings.hpp 
-```
-
-::: 
-::: {.column width="10%"}
-
-
-\scalebox{0.7}{
-\begin{forest}
-  pic dir tree,
-  where level=0{}{
-    directory,
-  },
-  [ 
-    [greetings
-      [CMakeLists.txt, file
-      ]
-      [src
-        [\colorbox{pink}{CMakeLists.txt}, file
-        ]
-        [greetings.hpp, file
-        ]
-        [greetings.cpp, file
-        ]
-        [hello.cpp, file
-        ]
-      ]
-    ]
-  ]
-\end{forest}
-}
-
-::: 
-::: {.column width="10%"}
-
-::: 
-::::::::::::::
-
-<!-- 
-  These collection of properties define **how** the build "artifact" should be produced and how it should be used by other dependent targets in the project (usage requirements)
--->
-
-## HOW IT WORKS - TARGET PROPERTIES (II)
-
-\vspace{.3cm}
-
-A target is a logical unit that encapsulates the **properties** required to build a component of your software project.
-
-\vspace{.3cm}
-
-:::::::::::::: {.columns}
-::: {.column width="80%"}
-
-
-```{.cmake style=cmakestyle}
-include(CMakePrintHelpers)
-
-add_executable(hello hello.cpp)
-target_link_libraries(hello greetings)
-
-cmake_print_properties(TARGETS hello
-                    PROPERTIES TYPE SOURCES LINK_LIBRARIES)
-```
-
-```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-...
--- hello.TYPE : EXECUTABLE
--- hello.SOURCES : hello.cpp 
--- hello.LINK_LIBRARIES : greetings
-```
-
-::: 
-::: {.column width="10%"}
-
-
-\scalebox{0.7}{
-\begin{forest}
-  pic dir tree,
-  where level=0{}{
-    directory,
-  },
-  [ 
-    [greetings
-      [CMakeLists.txt, file
-      ]
-      [src
-        [\colorbox{pink}{CMakeLists.txt}, file
-        ]
-        [greetings.hpp, file
-        ]
-        [greetings.cpp, file
-        ]
-        [hello.cpp, file
-        ]
-      ]
-    ]
-  ]
-\end{forest}
-}
-
-::: 
-::: {.column width="10%"}
-
-::: 
-::::::::::::::
-
-## HOW IT WORKS - DEPENDENCY GRAPH (I)
-
-<!-- 
-    To print a target property on screen, we first need to store it in the `<var>` variable and then message() it to the user; we have to read them one by one. 
--->
-
-\vspace{.5cm}
-
-\centering 
-
-**A target is a node inside the dependecy graph of your project**
-
-\vspace{.4cm}
-
-:::::::::::::: {.columns}
-::: {.column width="60%"}
-
-```{.cmake style=cmakestyle}
-# src/CMakeLists.txt
-add_library(greetings 
-      STATIC 
-      greetings.hpp greetings.cpp) 
-
-add_executable(hello hello.cpp)
-target_link_libraries(hello greetings)
-```
-
-```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-$ cmake --build <build-tree>
-... missing output
-```
-
-::: 
-::: {.column width="35%"}
-
-```plantuml
-top to bottom direction
-
-title Greetings : Dependency Graph
-
-object hello{
-  TYPE : EXECUTABLE
-  SOURCES : hello.cpp 
-  LINK_LIBRARIES : greetings
-  . . . 
-}
-
-object greetings{
-    TYPE : STATIC_LIBRARY
-    SOURCES : greetings.cpp/.hpp
-    LINK_LIBRARIES : NOT_FOUND
-    . . .
-}
-
-greetings --> hello 
-
-```
-
-::: 
-::: {.column width="5%"}
-
-::: 
-::::::::::::::
-
-
-## HOW IT WORKS - DEPENDENCY GRAPH (II)
-
-<!-- 
-    To print a target property on screen, we first need to store it in the `<var>` variable and then message() it to the user; we have to read them one by one. 
--->
-
-\vspace{.5cm}
-
-\centering 
-
-**Direct dependencies between targets are created with `target_link_libraries()`**
-
-\vspace{.4cm}
-
-:::::::::::::: {.columns}
-::: {.column width="60%"}
-
-```{.cmake style=cmakestyle}
-# src/CMakeLists.txt
-add_library(greetings 
-      STATIC 
-      greetings.hpp greetings.cpp) 
-
-add_executable(hello hello.cpp)
-# target_link_libraries(hello greetings)
-```
-
-```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-$ cmake --build <build-tree>
-... missing output
-```
-
-::: 
-::: {.column width="35%"}
-
-```plantuml
-top to bottom direction
-
-title Greetings : Dependency Graph
-
-object hello{
-  TYPE : EXECUTABLE
-  SOURCES : hello.cpp 
-  LINK_LIBRARIES : NOT_FOUND
-  . . . 
-}
-
-object greetings{
-    TYPE : STATIC_LIBRARY
-    SOURCES : greetings.cpp/.hpp
-    LINK_LIBRARIES : NOT_FOUND
-    . . .
-}
-
-greetings -[hidden]-> hello 
-
-```
-
-::: 
-::: {.column width="5%"}
-
-::: 
-::::::::::::::
-
-
-
-## LIBRARY TYPES: STATIC, SHARED, OBJECT 
+## LIBRARY TYPES: STATIC, SHARED, OBJECT MODULE 
 
             
 ```{.cmake style=cmakestyle}
@@ -830,12 +571,6 @@ add_library(<name> [STATIC | SHARED | OBJECT ]
 **OBJECT** 
   : used to compile the sources in the list given to `add_library()` to object files, but then neither archiving them into a static library nor linking them into a shared object. 
   
-
-
-## SHOW OBJECT 
-
-SHOW SAME EXAMPLES WITH OBJECT TYPES TO CLARIFY THE DIFFERENCE WITH OUTPUT AS WELL
-
 <!-- 
 
 CMake accepts other values as valid for the second argument to add_library and we will
@@ -889,10 +624,6 @@ manual/ cmake- buildsystem. 7. html#alias- libraries
 
 -->
 
-<!-- 
-
-I WILL SHOW THIS IN THE EXERCISES AND TELL THEM TO OPEN UP THE LINK
-
 ## GRAPHVIZ OF DEPENDENCIES
 
 - CMake can use the Graphviz graph visualization software (http://www.graphviz.org) to
@@ -906,8 +637,6 @@ generate the dependency graph of a project:
 The generated diagram will show dependencies between targets in different directories
 
 show the picture
-
--->
 
 <!--
 
