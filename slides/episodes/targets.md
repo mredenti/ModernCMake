@@ -389,8 +389,8 @@ some missing test
 
 ```{.cmake style=cmakestyle}
 add_library(greetings 
-                STATIC 
-                    greetings.hpp greetings.cpp) 
+            STATIC 
+              greetings.hpp greetings.cpp) 
 add_executable(hello hello.cpp) 
 target_link_libraries(hello PRIVATE greetings)
 ```
@@ -442,7 +442,7 @@ errro
 
 \vspace{.3cm}
 
-Let us set the header search path as a build requirement of the `greetings` library
+Let us set the header search path as a **build requirement** of the `greetings` library
 
 \vspace{.3cm}
 
@@ -505,7 +505,7 @@ errro
 
 \vspace{.3cm}
 
-Let us set the header search path as a build requirement of the `greetings` library
+Let us set the header search path as a **usage requirement** of the `greetings` library
 
 \vspace{.3cm}
 
@@ -517,7 +517,7 @@ add_library(greetings
             STATIC 
               greetings.hpp greetings.cpp) 
 target_include_directories(greetings 
-            PRIVATE 
+            INTERFACE 
               ${CMAKE_CURRENT_LIST_DIR}/include)
 add_executable(hello hello.cpp) 
 target_link_libraries(hello PRIVATE greetings)
@@ -569,7 +569,7 @@ errro
 
 \vspace{.3cm}
 
-Let us set the header search path as a build requirement of the `greetings` library
+Let us set the header search path as a **build and usage** requirement of the `greetings` library
 
 \vspace{.3cm}
 
@@ -581,7 +581,7 @@ add_library(greetings
             STATIC 
               greetings.hpp greetings.cpp) 
 target_include_directories(greetings 
-            PRIVATE 
+            PUBLIC 
               ${CMAKE_CURRENT_LIST_DIR}/include)
 add_executable(hello hello.cpp) 
 target_link_libraries(hello PRIVATE greetings)
