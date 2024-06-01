@@ -712,7 +712,7 @@ $ cmake --build <build-tree>
 ```
 
 ::: 
-::: {.column width="35%"}
+::: {.column width="40%"}
 
 ```plantuml
 top to bottom direction
@@ -737,8 +737,6 @@ greetings --> hello
 
 ```
 
-::: 
-::: {.column width="5%"}
 
 ::: 
 ::::::::::::::
@@ -778,7 +776,7 @@ $ cmake --build <build-tree>
 ```
 
 ::: 
-::: {.column width="35%"}
+::: {.column width="40%"}
 
 ```plantuml
 top to bottom direction
@@ -803,8 +801,6 @@ greetings -[hidden]-> hello
 
 ```
 
-::: 
-::: {.column width="5%"}
 
 ::: 
 ::::::::::::::

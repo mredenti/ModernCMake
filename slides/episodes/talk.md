@@ -76,7 +76,12 @@
 
 
 
+## TARGET CONFIGURATION
 
+- For your targets you  need to define include directories, to sepcify where are the headers, 
+- You need to specify compile definitions, preprocessor macros, definitios 
+- compile options (for example if i want to define all of the warnings)
+- All of these commands have visibility levels
 
 
 
