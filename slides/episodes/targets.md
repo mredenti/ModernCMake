@@ -71,7 +71,7 @@ We use target to tell CMake about the structure of our project and `target_link_
 
 ## TARGET PROPERTIES
 
-A target is a node <!-- logical unit --> inside the dependecy graph of your project that encapsulates **properties** subdivided in two categories:
+- A target is a node <!-- logical unit --> inside the dependecy graph of your project that encapsulates **properties** subdivided in two categories:
 
   **BUILD REQUIREMENTS**
     : Everything that is needed to build that target 
@@ -79,7 +79,7 @@ A target is a node <!-- logical unit --> inside the dependecy graph of your proj
   **USAGE REQUIREMENTS**
     : Everything that is needed to use that target as a dependency of another target <!-- propagation occurs by target_link_libraries() -->
 
-e.g. 
+- Example: 
 
   - source files (normally not a usage requirement)
   - include search paths
@@ -87,7 +87,7 @@ e.g.
   - link-dependencies
   - compiler/linker options
 
-## TARGET PROPERTIES -  SETTING BUILD REQUIREMENTS
+## TARGET PROPERTIES -  SETTING BUILD REQUIREMENTS (I)
 
 
 :::::::::::::: {.columns}
@@ -100,19 +100,19 @@ e.g.
 INCLUDE_DIRECTORIES
 
 ```{.cmake style=cmakestyle} 
-target_include_directories(myTarget PRIVATE main.cpp)
+target_include_directories(mylib PRIVATE include)
 ```
 
 COMPILE_DEFINITIONS
 
 ```{.cmake style=cmakestyle} 
-target_compile_definitions(myTarget PRIVATE main.cpp)
+target_compile_definitions(mylib PRIVATE TYPE=double)
 ```
 
 COMPILE_OPTIONS
 
 ```{.cmake style=cmakestyle} 
-target_compile_options(myTarget PRIVATE main.cpp)
+target_compile_options(mylib PRIVATE -march=native)
 ```
 
 \vspace{.2cm}
@@ -123,19 +123,25 @@ target_compile_options(myTarget PRIVATE main.cpp)
 LINK_LIBRARIES
 
 ```{.cmake style=cmakestyle} 
-target_link_libraries(myTarget PRIVATE main.cpp)
+target_link_libraries(mylib PRIVATE m)
 ```
 
 :::
 ::: {.column width="25%"}
 
+\vspace{2cm}
+
 ```plantuml
+skinparam defaultFontSize 18
 top to bottom direction
 
-object greetings{
+object mylib{
     TYPE : STATIC_LIBRARY
-    SOURCES : greetings.cpp/.hpp
-    LINK_LIBRARIES : NOT_FOUND
+    SOURCES : a.cpp;b.cpp
+    INCLUDE_DIRECTORIES: include
+    COMPILE_DEFINITIONS : TYPE=double
+    COMPILE_OPTIONS : -march=native
+    LINK_LIBRARIES : m
     . . .
 }
 
@@ -145,7 +151,13 @@ object greetings{
 ::::::::::::::
 
 
-## TARGET PROPERTIES -  SETTING USAGE REQUIREMENTS
+## TARGET PROPERTIES -  SETTING BUILD REQUIREMENTS (II)
+
+
+show just mock output from the previous slide for a build...
+
+
+## TARGET PROPERTIES -  SETTING USAGE REQUIREMENTS (I)
 
 :::::::::::::: {.columns}
 ::: {.column width="75%"}
@@ -157,19 +169,19 @@ object greetings{
 INTERFACE_INCLUDE_DIRECTORIES
 
 ```{.cmake style=cmakestyle} 
-target_include_directories(myTarget INTERFACE main.cpp)
+target_include_directories(mylib INTERFACE include)
 ```
 
 INTERFACE_COMPILE_DEFINITIONS
 
 ```{.cmake style=cmakestyle} 
-target_compile_definitions(myTarget INTERFACE main.cpp)
+target_compile_definitions(mylib INTERFACE TYPE=double)
 ```
 
 INTERFACE_COMPILE_OPTIONS
 
 ```{.cmake style=cmakestyle} 
-target_compile_options(myTarget INTERFACE main.cpp)
+target_compile_options(mylib INTERFACE -march=native)
 ```
 
 \vspace{.2cm}
@@ -180,7 +192,7 @@ target_compile_options(myTarget INTERFACE main.cpp)
 INTERFACE_LINK_LIBRARIES
 
 ```{.cmake style=cmakestyle} 
-target_link_libraries(myTarget INTERFACE main.cpp)
+target_link_libraries(mylib INTERFACE m)
 ```
 
 :::
@@ -191,27 +203,36 @@ target_link_libraries(myTarget INTERFACE main.cpp)
 ```plantuml
 top to bottom direction
 
-object greetings{
+object mylib{
     TYPE : STATIC_LIBRARY
-
-    SOURCES : greetings.cpp/.hpp
     
-    INTERFACE_LINK_LIBRARIES : NOT_FOUND
+    SOURCES : a.cpp;b.cpp
     
-    INTERFACE_INCLUDE_DIRECTORIES: NOT_FOUND
+    INTERFACE_INCLUDE_DIRECTORIES: include
+    
+    INTERFACE_COMPILE_DEFINITIONS : TYPE=double
+    
+    INTERFACE_COMPILE_OPTIONS : -march=native
+    
+    INTERFACE_LINK_LIBRARIES : m
     
     . . .
 }
 
 ```
-
 ::: 
 ::::::::::::::
 
-## TARGET PROPERTIES -  SETTING BUILD AND USAGE REQUIREMENTS
+
+## TARGET PROPERTIES -  SETTING USAGE REQUIREMENTS (II)
+
+SHOW OUTPUT
+
+
+## TARGET PROPERTIES -  SETTING BUILD AND USAGE REQUIREMENTS (I)
 
 :::::::::::::: {.columns}
-::: {.column width="75%"}
+::: {.column width="70%"}
 
 \vspace{.2cm}
 
@@ -220,19 +241,19 @@ object greetings{
 (INTERFACE_)INCLUDE_DIRECTORIES
 
 ```{.cmake style=cmakestyle} 
-target_include_directories(myTarget PUBLIC main.cpp)
+target_include_directories(mylib PUBLIC include)
 ```
 
 (INTERFACE_)COMPILE_DEFINITIONS
 
 ```{.cmake style=cmakestyle} 
-target_compile_definitions(myTarget PUBLIC main.cpp)
+target_compile_definitions(mylib PUBLIC TYPE=double)
 ```
 
 (INTERFACE_)COMPILE_OPTIONS
 
 ```{.cmake style=cmakestyle} 
-target_compile_options(myTarget PUBLIC main.cpp)
+target_compile_options(mylib PUBLIC -march=native)
 ```
 
 \vspace{.2cm}
@@ -243,14 +264,51 @@ target_compile_options(myTarget PUBLIC main.cpp)
 (INTERFACE_)LINK_LIBRARIES
 
 ```{.cmake style=cmakestyle} 
-target_link_libraries(myTarget PUBLIC main.cpp)
+target_link_libraries(mylib PUBLIC m)
 ```
 
 :::
-::: {.column width="25%"}
+::: {.column width="30%"}
+
+\vspace{2cm}
+
+```plantuml
+top to bottom direction
+
+object mylib{
+    TYPE : STATIC_LIBRARY
+    
+    SOURCES : a.cpp;b.cpp
+
+    INCLUDE_DIRECTORIES: include
+    
+    COMPILE_DEFINITIONS : TYPE=double
+    
+    COMPILE_OPTIONS : -march=native
+    
+    LINK_LIBRARIES : m
+    
+    INTERFACE_INCLUDE_DIRECTORIES: include
+    
+    INTERFACE_COMPILE_DEFINITIONS : TYPE=double
+    
+    INTERFACE_COMPILE_OPTIONS : -march=native
+    
+    INTERFACE_LINK_LIBRARIES : m
+    
+    . . .
+}
+
+```
 
 ::: 
 ::::::::::::::
+
+
+
+## TARGET PROPERTIES -  SETTING BUILD AND USAGE REQUIREMENTS (II)
+
+SHOW OUTPUT
 
 
 ## EXTRA
