@@ -4,7 +4,7 @@ aspectratio: 169
 
 # BASIC STEPS WITH CMAKE
 
-## HELLO WORLD WITH CMAKE!
+## HELLO, WORLD!
 
 \lstset{
   xleftmargin=0.0\linewidth,
@@ -54,7 +54,60 @@ end program hello
 ::: 
 ::::::::::::::
 
-## HELLO WORLD WITH CMAKE!
+## ## MANUAL COMPILATION OF HELLO, WORLD!
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+\vspace{.5cm}
+
+**CPP**
+
+\vspace{.2cm}
+
+Step 1: Compile object file
+
+```{.shell style=bashstyle}
+g++ -c hello.cpp -o hello.o
+```
+
+\vspace{.2cm}
+
+Step 2: Link object file to create executable
+
+```{.shell style=bashstyle}
+g++ hello.o -o hello
+```
+
+::: 
+::: {.column width="50%"}
+
+\vspace{.5cm}
+
+**FORTRAN**
+
+\vspace{.2cm}
+
+Step 1: Compile object file
+
+```{.shell style=bashstyle}
+gfortran -c hello.cpp -o hello.o
+```
+
+\vspace{.2cm}
+
+Step 2: Link object file to create executable
+
+```{.shell style=bashstyle}
+gfortran hello.o -o hello
+```
+
+
+::: 
+::::::::::::::
+
+
+## HELLO, WORLD! WITH CMAKE
 
 <!--
   Alongside the source file, we need to provide CMake with a description of the operations to perform to configure the project for the build tools. The description is done in the CMake language. 
