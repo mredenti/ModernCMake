@@ -1093,7 +1093,23 @@ and `C`:
 
 ## COMPILATION FLAGS
 
-AN EXAMPLE WITH `CMAKE_CXX_FLAGS`
+<!--
+  Sometimes you may want to set compiler-specific flags or override the default CMake behavior from the command line. This can be useful for enabling optimizations, warnings, or other compiler-specific features.
+-->
+
+\vspace{-1.5cm}
+
+- Setting the `CMAKE_CXX_FLAGS` CMake cache variable from the command line allows for customization of compiler-specific options.
+
+- This can be useful for enabling optimizations, warnings, or other compiler-specific features:
+
+  ```{.bash style=bashstyle}
+  $ cmake -B <build-tree> -S <source-tree> \
+              -DCMAKE_CXX_FLAGS="-O2 -Wall -Wextra"
+  @[ 50%] Building CXX object main.cxx.o@
+  /usr/bin/c++ -O2 -Wall -Wextra -o main.o -c main.cpp
+  ```
+
 
 ## BUILD CONFIGURATONS 
 
