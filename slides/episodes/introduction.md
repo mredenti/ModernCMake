@@ -692,17 +692,13 @@ CMake modules extend the functionality of the language by providing predefined s
 | MORNING                    | AFTERNOON                  |
 | -------------------------- | -------------------------- |
 | **Introduction**           | **Finding dependencies**   |
-|                            |                            |
 | **Basic Steps with CMake** | **Testing**                |
-|                            |                            |
 | **Creating a library**     | **Generator expressions**  |
-|                            |                            |
 | **Variables**              | **Conclusion and wrap up** |
 |                            |                            |
 | **Coffe break**            | **Hands on**               |
 |                            |                            |
 | **Targets**                |                            |
-|                            |                            |
 | **Hands on**               |                            |
 
 
