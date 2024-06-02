@@ -352,7 +352,44 @@ On Galileo100
   ccmake  cmake  cpack  ctest
   ```
 
-## STEP 1 - BUILD FILES GENERATION
+
+## STEP 1 - GENERATE BUILD FILES
+
+\vspace{-2cm}
+
+\centering The first step with **cmake** is to **generate project files**.
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="75%"}
+
+  ```{.bash style=bashstyle}
+  $ cmake -B ./build -S ./hello-world
+  ```
+
+::: 
+::: {.column width="25%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [CMakeLists.txt, file
+      ]
+      [hello.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+:::
+::::::::::::::
+
+## STEP 1 - GENERATE BUILD FILES
 
 \centering The first step with **cmake** is to **generate project files**.
 
@@ -409,7 +446,8 @@ On Galileo100
 ::::::::::::::
 
 
-## STEP 1 - BUILD FILES GENERATION (Cont.)
+
+## STEP 1 - GENERATE BUILD FILES (Cont.)
 
 :::::::::::::: {.columns}
 ::: {.column width="65%"}
