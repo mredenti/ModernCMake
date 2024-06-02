@@ -618,11 +618,11 @@ $\Rightarrow$ the **greetings** library is always built before being linked it t
 
 ## HOW IT WORKS - TARGET PROPERTIES (I)
 
-\vspace{.4cm}
-
-A target is a logical unit that encapsulates the **properties** required to build a component of your software project.
-
 \vspace{.3cm}
+
+In CMake, a target has a collection of **properties** which define how that component of your project should be built.
+
+\vspace{.2cm}
 
 :::::::::::::: {.columns}
 ::: {.column width="80%"}
@@ -639,7 +639,7 @@ message(STATUS "greeting.SOURCES : ${_greetings_sources}")
 ```
 
 ```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
+$ cmake -B ./build -S ./greetings
 ...
 -- greetings.TYPE : STATIC_LIBRARY
 -- greeting.SOURCES : greetings.cpp;greetings.hpp 
@@ -688,9 +688,9 @@ $ cmake -B <build-tree> -S <source-tree>
 
 \vspace{.3cm}
 
-A target is a logical unit that encapsulates the **properties** required to build a component of your software project.
+In CMake, a target has a collection of **properties** which define how that component of your project should be built.
 
-\vspace{.3cm}
+\vspace{.2cm}
 
 :::::::::::::: {.columns}
 ::: {.column width="80%"}
@@ -707,7 +707,7 @@ cmake_print_properties(TARGETS hello
 ```
 
 ```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
+$ cmake -B ./build -S ./greetings
 ...
 -- hello.TYPE : EXECUTABLE
 -- hello.SOURCES : hello.cpp 
@@ -777,9 +777,11 @@ target_link_libraries(hello greetings)
 ```
 
 ```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-$ cmake --build <build-tree>
-... missing output
+$ cmake -B ./build -S ./greetings
+$ cmake --build ./build
+...
+@[100%] Linking CXX executable hello@
+@[100%] Built target hello@
 ```
 
 ::: 
@@ -841,9 +843,12 @@ add_executable(hello hello.cpp)
 ```
 
 ```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
-$ cmake --build <build-tree>
-... missing output
+$ cmake -B ./build -S ./greetings
+$ cmake --build ./build
+...
+@[100%] Linking CXX executable hello@
+...: In function `main':
+...: undefined reference to `say_hello()'
 ```
 
 ::: 
