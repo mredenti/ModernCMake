@@ -6,7 +6,7 @@ aspectratio: 169
 
 # CREATING A LIBRARY 
 
-## OVERVIEW
+## MOTIVATION
 
 <!-- 
   BUILDING AND LINKING STATIC AND SHARED LIBRARIES
@@ -22,13 +22,50 @@ aspectratio: 169
   grouped under their own directories, or for files belonging to logical functional groupings to be in
   their own part of the project’s directory hierarchy. While the directory structure may be driven by
   how developers think of the project, the way the project is structured also impacts the build system.
+
+  
+WHY USE LIBRARIES IN LARGE-SCALE PROJECTS?
+Modularity & Structure:
+
+Organize code into logical entities.
+Separate concerns for better readability and maintenance.
+Code Reuse:
+
+Share common functionality across multiple targets.
+Promote reusability and reduce redundancy.
+Efficient Development:
+
+Faster compilation times by isolating changes.
+Simplify and speed up the build process.
+Maintainability:
+
+Easier to manage, update, and debug large codebases.
+Improve overall project structure and scalability.
+
+Mature applications are often built from many components, and I don't mean external dependencies here. Specifically, I'm talking about internal libraries. Adding them to the project is useful from a structural perspective, as related things are packaged together in a single logical entity. And they can be linked with other targets – another library or an executable. This is especially convenient when multiple targets are using the same library.
+
+As software developers, we deliberately draw boundaries and designate components to group one or more units of translation (.cpp files). We do it for multiple reasons: to increase code readability, manage coupling and connascence, speed up the build process, and finally, extract the reusable components.
 -->
 
-- Most projects consist of multiple source files
+\vspace{.1cm}
 
-- Splitting code into multiple files enhances modularity, code reuse, and separation of concerns
+- Large scale projects consist of multiple source files organised in logical components to separate concerns for better readability and maintenance. 
+  
+\vspace{.5cm}
 
-- Using libraries simplifies code management and speeds up recompilation
+- In this context, the use of libraries enables:
+
+  Code Reuse
+
+    : Share common functionality across multiple targets.
+
+  Efficient Development
+    
+    : Faster compilation times by isolating changes.
+
+  Maintainability
+    
+    : Easier to manage, update, and debug large codebases.
 
 <!-- 
   Why Use Libraries?
@@ -43,11 +80,6 @@ aspectratio: 169
   and managing larger projects effectively, ensuring better code maintenance and scalability.
 -->
 
-BUT WHY DO WE NEED LIBRARIES? THAT AIN'T CLEAR! 
-
-Mature applications are often built from many components, and I don't mean external dependencies here. Specifically, I'm talking about internal libraries. Adding them to the project is useful from a structural perspective, as related things are packaged together in a single logical entity. And they can be linked with other targets – another library or an executable. This is especially convenient when multiple targets are using the same library.
-
-As software developers, we deliberately draw boundaries and designate components to group one or more units of translation (.cpp files). We do it for multiple reasons: to increase code readability, manage coupling and connascence, speed up the build process, and finally, extract the reusable components.
 
 ## A GREETINGS LIBRARY - SET UP (I)
 
@@ -55,7 +87,6 @@ As software developers, we deliberately draw boundaries and designate components
 ::: {.column width="65%"}
 
 ```c++
-// greetings/src/greetings.hpp
 #ifndef GREETINGS_H
 #define GREETINGS_H
 
@@ -101,7 +132,6 @@ namespace greetings {
 ::: {.column width="65%"}
 
 ```c++
-// greetings/src/greetings.cpp
 #include <iostream>
 #include "greetings.hpp"
 
@@ -373,11 +403,36 @@ add_subdirectory(src)
   $\Rightarrow$ BUILD $\Rightarrow$ RUN
 -->
 
+\vspace{-5.3cm}
 
 Configure and generate project files  
     
 ```{.bash style=bashstyle}
-$ cmake -B ../build --trace-source=CMakeLists.txt 
+$ cmake -B ./build -S ./greetings --trace-source=CMakeLists.txt 
+```
+
+## GENERATE PROJECT FILES
+
+\vspace{-2.9cm}
+
+Configure and generate project files  
+    
+```{.bash style=bashstyle}
+$ cmake -B ./build -S ./greetings --trace-source=CMakeLists.txt 
+<>/greetings/CMakeLists.txt(1): @cmake_minimum_required(VERSION 3.21)@
+<>/greetings/CMakeLists.txt(3): @project(Greetings LANGUAGES CXX)@
+-- The CXX compiler identification is GNU 8.4.1
+. . . 
+-- Detecting CXX compile features - done
+<>/greetings/CMakeLists.txt(5): @add_subdirectory(src)@
+```
+
+## GENERATE PROJECT FILES
+
+Configure and generate project files  
+    
+```{.bash style=bashstyle}
+$ cmake -B ./build -S ./greetings --trace-source=CMakeLists.txt 
 <>/greetings/CMakeLists.txt(1): cmake_minimum_required(VERSION 3.21)
 <>/greetings/CMakeLists.txt(3): project(Greetings LANGUAGES CXX)
 -- The CXX compiler identification is GNU 8.4.1
@@ -385,11 +440,11 @@ $ cmake -B ../build --trace-source=CMakeLists.txt
 -- Detecting CXX compile features - done
 <>/greetings/CMakeLists.txt(5): add_subdirectory(src)
 <>/greetings/src/CMakeLists.txt(1): 
-        add_library(greetings STATIC greetings.cpp greetings.hpp)
+        @add_library(greetings STATIC greetings.cpp greetings.hpp)@
 <>/greetings/src/CMakeLists.txt(8): 
-        add_executable(hello hello.cpp)
+        @add_executable(hello hello.cpp)@
 <>/greetings/src/CMakeLists.txt(12): 
-        target_link_libraries(hello greetings)
+        @target_link_libraries(hello greetings)@
 -- Configuring done
 -- Generating done
 -- Build files have been written to: <>/build
@@ -397,6 +452,13 @@ $ cmake -B ../build --trace-source=CMakeLists.txt
 
 ## BUILD THE GREETINGS LIBRARY
 
+\vspace{-4cm}
+
+```{.bash style=bashstyle}
+$ cmake --build ./build --target greetings -v
+```
+
+## BUILD THE GREETINGS LIBRARY
 
 ```{.bash style=bashstyle}
 $ cmake --build ./build --target greetings -v
@@ -415,6 +477,7 @@ cd <>/build/src
 . . . 
 [100%] Built target greetings
 ```
+
 
 ## BUILD AND LINK THE HELLO PROGRAM TO GREETINGS
 
@@ -826,11 +889,6 @@ add_library(<name> [STATIC | SHARED | OBJECT ]
 **OBJECT** 
   : used to compile the sources in the list given to `add_library()` to object files, but then neither archiving them into a static library nor linking them into a shared object. 
   
-
-
-## SHOW OBJECT 
-
-SHOW SAME EXAMPLES WITH OBJECT TYPES TO CLARIFY THE DIFFERENCE WITH OUTPUT AS WELL
 
 <!-- 
 
