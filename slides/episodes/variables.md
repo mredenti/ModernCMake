@@ -791,9 +791,7 @@ set(<variable> <value>... CACHE <type> <docstring>)
   Setting a boolean cache variable is such a common need that CMake provides a separate command for it.
 -->
 
-. . . 
-
-- Enable CUDA language if required
+- Another example: Enable CUDA language if required
     
   ```{.cmake style=cmakestyle}  
   # set(ENABLE_CUDA "OFF" CACHE BOOL "Build project with CUDA enabled")
