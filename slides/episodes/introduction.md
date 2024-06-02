@@ -45,14 +45,6 @@ Targets can have dependencies between them. Ex. An executable target depending o
 
 There are some target types which are not IMPORTED which also have nothing to build (Ex. interface libraries, and other types you can read about in the add_library docs, but those are more "advanced" features).
 
-## OTHER 
-
-The module will produce a text file that we can import to the Graphviz visualization software, which can render an image or produce a PDF or SVG file that can be stored as part of the software documentation. Everybody loves great documentation, but hardly anyone likes to create it – now, you don't need to!
-
-If you're in a rush, you can even run Graphviz straight from your browser at this address:
-
-https://dreampuf.github.io/GraphvizOnline/
-
 ## EXTREMELY IMPORTANT TO ADD 
 
 To reiterate, a library is a collection of files without an entry point whereas an executable is a program with an entry point defined in the main function.
