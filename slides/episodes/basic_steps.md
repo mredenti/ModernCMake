@@ -419,6 +419,51 @@ On Galileo100
     - skipped
   -- Detecting CXX compile features
   -- Detecting CXX compile features - done
+  -- Configuring done (0.9s)
+  -- Generating done (0.1s)
+  -- Build files have been written to: <...>/build
+  ```
+
+::: 
+::: {.column width="25%"}
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [CMakeLists.txt, file
+      ]
+      [hello.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+:::
+::::::::::::::
+
+
+## STEP 1 - GENERATE BUILD FILES
+
+\centering The first step with **cmake** is to **generate project files**.
+
+\vspace{.5cm}
+
+:::::::::::::: {.columns}
+::: {.column width="75%"}
+
+  ```{.bash style=bashstyle}
+  $ cmake -B ./build -S ./hello-world
+  -- The CXX compiler identification is GNU 8.4.1
+  -- Detecting CXX compiler ABI info
+  -- Detecting CXX compiler ABI info - done
+  -- Check for working CXX compiler: /usr/bin/c++ 
+    - skipped
+  -- Detecting CXX compile features
+  -- Detecting CXX compile features - done
   -- @Configuring done (0.9s)@
   -- @Generating done (0.1s)@
   -- Build files have been written to: <...>/build
@@ -608,6 +653,7 @@ To see the output in verbose mode append the `--verbose` flag
   . . .
   /usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o -o hello 
   . . .
+  [100%] Built target hello
   ```
 
 ## STEP 3 - RUN THE HELLO WORLD
