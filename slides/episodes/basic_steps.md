@@ -347,7 +347,7 @@ s.
 On Galileo100
 
   ```{.bash style=bashstyle}
-  $ module load cmake/3.21.4
+  $ module load cmake
   $ ls $CMAKE_PREFIX_PATH/bin
   ccmake  cmake  cpack  ctest
   ```
@@ -656,6 +656,26 @@ To see the output in verbose mode append the `--verbose` flag
   [100%] Built target hello
   ```
 
+## STEP 2 - RUNNING THE NATIVE BUILD SYSTEM (VERBOSE MODE)
+
+To see the output in verbose mode append the `--verbose` flag 
+
+  ```{.bash style=bashstyle}
+  $ cmake --build ./build --verbose
+  . . .
+  [ 50%] Building CXX object CMakeFiles/hello.dir/hello.cpp.o
+  @/usr/bin/c++@    
+    @-MD -MT CMakeFiles/hello.dir/hello.cpp.o@
+    @-MF CMakeFiles/hello.dir/hello.cpp.o.d@ 
+    @-o CMakeFiles/hello.dir/hello.cpp.o@ 
+    @-c <...>/HelloWorld/hello.cpp@
+  [100%] Linking CXX executable hello
+  . . .
+  @/usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o -o hello@
+  . . .
+  [100%] Built target hello
+  ```
+
 ## STEP 3 - RUN THE HELLO WORLD
 
 :::::::::::::: {.columns}
@@ -675,6 +695,8 @@ Hello, World!
 
 ::: 
 ::: {.column width="35%"}
+
+\vspace{-.2cm}
 
 \begin{forest}
   pic dir tree,
@@ -724,7 +746,7 @@ $ cmake --build ./build --target help
 ... hello.s
 ```
 
-and each target can be invoked individually
+and each target can be provided individually
 
 ```{.bash style=bashstyle}
 $ cmake --build ./build --target hello
@@ -786,10 +808,10 @@ $ cmake --build ./build --target hello
   From the programmer's perspective, using CMake through the CLI is a two step process
 -->
 
-1. **Generate** the build files 
+1. **Configure** and **Generate** the build files 
  
     ```{.bash style=bashstyle}
-    $ cmake -B ./build -S <path-to-root-CMakeLists.txt>
+    $ cmake -B ./build -S ./hello-world
     ```
 
 2. Run the native **build** system (compile)
@@ -803,14 +825,6 @@ $ cmake --build ./build --target hello
    ```{.bash style=bashstyle}
     $ ./build/hello
     ```
-
-## CONFIGURE $\Rightarrow$ GENERATE $\Rightarrow$ BUILD $\Rightarrow$ RUN
-
-
-- oik 
-
-Maybe show how using ccmake it is actually two distinct steps... maybe on the screen interactively
-
 
 <!--
 fd
