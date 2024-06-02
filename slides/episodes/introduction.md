@@ -689,17 +689,24 @@ CMake modules extend the functionality of the language by providing predefined s
 
 ## Agenda 
 
-| MORNING                    | AFTERNOON                  |
-| -------------------------- | -------------------------- |
-| **Introduction**           | **Finding dependencies**   |
-| **Basic Steps with CMake** | **Testing**                |
-| **Creating a library**     | **Generator expressions**  |
-| **Variables**              | **Conclusion and wrap up** |
-|                            |                            |
-| **Coffe break**            | **Hands on**               |
-|                            |                            |
-| **Targets**                |                            |
-| **Hands on**               |                            |
+\vspace{.2cm}
+
+| MORNING                                  | AFTERNOON                               |
+| ---------------------------------------- | --------------------------------------- |
+| **09:00 - 09:30** Basic Steps with CMake | **13:00 - 14:00** Finding dependencies  |
+|                                          |                                         |
+| **09:30 - 10:00** Creating a library     | **14:00 - 14:30** Testing               |
+|                                          |                                         |
+| **10:00 - 10:30** Variables              | **14:30 - 15:00** Generator expressions |
+|                                          |                                         |
+| > **10:30 - 11:00** Coffe break <        | **15:00 - 15:30** Additional Topics     |
+|                                          |                                         |
+| **11:00 - 12:00** Targets                | > **15:30 - 16:00** Coffe break <       |
+|                                          |                                         |
+| **12:00 - 13:00** Hands on               | **16:00 - 17:00** Hands on              |
+
+
+
 
 
 
@@ -710,6 +717,8 @@ CMake modules extend the functionality of the language by providing predefined s
 
 ## Setup
 
+\alert{I AM NOT SURE - LET US FIRST SEE WHAT AUTOTOOLS DOES}
+
 Logging into G100 Cineca cluster
 
 ```{.bash style=bashstyle}
@@ -719,13 +728,14 @@ $ ssh <username>@login.g100.cineca.it
 Clone the exercises repository
 
 ```{.bash style=bashstyle}
-$ git clone ...
+$ git clone https://gitlab.hpc.cineca.it/training/<...>.git
+ls day2/morning/SlidesExamples
 ```
 
 Loading the cmake module
 
 ```{.bash style=bashstyle}
-$ module load cmake/3.21.4
+$ module load cmake
 ```
 
 
