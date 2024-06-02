@@ -1097,8 +1097,6 @@ and `C`:
   Sometimes you may want to set compiler-specific flags or override the default CMake behavior from the command line. This can be useful for enabling optimizations, warnings, or other compiler-specific features.
 -->
 
-\vspace{-1.5cm}
-
 - Setting the `CMAKE_CXX_FLAGS` CMake cache variable from the command line allows for customization of compiler-specific options.
 
 - This can be useful for enabling optimizations, warnings, or other compiler-specific features:
@@ -1106,19 +1104,13 @@ and `C`:
   ```{.bash style=bashstyle}
   $ cmake -B <build-tree> -S <source-tree> \
               -DCMAKE_CXX_FLAGS="-O2 -Wall -Wextra"
+
   @[ 50%] Building CXX object main.cxx.o@
   /usr/bin/c++ -O2 -Wall -Wextra -o main.o -c main.cpp
   ```
 
 
-## BUILD CONFIGURATONS 
-
-- With Makefile generators(Makefile, Ninja):
-- CMAKE_BUILD_TYPE:STRING=Release
-- known values are: Debug, Release, MinSizeRel,
-RelWithDebInfo
-
-## RELEASE AND DEBUG BUILDS 
+## BUILD TYPES 
 
 CMake distinguishes between the following build types:
 
@@ -1138,7 +1130,7 @@ The build type can be selected on the command line
 
 
 ```{.bash style=bashstyle}
-$ cmake --help-variable PROJECT_BINARY_DIR
+$ cmake -DCMAKE_BUILD_TYPE
 ```
 
 ```{.cmake style=cmakestyle}
