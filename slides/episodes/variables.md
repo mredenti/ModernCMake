@@ -1067,10 +1067,6 @@ CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
 - CMake offers a platform- and compiler-independent mechanism for setting the language standard for `CXX`
 and `C`:
 
-<!-- 
-  : `CMAKE_<LANG>_STANDARD` property for targets.
--->
-
   ```{.cmake style=cmakestyle}
   # myProject/CMaleLists.txt
   set(CMAKE_CXX_STANDARD 17)
@@ -1219,11 +1215,6 @@ never shown in cache editors
 
 
 -->
-
-## {.standout}
-
-However, this will set the flags for the entire project. If you want fine-grained control, a nicer way is to define compile flags per target like in this example (here we want to lower the optimization level for mytarget to -O1):
-
 
 
 <!--
