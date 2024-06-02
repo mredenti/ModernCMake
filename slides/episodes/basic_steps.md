@@ -355,7 +355,7 @@ On Galileo100
 
 ## STEP 1 - GENERATE BUILD FILES
 
-\vspace{-2cm}
+\vspace{-2.5cm}
 
 \centering The first step with **cmake** is to **generate project files**.
 
@@ -419,8 +419,8 @@ On Galileo100
     - skipped
   -- Detecting CXX compile features
   -- Detecting CXX compile features - done
-  -- Configuring done (0.9s)
-  -- Generating done (0.1s)
+  -- @Configuring done (0.9s)@
+  -- @Generating done (0.1s)@
   -- Build files have been written to: <...>/build
   ```
 
@@ -508,7 +508,7 @@ On Galileo100
 ::: 
 ::::::::::::::
 
-## STEP 1 - BUILD FILES GENERATION (Cont.)
+## STEP 1 - GENERATE BUILD FILES (Cont.)
 
 <!-- 
   Running cmake . in the same directory as CMakeLists.txt would in
