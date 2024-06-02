@@ -615,9 +615,9 @@ On GNU/Linux, CMake will by default generate Unix Makefiles to build the project
 
 ```{.bash style=bashstyle}
 $ cmake --build ./build 
-[ 50%] Building CXX object CMakeFiles/hello.dir/hello.cpp.o
-[100%] Linking CXX executable hello
-[100%] Built target hello
+@[ 50%] Building CXX object CMakeFiles/hello.dir/hello.cpp.o@
+@[100%] Linking CXX executable hello@
+@[100%] Built target hello@
 ``` 
 
 <!-- 

@@ -452,7 +452,7 @@ $ cmake -B ./build -S ./greetings --trace-source=CMakeLists.txt
 
 ## BUILD THE GREETINGS LIBRARY
 
-\vspace{-4cm}
+\vspace{-5cm}
 
 ```{.bash style=bashstyle}
 $ cmake --build ./build --target greetings -v
@@ -463,21 +463,29 @@ $ cmake --build ./build --target greetings -v
 ```{.bash style=bashstyle}
 $ cmake --build ./build --target greetings -v
 
-[ 50%] Building CXX object src/CMakeFiles/greetings.dir/greetings.cpp.o
+@[ 50%] Building CXX object src/CMakeFiles/greetings.dir/greetings.cpp.o@
 cd <>/build/src && /usr/bin/c++  
       -MD -MT src/CMakeFiles/greetings.dir/greetings.cpp.o 
       -MF CMakeFiles/greetings.dir/greetings.cpp.o.d 
       -o CMakeFiles/greetings.dir/greetings.cpp.o 
       -c <>/greetings/src/greetings.cpp
-[100%] Linking CXX static library libgreetings.a
+@[100%] Linking CXX static library libgreetings.a@
 cd <>/build/src
 . . . 
 /usr/bin/ar qc libgreetings.a CMakeFiles/greetings.dir/greetings.cpp.o
 /usr/bin/ranlib libgreetings.a
 . . . 
-[100%] Built target greetings
+@[100%] Built target greetings@
 ```
 
+
+## BUILD AND LINK THE HELLO PROGRAM TO GREETINGS
+
+\vspace{-4.8cm}
+
+```{.bash style=bashstyle}
+$ cmake --build ./build --target hello -v
+```
 
 ## BUILD AND LINK THE HELLO PROGRAM TO GREETINGS
 
@@ -485,13 +493,13 @@ cd <>/build/src
 $ cmake --build ./build --target hello -v
 
 . . . 
-[ 75%] Building CXX object src/CMakeFiles/hello.dir/hello.cpp.o
+@[ 75%] Building CXX object src/CMakeFiles/hello.dir/hello.cpp.o@
 cd <>/build/src && /usr/bin/c++ 
     -MD -MT src/CMakeFiles/hello.dir/hello.cpp.o 
     -MF CMakeFiles/hello.dir/hello.cpp.o.d 
     -o CMakeFiles/hello.dir/hello.cpp.o 
     -c <>/greetings/src/hello.cpp
-[100%] Linking CXX executable hello
+@[100%] Linking CXX executable hello@
 cd <>/build/src && . . . 
 /usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o -o hello libgreetings.a 
 . . . 
@@ -514,7 +522,7 @@ cd <>/build/src && . . .
     Goodbye, World!
     ```
 
-- The call to `add_subdirectory(src)` creates a matching directory structure in the `build` folder
+- The call to `add_subdirectory(src)` creates a matching directory structure in the `build` tree
 
 ::: 
 ::: {.column width="35%"}
@@ -587,7 +595,7 @@ executable.
 library (on GNU/Linux) and the hello-world executable.
 -->
 
-- Guarantees that the `hello` target depends on the message library $\Rightarrow$ the **greetings** library is always built before being linked it to the `hello` executable
+- Guarantees that the `hello` target depends on the message library $\Rightarrow$ the **greetings** library is built before being linked it to the `hello` executable
 
     ```{.bash style=bashstyle}
     $ cmake --build ./build 
