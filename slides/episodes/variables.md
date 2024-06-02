@@ -130,7 +130,7 @@ cmake_minimum_required(VERSION 3.21)
 project(Greetings LANGUAGES CXX)
 
 # Define a variable to toggle library usage
-set(USE_LIBRARY OFF)
+set(USE_LIBRARY OFF) # set(USE_LIBRARY "OFF")
 message(STATUS "Compile sources into a library? 
                 ${USE_LIBRARY}")
 
@@ -255,7 +255,7 @@ $\Rightarrow$ At build time...
 ```{.bash style=bashstyle}
 $ cmake --build ./build --verbose
 ...
-[100%] Linking CXX executable hello
+@[100%] Linking CXX executable hello@
 cd <>/build/src ...
 /usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o 
             CMakeFiles/hello.dir/greetings.cpp.o -o hello 
@@ -636,7 +636,7 @@ message(STATUS ${TEST_EXTEND}) # "42"
   Local variables are used to handle internal logic. How do we expose configuration options to the end user?
 -->
 
-How can we enable users to adjust configuration toggles without altering the CMakeLists.txt directly?
+How can we enable users to adjust build configuration options without altering the CMakeLists.txt directly?
 
 <!-- 
   This example shows that it is possible to introduce conditionals to control the execution
@@ -747,6 +747,8 @@ set(<variable> <value>... CACHE <type> <docstring>)
 
 - These are only used by `cmake-gui` and `ccmake` to display the appropriate type of edit widget
 
+<!-- 
+
 ## EXAMPLE: CACHE VARIABLES OF TYPE STRING
 
 - You can override default cache variable values through the command line 
@@ -768,6 +770,8 @@ set(<variable> <value>... CACHE <type> <docstring>)
   $ cmake -B <...> -S <...> -D TRAFFIC_LIGHT="GREEN" 
   -- GO
   ```
+
+-->
 
 ## BOOLEAN SPECIALISATION
 
