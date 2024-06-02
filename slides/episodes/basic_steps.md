@@ -259,9 +259,9 @@ cmake_minimum_required(VERSION <min>)
 
   
 ```{.cmake style=cmakestyle}
-project(<project-name>
+project(<name>
         [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
-        [DESCRIPTION <project-description-string>]
+        [DESCRIPTION <description-string>]
         [HOMEPAGE_URL <url-string>]
         [LANGUAGES <language-name>...])
 ```
@@ -276,6 +276,8 @@ project(<project-name>
   - Determine Operating System Information (`CMakeDetermineSystem.cmake`, ...)
   - Find and Test Compilers (`CMakeDetermineCXXCompiler.cmake`, `CMakeCXXCompiler.cmake`, .)
 
+- Multiple languages can be enabled (C, C++, Fortran, C#, CUDA, ...) 
+
 <!--
   CMakeDetermineCXXCompiler.cmake: Determines the C++ compiler to use.
   CMakeCXXCompiler.cmake: Sets up the compiler flags and other configurations specific to the C++ compiler.
@@ -285,10 +287,12 @@ project(<project-name>
 ## ADD_EXECUTABLE()
 
 ```{.cmake style=cmakestyle}
-add_executable(hello hello.cpp)
+add_executable(<name>
+                [EXCLUDE_FROM_ALL]
+                [source1] [source2 ...]) 
 ```
 
-- Adds the `hello` executable **TARGET** to be built from the source file `hello.cpp`
+- Creates the `<name>` executable **TARGET** to be built from the source files `source1, source, ...`
 
 <!--
 
