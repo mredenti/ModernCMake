@@ -1065,57 +1065,26 @@ CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
 - Setting the C++ standard is often a decision driven by the project's code requirements.
 
 - CMake offers a platform- and compiler-independent mechanism for setting the language standard for `CXX`
-and `C:
+and `C`:
 
 <!-- 
   : `CMAKE_<LANG>_STANDARD` property for targets.
 -->
 
+  ```{.cmake style=cmakestyle}
+  # myProject/CMaleLists.txt
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+  ```
+
+  ```{.bash style=bashstyle}
+  @[ 50%] Building CXX object main.cxx.o@
+  /usr/bin/c++ -std=gnu++17 -o main.o -c main.cpp
+  ```
 
 
-:::::::::::::: {.columns}
-::: {.column width="50%"}
-
-
-```c++
-//hello.cpp
-#include <cstdlib>
-#include <iostream>
-
-int main(){
-  std::cout << "Hello World!\n";
-  return EXIT_SUCCESS;
-}
-```
-
-::: 
-::: {.column width="50%"}
-
-Certain variables are known internally to CMake
-
-```{.cmake style=cmakestyle}
-# project/CMakeLists.txt
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-add_library(geometry STATIC ${SRCS})
-```
-
-:::
-::::::::::::::
-
-. . . 
-
-- Running the build in verbose mode we can see how the flag `-std=17` has been applied to all targets
-    
-    ```{.bash style=bashstyle}
-    $ cmake --build ./build --verbose
-    [50%] Building ....
-    /usr/bin/c++ -std=gnu++11 -o main.cxx.o -c main.cxx
-    ```
-
-## STANDARD 
+## SETTING THE STANDARD (Cont.)
 
 `CMAKE_CXX_STANDARD` 
   : mandates the standard that we would like to have.

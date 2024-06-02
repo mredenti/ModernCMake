@@ -54,7 +54,7 @@ end program hello
 ::: 
 ::::::::::::::
 
-## MANUAL COMPILATION OF HELLO, WORLD!
+## HELLO, WORLD! WITH THE COMMAND LINE
 
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
@@ -831,6 +831,8 @@ $ cmake --build ./build --target hello
 
 ::: 
 ::: {.column width="25%"}
+
+\vspace{0.2cm}
 
 \begin{forest}
   pic dir tree,
