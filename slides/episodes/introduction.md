@@ -175,7 +175,7 @@ Autotools <!-- a.k.a. Autohell -->
 \end{center}
 
 
-# INTRODUCTION TO CMAKE
+# WHAT IS CMAKE?
 
 ## WHAT IS CMAKE?
 
@@ -352,7 +352,7 @@ VS <-- visual
 
 **Multiple Generators**
 
-- Makefiles (Unix, NMake, Borland, ...)
+- Makefiles 
 - Ninja
 - Microsoft Visual Studio (.sln)
 - Eclipse
@@ -363,7 +363,7 @@ VS <-- visual
 
 **Direct CMake integration with IDEs** 
 
-  - Microsoft Visual Studio 2017...20??
+  - Microsoft Visual Studio 2017...
   - JetBrains CLion
 
 
@@ -460,6 +460,8 @@ Discussion on how CMake fits into the software development process, its role in 
 ::::::::::::::
   
 
+# CMAKE LANGUAGE OVERVIEW 
+
 ## CMAKE LANGUAGE OVERVIEW (I)
 
 \vspace{.5cm}
@@ -490,7 +492,7 @@ file(READ <file> <variable>)
 
 \vspace{.2cm}
 
-**link to documentation**
+[Link to documentation](hhtps)
 
 . . . 
 
