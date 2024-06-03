@@ -1139,33 +1139,65 @@ and `C`:
 
 ## BUILD TYPES 
 
+\vspace{.2cm}
+
 CMake distinguishes between the following build types:
 
+
+:::::::::::::: {.columns}
+::: {.column width="30%"}
+
 Debug
-: fkdjf
+: 
 
 Release
-: dfdf 
+: 
 
 RelWithDebInfo
-: fdfdf
+: 
 
 MinSizeRel
-: fdfdj
+: 
+
+::: 
+::: {.column width="70%"}
+
+```{.cmake style=cmakestyle}
+include(CMakePrintHelpers)
+cmake_print_variables(CMAKE_BUILD_TYPE
+                      CMAKE_CXX_FLAGS
+                      CMAKE_CXX_FLAGS_DEBUG
+                      CMAKE_CXX_FLAGS_RELEASE)
+```
+
+:::
+::::::::::::::
+
 
 The build type can be selected on the command line
 
 
 ```{.bash style=bashstyle}
-$ cmake -DCMAKE_BUILD_TYPE
+$ cmake -B ./build-rel -S <...> -D CMAKE_BUILD_TYPE:STRING=Release
+-- CMAKE_BUILD_TYPE="Release" ; CMAKE_CXX_FLAGS="" ; 
+CMAKE_CXX_FLAGS_DEBUG="-g" ; CMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG"
 ```
 
+```{.bash style=bashstyle}
+$ cmake --build ./build-rel
+/usr/bin/c++ @-O3 -DNDEBUG@ CMakeFiles/main.dir/main.cpp.o -o main
+```
+
+
+<!-- 
 ```{.cmake style=cmakestyle}
 # we default to Release build type
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
 endif()
 ```
+-->
+
 
 <!-- 
 ## CACHE VARIABLES
