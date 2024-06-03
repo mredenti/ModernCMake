@@ -11,6 +11,7 @@ aspectratio: 169
 
 # CREATING AND RUNNING TESTS
 
+
 ## WHY TESTING IS IMPORTANT
 
 <!--
@@ -39,6 +40,10 @@ command-line tool. -->
     cognitive load, we wish to keep the code that is to be tested as simple as possible.
 -->
 
+<!-- 
+  Testing is an essential activity in the development cycle. A well-designed test suite will help you detect bugs and can also facilitate the onboarding of new developers.
+-->
+
 Testing is an essential component of the code development toolbox
 
 - Early detection of functionality regressions
@@ -48,6 +53,10 @@ Testing is an essential component of the code development toolbox
 - Verification of installation and deployment
 
 - Encouragement of modular and less complex code
+
+\vspace{0.5cm}
+
+**CTest** is part of the CMake suite of programs. It is a test runner. You can handle your test suite definition, execution, and reporting through it.
 
 <!--
     Testing is an essential activity in the development cycle. A well-designed test suite will help you detect bugs and can also facilitate the onboarding of new developers. In this episode, we will look into how to use CTest to define and run our tests.
@@ -364,7 +373,7 @@ Total Test time (real) =   0.01 sec
 ```
 
 \centering 
-By default, a test will be deemed to pass if the command returns an exit code of 0.
+**By default, a test will be deemed to pass if the command returns an exit code of 0.**
 
 <!-- 
 
@@ -424,17 +433,6 @@ By default, a test will be deemed to pass if the command returns an exit code of
     The project doesn’t have to care where the build will create the binary in the file system, CMake will provide
     that information to ctest automatically.
 -->
-
-## CTEST 
-
-- The CTest is the testing tool used to control how tests execute
-
-- By default, `ctest` will execute all defined tests one at a time, logging a status message as each test is started and completed, but hiding all test output. An overall summary of the tests will be printed at the end.
-
-- Rich features are provided for defining how tests use resources, constraints between tests, and controlling how
-tests execute.
-
-- Reporting options include support for a dedicated dashboard server (CDash) or file ouptput in the widely used JUnit XML format.
 
 ## DIAGNOSING TEST FAILURES (I)
 
@@ -526,6 +524,48 @@ CLI switch to use is `--rerun-failed`, and it proves extremely useful during deb
 
 - `--stop-on-failure` to end the test run at the first error encountered (CMake > 3.18) 
 
+# TEST PROPERTIES
+
+## TEST PROPERTIES 
+
+\centering 
+
+**Just like targets, tests in CMake can have properties that control various aspects of their behavior.**
+
+\raggedright
+
+\vspace{.5cm}
+
+- Properties are set using the `set_tests_properties()` command.
+
+- See the [CMake: Test Properties Documentation](https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#test-properties) for a full list of properties 
+
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+
+**TIMEOUTS** 
+
+:::
+::: {.column width="50%"}
+
+**LABELS** 
+
+:::
+::::::::::::::
+
+
+## EXAMPLE: USING TIMEOUTS FOR LONG TESTS 
+
+DFD
+
+## EXAMPLE: LABELS 
+
+## INTEGRATION WITH TEST FRAMEWORKS
+
+we do not discuss here ...
+
 ## TESTING EXPECTED FAILURES 
 
 <!-- 
@@ -565,11 +605,13 @@ Many other properties can be set on tests...
 
 - Implementing timeouts can be achieved with properties too...
 
+
+[CMake Properties On Tests - Documentation](https://cmake.org/cmake/help/v3.19/manual/cmake-properties.7.html#properties-on-tests)
+
 ## VALGRIND EXAMPLE SOMEWHERE
 
 lkl
 
-# TEST PROPERTIES: TIMEOUT, COST AND LABELS
 
 ## Using timeouts for long tests
 
@@ -628,6 +670,23 @@ List of testing frameworks:
 
 The above complement tests by providing additional verification of the code quality, adherence to relevant standards and catching common programming models.
 Dynamic code analysis is also possible with CMake projects.
+
+## CTEST 
+
+- The CTest is the testing tool used to control how tests execute
+
+- By default, `ctest` will execute all defined tests one at a time, logging a status message as each test is started and completed, but hiding all test output. An overall summary of the tests will be printed at the end.
+
+- Rich features are provided for defining how tests use resources, constraints between tests, and controlling how
+tests execute.
+
+- Reporting options include support for a dedicated dashboard server (CDash) or file ouptput in the widely used JUnit XML format.
+
+# The CTest command-line interface
+
+## CTEST 
+
+show a couple of things with the CTest command line interface
 
 <!-- 
 
