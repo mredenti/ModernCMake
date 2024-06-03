@@ -1018,13 +1018,13 @@ The user can set this variable in one of two ways:
 1. [preferred] By using the `-D` option in the CLI
 
   ```{.bash style=bashstyle}
-  $ cmake -D CMAKE_CXX_COMPILER:FILEPATH=clang++
+  $ cmake -B ./build -S <...> -D CMAKE_CXX_COMPILER:FILEPATH=clang++
   ```
 
 2. By exporting the environment variable `CXX` (`CC`, `FC`) 
   
   ```{.bash style=bashstyle}
-  $ env CXX=clang++ cmake 
+  $ env CXX=clang++ cmake -B ./build -S <...>
   ```
 
 **Note:** We have here assumed that the additional compilers are available in the standard paths
@@ -1047,15 +1047,39 @@ CMake caches the compiler for a build directory on the first invocation...
 ```{.bash style=bashstyle}
 $ cmake -B ./build -S <...> -DCMAKE_CXX_COMPILER:FILEPATH=$(which clang++)
 -- The CXX compiler identification is Clang 14.0.0
-. . . 
+-- Detecting CXX compiler ABI info
+...
+-- Detecting CXX compile features - done
+-- Configuring done (0.9s)
+-- Generating done (0.0s)
+-- Build files have been written to: <>./build
 ```
 
+. . . 
+
 ... such that on a second invocation 
+
+```{.bash style=bashstyle}
+$ cmake -B ./build -S <...>
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to:<>/build
+```
+
+## SPECIFYING THE COMPILER (Cont.)
+
+You can verify which compiler has been cache either by inspecting the `CMakeCache.txt` file directly or by printing Cache variables to screen with the flag `-LAH`
 
 ```{.bash style=bashstyle}
 $ cmake -B ./build -S <...> -LAH | grep "CMAKE_CXX_COMPILER"
 CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
 ```
+
+where 
+
+- `-L`: lists all the variables in the CMake cache
+- `-LA`: lists all the variables in the CMake cache as well as advanced ones
+- `-LAH`: lists all the variables in the CMake cache as well as advanced ones with the docstring
 
 ## SETTING THE STANDARD 
 
