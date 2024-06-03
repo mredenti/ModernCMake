@@ -672,33 +672,36 @@ macro_name("value1" "value2")
 :::
 ::::::::::::::
 
-## CMAKE LANGUAGE OVERVIEW (IV)
+## MODULES 
 
-\centering The CMake language is very rich in features and capabilities!
+\vspace{.5cm}
 
-\vspace{0.3cm}
+<!-- 
+Code reuse is a valuable technique in software development and CMake has been designed to support it.
+-->
 
-**COMMANDS**
+- CMake **Modules** extend the functionality of the language by providing predefined `.cmake` scripts that simplify complex tasks. <!-- collect common functionality -->
 
-Numerous commands to handle various build system tasks
-  
 ```{.bash style=bashstyle}
-$ cmake --help-command-list | wc -l
+$ ls $CMAKE_PREFIX_PATH/share/cmake-3.27/Modules/cmake
+FindMPI.cmake
+CheckCXXCompilerFlag.cmake
+...(+267)
+```
+- **Modules** can then be included into other CMakeLists files using the `include()` command.
+
+- **Example:** Check whether the CXX compiler supports a given flag
+```{.bash style=bashstyle}
+include(CheckTypeSize)
+check_type_size(long SIZEOF_LONG)
 ```
 
-A multitude of variables control the build process
+<!-- 
+  Example: `Find<Package>.cmake` modules help in locating and configuring and external dependency to be used by the project.
+-->
 
-## CMAKE MODULES OVERVIEW
 
-- A set of predefined scripts (Modules)  <!-- CMake modules extend the functionality of the language by providing -->
-
-- CMake modules extend the functionality of the language by providing predefined scripts that simplify complex tasks.
-
-CMake modules extend the functionality of the language by providing predefined scripts that simplify complex tasks.
-
-- Example: `FindPackage` modules help in locating and configuring dependencies.
-
-- Provide a list of modules organised by objective
+add a link to the documentation 
 
 <!-- 
 
@@ -713,6 +716,31 @@ CMake modules extend the functionality of the language by providing predefined s
 ![](./fig/BuildProcess.png)  
 
 -->
+
+
+
+## USE THE BUILT IN DOCUMENTATION
+
+\centering \textbf{The CMake language is \underline{\textit{(too)}} rich in features and capabilities!}
+
+\raggedright
+
+\vspace{0.3cm}
+
+**COMMANDS**
+
+Numerous commands to handle various build system tasks
+  
+```{.bash style=bashstyle}
+$ cmake --help-command-list | wc -l
+128
+```
+
+A multitude of variables control the build process or extract information about the host system
+```{.bash style=bashstyle}
+$ cmake --help-variable-list | wc -l
+701
+```
 
 # Workshop Outline and Setup
 

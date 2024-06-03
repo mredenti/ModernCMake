@@ -853,6 +853,10 @@ $ cmake --build ./build --target hello
 ::::::::::::::
 
 
+## CHANGING THE COMPILER 
+
+Maybe show how to change the compiler...
+
 <!--
 fd
 -->
