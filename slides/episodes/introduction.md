@@ -47,9 +47,19 @@ There are some target types which are not IMPORTED which also have nothing to bu
 
 ## EXTREMELY IMPORTANT TO ADD 
 
-To reiterate, a library is a collection of files without an entry point whereas an executable is a program with an entry point defined in the main function.
+- To reiterate, a library is a collection of files without an entry point whereas an executable is a program with an entry point defined in the main function.
 
-## WHY EFFICIENT BUILD SYSTEMS MATTER
+- build requirements can be propagated from the dependency to the user to the one depending on it; the propagation of build requirements to make them become build requirements of our new target is automatic
+
+- In traditional CMake there usage requirements need to be propagated manually 
+
+- In modern CMake, build requirements are set on targets themselves, sometimes you do not even have to set them yourself because they come automatically from this target in the form of usage requirements 
+
+- In traditional CMake, keeping track of usage requirements was done through cache variables. 
+
+- In traditional CMake, build requirements are done on the environment meaning they have directory scope. The build requirement is set for all targets defined there and for all targets defined in subdirectories
+
+## WHY 
 
 <!-- 
   Modern build systems should be able to build the software, package it, test it
@@ -176,18 +186,25 @@ Autotools <!-- a.k.a. Autohell -->
 - Can not overcome the limitations of the underlying IDEs
 -->
 
-- **C**ross Platform **Make** is an open-source **build system generator**.
+**C**ross Platform **Make** is an open-source **build system generator** (not a build system!).
 
-- It allows us to: 
-  - structure and build C/C++/Fortran/... projects $\Rightarrow$ **CMake**
-  - easily integrate third-party dependencies
-  - orchestrate tests $\Rightarrow$ **CTest, CDash**
-  - package projects $\Rightarrow$ **CPack**
+\vspace{.1cm}
 
-- Supports generating build-systems for multiple languages
-  - C/C++, Fortran, CUDA, HIP, C#, ...
+- **CMake** supports generating build files for multiple build systems (Make, Ninja, Visual Studio, ...) and multiple languages (**C/C++**, **Fortran**, CUDA, HIP, C#, ...)
+
+\vspace{.1cm}
+
+- **CTest** orchestrate tests
+
+\vspace{.1cm}
+
+- **CPack** package projects
+
+\vspace{.1cm}
 
 - Version 3.0 was released in June 2014 and signals the beginning of "Modern CMake".
+
+
 <!-- 
   Let developers use the IDE and tools they are most familiar with, they are not going to be as productive if you force them to use the command line
 
@@ -226,7 +243,7 @@ generators
   Interpreted Execution: CMake processes the CMakeLists.txt files line by line to generate build instructions (e.g., Makefiles or Visual Studio project files).
 -->
 
-CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build tools.
+CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build systems (Make, Ninja, Visual Studio, ...)
 
 :::::::::::::: {.columns}
 ::: {.column width="5%"}

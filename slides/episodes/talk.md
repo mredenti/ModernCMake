@@ -1,3 +1,19 @@
+- Ok, I think we should probably get started. 
+- My name is Michael and I work as a ... here in CINECA. I mainly deal with ...
+- Today I will talk about CMake. The motivation for talking about CMake in this workshop definitely has to do with its wide adoption...
+  - Just like C++, CMake has a big userbase, it dominates the industry 
+  - They have a strong focus on backwards compatibility
+  - complex, feature, rich, "multi paradigm toolset" (just like C++)
+  - bad reputation, horrible syntax, "bloated"
+
+
+## WHAT IS CMAKE 
+
+- CMake is a portable build system generator, but not a build system. 
+
+- The main thing about being modern is the Target Centric approach. All the targets that you declare full carry their own build and usage requirements with it and they will propagate this.
+
+
 ## WHY EFFICIENT BUILD SYSTEMS MATTER 
 
 
