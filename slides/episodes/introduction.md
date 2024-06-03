@@ -281,7 +281,7 @@ skinparam rectangle {
   BackgroundColor<<Windows>> LightBlue
   BackgroundColor<<macOS>> LightBlue
   BackgroundColor<<Linux>> LightBlue
-  BackgroundColor<<Tool>> Pink
+  BackgroundColor<<Tool>> Green
 }
 
 skinparam Arrow {
@@ -291,9 +291,9 @@ skinparam Arrow {
 file "CMakeLists.txt" as ST
 rectangle "CMake" as CM #Pink
 
-collections "Visual Studio" as VS <<Windows>> #FEFECE
+collections ".sln files" as VS <<Windows>> #FEFECE
 collections "XCode" as XC <<macOS>> #FEFECE
-collections "Make" as MK <<Linux>> #FEFECE
+collections "Makefiles" as MK <<Linux>> #FEFECE
 
 rectangle "Make" as make #Pink
 rectangle "xcode" as xcode #Pink
@@ -691,7 +691,7 @@ CheckCXXCompilerFlag.cmake
 - **Modules** can then be included into other CMakeLists files using the `include()` command.
 
 - **Example:** Check whether the CXX compiler supports a given flag
-```{.bash style=bashstyle}
+```{.cmake style=cmakestyle}
 include(CheckTypeSize)
 check_type_size(long SIZEOF_LONG)
 ```
@@ -719,7 +719,7 @@ add a link to the documentation
 
 
 
-## USE THE BUILT IN DOCUMENTATION
+## RECOMMENDATION: USE THE BUILT IN DOCUMENTATION!
 
 \centering \textbf{The CMake language is \underline{\textit{(too)}} rich in features and capabilities!}
 
@@ -727,20 +727,51 @@ add a link to the documentation
 
 \vspace{0.3cm}
 
-**COMMANDS**
+**COMMANDS** 
 
-Numerous commands to handle various build system tasks
-  
 ```{.bash style=bashstyle}
 $ cmake --help-command-list | wc -l
 128
 ```
 
-A multitude of variables control the build process or extract information about the host system
+\vspace{0.1cm}
+
 ```{.bash style=bashstyle}
-$ cmake --help-variable-list | wc -l
-701
+$ cmake --help-command include
+include
+-------
+Load and run CMake code from a file or module.
+
+ include(<file|module> [OPTIONAL] [RESULT_VARIABLE <var>]
+                       [NO_POLICY_SCOPE])
+
+If ``OPTIONAL`` is present, then no error is raised if the file 
+does not exist.
+...
 ```
+
+## RECOMMENDATION: USE THE BUILT IN DOCUMENTATION!
+
+\centering \textbf{The CMake language is \underline{\textit{(too)}} rich in features and capabilities!}
+
+\raggedright
+
+**MODULES** 
+<!-- 
+  A multitude of variables control the build process or extract information about the host system
+-->
+
+```{.bash style=bashstyle}
+$ cmake --help-module-list | wc -l
+269
+```
+
+```{.bash style=bashstyle}
+$ cmake --help-module CheckCXXCompilerFlag
+
+```
+
+
 
 # Workshop Outline and Setup
 
