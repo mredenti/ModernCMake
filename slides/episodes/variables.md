@@ -1,6 +1,5 @@
 ---
 aspectratio: 169
-urlcolor: blue
 ---
 
 # VARIABLES 
