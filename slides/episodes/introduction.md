@@ -260,7 +260,7 @@ generators
   Interpreted Execution: CMake processes the CMakeLists.txt files line by line to generate build instructions (e.g., Makefiles or Visual Studio project files).
 -->
 
-CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build systems (Make, Ninja, Visual Studio, ...)
+CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build systems
 
 :::::::::::::: {.columns}
 ::: {.column width="5%"}
@@ -291,9 +291,9 @@ skinparam Arrow {
 file "CMakeLists.txt" as ST
 rectangle "CMake" as CM #Pink
 
-collections "Visual Studio" as VS <<Windows>> #LightBlue
-file "XCode" as XC <<macOS>> #LightBlue
-file "Make" as MK <<Linux>> #LightBlue
+collections "Visual Studio" as VS <<Windows>> #FEFECE
+collections "XCode" as XC <<macOS>> #FEFECE
+collections "Make" as MK <<Linux>> #FEFECE
 
 rectangle "Make" as make #Pink
 rectangle "xcode" as xcode #Pink
