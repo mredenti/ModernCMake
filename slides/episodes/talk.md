@@ -29,7 +29,7 @@
 
 ## WHAT IS CMAKE 
 
-- CMake is a BUILD FILE generator, meaning it generates files; it does not build. 
+- CMake is a BUILD FILE generator, meaning it generates files; it does not build. CMake allows you to generate the build files for your most favourite build system you want to use.
 
 - The CMake language is platform and compiler indipendent language
 
@@ -38,6 +38,9 @@
 - The CMake ecocsystem is a family of tools for building, testing and packaging your software
 
 - CMake puts a lot of effort on backwards compatibility, so that old CMake scripts should work
+
+The CMake project started sometime around year 2000. 
+
 
 ## CMAKE FEATURES 
 

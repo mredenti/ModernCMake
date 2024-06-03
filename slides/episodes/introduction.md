@@ -11,6 +11,14 @@ date: \today
 aspectratio: 169
 ---
 
+## EXTREMELY IMPORTANT FOR TESTING 
+
+https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html#:~:text=the%20testing%20process.-,How%20Does%20CMake%20Facilitate%20Testing%3F,-%C2%B6
+
+Use the following in the tutorial for the testing parts 
+
+- https://coderefinery.github.io/cmake-workshop/testing/
+
 ## IMPORTANT (IMPORTED LIBRARIES)
 
 Just like executables, libraries may be defined as imported targets. These are heavily used 
@@ -186,23 +194,31 @@ Autotools <!-- a.k.a. Autohell -->
 - Can not overcome the limitations of the underlying IDEs
 -->
 
-**C**ross Platform **Make** is an open-source **build system generator** (not a build system!).
+**C**ross Platform **Make** is an open-source **build system generator** (\underline{not a build system!}).
+
+<!-- 
+   CTest is an executable that comes with CMake; it handles running the tests for the project. While CTest works well with CMake, you do not have to use CMake in order to use CTest. The main input file for CTest is called CTestTestfile.cmake. This file will be created in each directory that was processed by CMake (typically every directory with a CMakeLists file).
+-->
+
+\vspace{.4cm}
+
+It is a family of software development tools:
 
 \vspace{.1cm}
 
-- **CMake** supports generating build files for multiple build systems (Make, Ninja, Visual Studio, ...) and multiple languages (**C/C++**, **Fortran**, CUDA, HIP, C#, ...)
+- **CMake** can generate build files for multiple build systems (Make, Ninja, Visual Studio, ...) and supports several languages (**C/C++**, **Fortran**, CUDA, HIP, C#, ...)
 
 \vspace{.1cm}
 
-- **CTest** orchestrate tests
+- **CTest** is a test scheduling and reporting tool that handles the tests for the project
 
 \vspace{.1cm}
 
 - **CPack** package projects
 
-\vspace{.1cm}
+\vspace{.3cm}
 
-- Version 3.0 was released in June 2014 and signals the beginning of "Modern CMake".
+Version 3.0 was released in June 2014 and signals the beginning of **Modern CMake**.
 
 
 <!-- 
@@ -218,6 +234,7 @@ Autotools <!-- a.k.a. Autohell -->
   Enable building (CMake), testing (CTest, CDash) and packaging (CPack) of software
 -->
 
+<!-- 
 ## CMAKE'S POSITION AMONG BUILD SYSTEMS
 
 standalone
@@ -228,7 +245,7 @@ integrated
 
 generators
   : Autotools (a.k.a. Autohell), **CMake**, Meson, Bazel
-
+-->
 
 ## BUILD SYSTEM GENERATOR
 
