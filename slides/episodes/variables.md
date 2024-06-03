@@ -1124,9 +1124,9 @@ and `C`:
   Sometimes you may want to set compiler-specific flags or override the default CMake behavior from the command line. This can be useful for enabling optimizations, warnings, or other compiler-specific features.
 -->
 
-- Setting the `CMAKE_CXX_FLAGS` CMake cache variable from the command line allows for customization of compiler-specific options.
+- Setting the `CMAKE_CXX_FLAGS` CMake cache variable from the command line allows for customisation of compiler-specific options.
 
-- This can be useful for enabling optimizations, warnings, or other compiler-specific features:
+- This can be useful for enabling optimisations, warnings, or other compiler-specific features:
 
   ```{.bash style=bashstyle}
   $ cmake -B <build-tree> -S <source-tree> \
