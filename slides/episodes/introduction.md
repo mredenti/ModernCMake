@@ -477,11 +477,11 @@ add_executable(foo bar.cpp)
 if(FOO)
 ```
 
-\vspace{.2cm}
+\vspace{.3cm}
 
 **Commands do not return values, no nesting**
 
-\vspace{.2cm}
+\vspace{.3cm}
 
 **Commands may have arguments and overloads** 
 
@@ -490,16 +490,16 @@ file(WRITE <file> <content>)
 file(READ <file> <variable>)
 ```
 
-\vspace{.2cm}
+\vspace{1cm}
 
-[Link to documentation](hhtps)
+[CMake Language - Documentation](https://cmake.org/cmake/help/latest/manual/cmake-language.7.html) 
 
 . . . 
 
 :::
 ::: {.column width="50%"}
 
-**Variables are set with command `set()`**
+**Variables are defined with the command `set()`**
 
 \vspace{.2cm}
 
@@ -518,6 +518,7 @@ set(FOO 42)
 ```{.cmake style=cmakestyle}
 set(FOO "a;b;c")
 set(FOO a b c)
+list(APPEND FOO "d") 
 ```
 
 
@@ -526,7 +527,7 @@ set(FOO a b c)
 **Variables are read using `${}`**
 
 ```{.cmake style=cmakestyle}
-list(APPEND FOO "d") # FOO="a;b;c;d"
+message(${FOO}) # FOO="a;b;c;d"
 ```
 
 :::
