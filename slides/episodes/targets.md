@@ -496,7 +496,7 @@ object mylib{
 
 # UNDERSTANDING VISIBILITY LEVELS: PRIVATE, INTERFACE, PUBLIC
 
-## EXAMPLE
+## SETUP
 
 \vspace{.3cm}
 
@@ -560,7 +560,7 @@ int main() {
 ::::::::::::::
 
 
-## EXAMPLE - HEADER NOT FOUND
+## HEADER NOT FOUND
 
 \vspace{.3cm}
 
@@ -629,22 +629,19 @@ $ cmake --build ./build
 
 ## PRIVATE
 
-\vspace{.3cm}
+\vspace{.2cm}
 
-Let us set the header search path as a **build requirement** of the `greetings` library
+Let us set the header search path as a **build requirement (PRIVATE)** of the `greetings` library
 
-\vspace{.3cm}
+\vspace{.2cm}
 
 :::::::::::::: {.columns}
 ::: {.column width="72%"}
 
 ```{.cmake style=cmakestyle}
-add_library(greetings 
-            STATIC 
-              greetings.cpp) 
+add_library(greetings STATIC greetings.cpp) 
 target_include_directories(greetings 
-            PRIVATE 
-              ${CMAKE_CURRENT_LIST_DIR}/include)
+          PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 add_executable(hello hello.cpp) 
 target_link_libraries(hello PRIVATE greetings)
 ```
@@ -652,10 +649,15 @@ target_link_libraries(hello PRIVATE greetings)
 ```{.bash style=bashstyle}
 $ cmake -B ./build -S ./greetings
 $ cmake --build ./build
-@[25%] Building CXX object <>/greetings.cpp.o@
+@[25%] Building CXX object <>/greetings.cpp.o@ 
+/usr/bin/c++ -I<>/include 
+      -o <>/greetings.cpp.o -c <>/greetings.cpp
 @[50%] Linking CXX static library libgreetings.a@
+@[75%] Building CXX object <>/hello.cpp.o@
+/usr/bin/c++ -o <>/hello.cpp.o -c <>/hello.cpp
+<>/hello.cpp:2:10: fatal error: No such file 
+ #include "greetings.hpp" ...
 ```
-
 ::: 
 ::: {.column width="28%"}
 
@@ -695,7 +697,7 @@ $ cmake --build ./build
 
 \vspace{.3cm}
 
-Let us set the header search path as a **usage requirement** of the `greetings` library
+Let us set the header search path as a **usage requirement (INTERFACE)** of the `greetings` library
 
 \vspace{.3cm}
 
@@ -703,29 +705,30 @@ Let us set the header search path as a **usage requirement** of the `greetings` 
 ::: {.column width="72%"}
 
 ```{.cmake style=cmakestyle}
-add_library(greetings 
-            STATIC 
-              greetings.cpp) 
+add_library(greetings STATIC greetings.cpp) 
 target_include_directories(greetings 
-            INTERFACE 
-              ${CMAKE_CURRENT_LIST_DIR}/include)
+            INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)
 add_executable(hello hello.cpp) 
 target_link_libraries(hello PRIVATE greetings)
 ```
-
-$\Rightarrow$
 
 ```{.bash style=bashstyle}
 $ cmake -B ./build -S ./greetings
 $ cmake --build ./build
 @[25%] Building CXX object <>/greetings.cpp.o@
 @[50%] Linking CXX static library libgreetings.a@
+@[75%] Building CXX object <>/hello.cpp.o@
+/usr/bin/c++ -o <>/hello.cpp.o -c <>/hello.cpp
+<>/hello.cpp:2:10: fatal error: greetings.hpp: No such file or directory
+ #include "greetings.hpp"
+          ^~~~~~~~~~~~~~~
+compilation terminated.
 ```
 
 ::: 
 ::: {.column width="28%"}
 
-\vspace{-.5cm}
+\vspace{-.2cm}
 
 \scalebox{0.9}{
 \begin{forest}
@@ -761,37 +764,38 @@ $ cmake --build ./build
 
 \vspace{.3cm}
 
-Let us set the header search path as a **build and usage** requirement of the `greetings` library
+Let us set the header search path as a **build and usage (PUBLIC)** requirement of the `greetings` library.
 
-\vspace{.3cm}
+\vspace{.1cm}
 
 :::::::::::::: {.columns}
-::: {.column width="67%"}
+::: {.column width="72%"}
 
 ```{.cmake style=cmakestyle}
-add_library(greetings 
-            STATIC 
-              greetings.hpp greetings.cpp) 
+add_library(greetings STATIC greetings.cpp) 
 target_include_directories(greetings 
-            PUBLIC 
-              ${CMAKE_CURRENT_LIST_DIR}/include)
+            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 add_executable(hello hello.cpp) 
 target_link_libraries(hello PRIVATE greetings)
 ```
 
-$\Rightarrow$
-
 ```{.bash style=bashstyle}
 $ cmake -B ./build -S ./greetings
 $ cmake --build ./build
-errro
+@[ 25%] Building CXX object <>/greetings.cpp.o@
+@[ 50%] Linking CXX static library libgreetings.a@
+@[ 50%] Built target greetings@
+@[ 75%] Building CXX object <>/hello.cpp.o@
+@[100%] Linking CXX executable hello@
+@[100%] Built target hello@
 ```
 
 ::: 
-::: {.column width="33%"}
+::: {.column width="28%"}
 
-\vspace{-.5cm}
+\vspace{-.2cm}
 
+\scalebox{0.9}{
 \begin{forest}
   pic dir tree,
   where level=0{}{
@@ -816,6 +820,7 @@ errro
     ]
   ]
 \end{forest}
+}
 
 ::: 
 ::::::::::::::

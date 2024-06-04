@@ -19,8 +19,8 @@
 \definecolor{weborange}{RGB}{255,117,24}
 \definecolor{frenchplum}{RGB}{129,20,83}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
-\definecolor{verdeacqua}{RGB}{130, 150, 240}
-
+\definecolor{verdeacqua}{RGB}{100, 120, 210}
+\definecolor{cerulean}{rgb}{0.0, 0.48, 0.65}
 \lstset {
     language=C++,
     %frame=tb,
@@ -34,7 +34,7 @@
     %upquote=true,
     commentstyle=\color{commentgreen},
     keywordstyle=\color{eminence},
-    stringstyle=\color{red},
+    stringstyle=\color{cerulean},
     basicstyle=\small\ttfamily, % basic font setting
     emph={int,char,double,float,unsigned,void,bool,accessor,host_accessor,buffer,queue,handler,id,range,device,group,h_item,event},
     emphstyle={\color{blue}},
@@ -66,7 +66,7 @@
     backgroundcolor=\color{white!8}, % Background color, 20% gray gray!8
     xleftmargin=0.06\linewidth,         % Left margin
     xrightmargin=0.06\linewidth,
-    moredelim=**[is][\bfseries\color{blue}]{@}{@}  % Define delimiter for highlighted lines   
+    moredelim=**[is][\bfseries\color{teal}]{@}{@}  % Define delimiter for highlighted lines   
 }
 
 \lstdefinelanguage{CMake}{
@@ -124,9 +124,9 @@
   rulecolor=\color{gray!50}, % Frame color, 50% gray
   backgroundcolor=\color{gray!8}, % Background color, 20% gray
   basicstyle=\ttfamily\footnotesize,
-  keywordstyle=\color{verdeacqua},
+  keywordstyle=\color{verdeacqua}\bfseries,
   commentstyle=\color{commentgreen},
-  stringstyle=\color{red},
+  stringstyle=\color{frenchplum},
   showstringspaces=false,
   tabsize=4,
   classoffset=1,                      % Starting a new class for additional keywords
