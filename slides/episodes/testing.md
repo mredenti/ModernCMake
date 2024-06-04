@@ -11,7 +11,7 @@ aspectratio: 169
 
 
 
-# CREATING AND RUNNING TESTS
+<!-- 
 
 ## EXTREMELY IMPORTANT FOR TESTING 
 
@@ -20,6 +20,10 @@ https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake
 Use the following in the tutorial for the testing parts 
 
 - https://coderefinery.github.io/cmake-workshop/testing/
+
+-->
+
+# CREATING AND RUNNING TESTS
 
 
 ## WHY TESTING IS IMPORTANT
