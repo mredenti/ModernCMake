@@ -223,7 +223,7 @@ Code reuse is a valuable technique in software development and CMake has been de
 - CMake **Modules** extend the functionality of the language by providing predefined `.cmake` scripts that simplify complex tasks. <!-- collect common functionality -->
 
 ```{.bash style=bashstyle}
-$ ls $CMAKE_PREFIX_PATH/share/cmake-3.27/Modules/cmake
+$ ls $CMAKE_PREFIX_PATH/share/cmake-3.27/Modules/
 FindMPI.cmake
 CheckCXXCompilerFlag.cmake
 ...(+267)
@@ -321,71 +321,3 @@ $ cmake --help-module CheckCXXCompilerFlag
 -->
 
 
-## BUILD SYSTEM GENERATOR
-
-<!--
-  CMake is a tool designed to help you build and test your software. It is now more popular than ever and is now supported by some major IDEs and libraries, including Android Studio, CLion, QtCreator or Visual Studio.
-
-  Let's cover the basics, understand how CMake works and how to write modern and extensible cross-platform build scripts with CMake.
-
-  CMake as a Scripting Language
-  CMake is a tool designed to manage the build process of software projects. It uses a scripting language to define the build process in CMakeLists.txt files. Here’s how it fits the characteristics of a scripting language:
-
-  Interpreted Execution: CMake processes the CMakeLists.txt files line by line to generate build instructions (e.g., Makefiles or Visual Studio project files).
--->
-
-CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build systems
-
-:::::::::::::: {.columns}
-::: {.column width="5%"}
-
-::: 
-::: {.column width="85%"}
-
-```plantuml
-left to right direction
-skinparam PackagePadding 2
-skinparam BoxPadding 2
-skinparam NodePadding 2
-skinparam style strictuml
-skinparam padding 0
-scale 0.8
-
-skinparam rectangle {
-  BackgroundColor<<Windows>> LightBlue
-  BackgroundColor<<macOS>> LightBlue
-  BackgroundColor<<Linux>> LightBlue
-  BackgroundColor<<Tool>> Green
-}
-
-skinparam Arrow {
-  Color Black
-}
-
-file "CMakeLists.txt" as ST
-rectangle "CMake" as CM #Pink
-
-collections ".sln files" as VS <<Windows>> #FEFECE
-collections "XCode" as XC <<macOS>> #FEFECE
-collections "Makefiles" as MK <<Linux>> #FEFECE
-
-rectangle "Make" as make #Pink
-rectangle "xcode" as xcode #Pink
-rectangle "visual-studio" as visual #Pink
-
-ST --> CM
-
-CM --> VS
-CM --> XC
-CM --> MK
-
-MK <-- make 
-XC <-- xcode
-VS <-- visual
-```
-
-::: 
-::: {.column width="10%"}
-
-:::
-:::::::::::::: 
