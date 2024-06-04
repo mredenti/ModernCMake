@@ -540,7 +540,7 @@ CLI switch to use is `--rerun-failed`, and it proves extremely useful during deb
 
 # TEST PROPERTIES
 
-## TEST PROPERTIES - A FEW EXAMPLES
+## TEST PROPERTIES
 
 \centering 
 
@@ -558,10 +558,17 @@ Properties are set using the `set_tests_properties()` command.
 The test is terminated and marked as failed if the test goes past specified time
 
 ```{.cmake style=cmakestyle}
-set_tests_properties(example PROPERTIES TIMEOUT 10) # [s]
+set_tests_properties(myTest PROPERTIES TIMEOUT 10) # [s]
 ```
 
 <!-- for whatever reason (the test has stalled or the machine is too slow) Specify a **TIMEOUT** for the test, and set it to 10 seconds: -->
+
+
+show some output
+
+
+## TEST PROPERTIES (Cont.)
+
 
 **LABELS** 
 
@@ -573,14 +580,11 @@ set_tests_properties(example PROPERTIES TIMEOUT 10)
 ```
 
 
+. . .
+
 - See the [CMake: Test Properties Documentation](https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#test-properties) for a full list of properties 
 
 
-## EXAMPLE: USING TIMEOUTS FOR LONG TESTS 
-
-DFD
-
-## EXAMPLE: LABELS 
 
 
 <!-- 
