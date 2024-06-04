@@ -117,11 +117,30 @@ Discussion on how CMake fits into the software development process, its role in 
 
 ## RESOURCES
 
-BOOOKS 
 
-FORUMS 
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{./fig/ProfessionalCMake.jpg}
+        %\caption{Caption 1}
+        %\label{fig:image1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{./fig/ProfessionalCMake.jpg}
+        %\caption{Caption 2}
+        %\label{fig:image2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{./fig/ProfessionalCMake.jpg}
+        %\caption{Caption 3}
+        %\label{fig:image3}
+    \end{subfigure}
+\end{figure}
 
-BUILT IN DOCUMENTATION
+ 
+
 
 
 

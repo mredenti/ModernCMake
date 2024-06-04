@@ -552,6 +552,7 @@ CLI switch to use is `--rerun-failed`, and it proves extremely useful during deb
 
 Properties are set using the `set_tests_properties()` command.
 
+. . .
 
 **TIMEOUTS** 
 
