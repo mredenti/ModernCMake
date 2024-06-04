@@ -563,8 +563,16 @@ set_tests_properties(myTest PROPERTIES TIMEOUT 10) # [s]
 
 <!-- for whatever reason (the test has stalled or the machine is too slow) Specify a **TIMEOUT** for the test, and set it to 10 seconds: -->
 
-
-show some output
+```{.bash style=bashstyle}
+$ ctest --test-dir ./build
+Start 1: myTest
+1/1 Test #1: myTest ..........................***Timeout 10.01 sec
+0% tests passed, 1 tests failed out of 1
+Total Test time (real) = 10.01 sec
+The following tests FAILED:
+1 - myTest (Timeout)
+Errors while running CTest
+```
 
 
 ## TEST PROPERTIES (Cont.)
