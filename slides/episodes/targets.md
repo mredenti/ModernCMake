@@ -39,8 +39,6 @@ A target in CMake is essentially a logical unit that encapsulates the settings a
 
 - Your application is built as a collection of targets depending on each other.
 
-- A target is something that CMake should build (i.e. generate something enabling the building of the target).
-
 - A target is declared by either `add_executable()` or `add_library()` commands
 
 
@@ -115,16 +113,6 @@ COMPILE_OPTIONS
 target_compile_options(mylib PRIVATE -march=native)
 ```
 
-\vspace{.2cm}
-
-
-**LINKER FLAGS**
-
-LINK_LIBRARIES
-
-```{.cmake style=cmakestyle} 
-target_link_libraries(mylib PRIVATE m)
-```
 
 :::
 ::: {.column width="25%"}
@@ -141,7 +129,6 @@ object mylib{
     INCLUDE_DIRECTORIES: include
     COMPILE_DEFINITIONS : TYPE=double
     COMPILE_OPTIONS : -march=native
-    LINK_LIBRARIES : m
     . . .
 }
 
@@ -150,12 +137,62 @@ object mylib{
 ::: 
 ::::::::::::::
 
+- put a link to a full list of properties that can be set on targets
+
+\vspace{.2cm}
+
 
 ## TARGET PROPERTIES -  SETTING BUILD REQUIREMENTS (II)
 
+\vspace{.5cm}
 
-show just mock output from the previous slide for a build...
+:::::::::::::: {.columns}
+::: {.column width="83%"}
 
+\vspace{.2cm}
+
+
+```{.bash style=bashstyle}
+$ cmake --build ./build 
+...
+@[ 33%] Building CXX object CMakeFiles/mylib.dir/a.cpp.o@
+/usr/bin/c++ 
+      -DTYPE=double -I/<>/include -march=native 
+      -o CMakeFiles/mylib.dir/a.cpp.o -c a.cpp
+@[ 66%] Building CXX object CMakeFiles/mylib.dir/b.cpp.o@
+/usr/bin/c++ 
+      -DTYPE=double -I/<>/include -march=native 
+      -o CMakeFiles/mylib.dir/b.cpp.o -c b.cpp
+@[100%] Linking CXX static library libmylib.a@
+/usr/bin/ar qc libmylib.a 
+        CMakeFiles/mylib.dir/a.cpp.o 
+        CMakeFiles/mylib.dir/b.cpp.o
+/usr/bin/ranlib libmylib.a
+```
+
+
+:::
+::: {.column width="27%"}
+
+\vspace{1.7cm}
+
+```plantuml
+skinparam defaultFontSize 18
+top to bottom direction
+
+object mylib{
+    TYPE : STATIC_LIBRARY
+    SOURCES : a.cpp;b.cpp
+    INCLUDE_DIRECTORIES: include
+    COMPILE_DEFINITIONS : TYPE=double
+    COMPILE_OPTIONS : -march=native
+    . . .
+}
+
+```
+
+::: 
+::::::::::::::
 
 ## TARGET PROPERTIES -  SETTING USAGE REQUIREMENTS (I)
 
@@ -186,13 +223,66 @@ target_compile_options(mylib INTERFACE -march=native)
 
 \vspace{.2cm}
 
+:::
+::: {.column width="25%"}
+
+\vspace{2cm}
+
+```plantuml
+top to bottom direction
+
+object mylib{
+    TYPE : STATIC_LIBRARY
+    
+    SOURCES : a.cpp;b.cpp
+    
+    INTERFACE_INCLUDE_DIRECTORIES: include
+    
+    INTERFACE_COMPILE_DEFINITIONS : TYPE=double
+    
+    INTERFACE_COMPILE_OPTIONS : -march=native
+    
+    . . .
+}
+
+```
+::: 
+::::::::::::::
+
+
+## TARGET PROPERTIES -  SETTING USAGE REQUIREMENTS (I)
+
+:::::::::::::: {.columns}
+::: {.column width="75%"}
+
+\vspace{.2cm}
+
+**COMPILER FLAGS** 
+
+INTERFACE_INCLUDE_DIRECTORIES
+
+```{.cmake style=cmakestyle} 
+target_include_directories(mylib INTERFACE include)
+```
+
+INTERFACE_COMPILE_DEFINITIONS
+
+```{.cmake style=cmakestyle} 
+target_compile_definitions(mylib INTERFACE TYPE=double)
+```
+
+INTERFACE_COMPILE_OPTIONS
+
+```{.cmake style=cmakestyle} 
+target_compile_options(mylib INTERFACE -march=native)
+```
 
 **LINKER FLAGS**
 
-INTERFACE_LINK_LIBRARIES
+LINK_LIBRARIES
 
 ```{.cmake style=cmakestyle} 
-target_link_libraries(mylib INTERFACE m)
+target_link_libraries(main PRIVATE mylib)
 ```
 
 :::
@@ -214,10 +304,28 @@ object mylib{
     
     INTERFACE_COMPILE_OPTIONS : -march=native
     
-    INTERFACE_LINK_LIBRARIES : m
-    
     . . .
 }
+
+
+object main{
+    TYPE : STATIC_LIBRARY
+    
+    SOURCES : main.cpp
+    
+    LINK_LIBRARIES : mylib 
+    
+    . . . 
+
+    INCLUDE_DIRECTORIES: include
+    
+    COMPILE_DEFINITIONS : TYPE=double
+    
+    COMPILE_OPTIONS : -march=native
+}
+
+
+mylib --> main 
 
 ```
 ::: 
@@ -226,7 +334,81 @@ object mylib{
 
 ## TARGET PROPERTIES -  SETTING USAGE REQUIREMENTS (II)
 
-SHOW OUTPUT
+\vspace{.3cm}
+
+:::::::::::::: {.columns}
+::: {.column width="84%"}
+
+\vspace{.2cm}
+
+
+```{.bash style=bashstyle}
+$ cmake --build ./build -v 
+@[ 20%] Building CXX object CMakeFiles/mylib.dir/a.cpp.o@
+/usr/bin/c++ -o CMakeFiles/mylib.dir/a.cpp.o -c <>/a.cpp
+@[ 40%] Building CXX object CMakeFiles/mylib.dir/b.cpp.o@
+/usr/bin/c++ -o CMakeFiles/mylib.dir/b.cpp.o -c <>/b.cpp
+@[ 60%] Linking CXX static library libmylib.a@
+/usr/bin/ar qc libmylib.a CMakeFiles/mylib.dir/a.cpp.o 
+                CMakeFiles/mylib.dir/b.cpp.o
+/usr/bin/ranlib libmylib.a
+@[ 60%] Built target mylib@
+@[ 80%] Building CXX object CMakeFiles/main.dir/main.cpp.o@
+/usr/bin/c++ 
+    -DTYPE=double -I<>/include -march=native 
+    -o CMakeFiles/main.dir/main.cpp.o 
+    -c <>/main.cpp
+@[100%] Linking CXX executable main@
+/usr/bin/c++ CMakeFiles/main.dir/main.cpp.o -o main libmylib.a 
+```
+
+
+:::
+::: {.column width="26%"}
+
+\vspace{1.7cm}
+
+```plantuml
+top to bottom direction
+
+object mylib{
+    TYPE : STATIC_LIBRARY
+    
+    SOURCES : a.cpp;b.cpp
+    
+    INTERFACE_INCLUDE_DIRECTORIES: include
+    
+    INTERFACE_COMPILE_DEFINITIONS : TYPE=double
+    
+    INTERFACE_COMPILE_OPTIONS : -march=native
+    
+    . . .
+}
+
+
+object main{
+    TYPE : STATIC_LIBRARY
+    
+    SOURCES : main.cpp
+    
+    LINK_LIBRARIES : mylib 
+    
+    . . . 
+
+    INCLUDE_DIRECTORIES: include
+    
+    COMPILE_DEFINITIONS : TYPE=double
+    
+    COMPILE_OPTIONS : -march=native
+}
+
+
+mylib --> main 
+
+```
+
+::: 
+::::::::::::::
 
 
 ## TARGET PROPERTIES -  SETTING BUILD AND USAGE REQUIREMENTS (I)
@@ -308,7 +490,8 @@ object mylib{
 
 ## TARGET PROPERTIES -  SETTING BUILD AND USAGE REQUIREMENTS (II)
 
-SHOW OUTPUT
+
+
 
 
 # UNDERSTANDING VISIBILITY LEVELS: PRIVATE, INTERFACE, PUBLIC
@@ -317,7 +500,7 @@ SHOW OUTPUT
 
 \vspace{.3cm}
 
-For sake of argument let us move the `greetings.hpp` header file into an `include/` folder.
+Let us move the `greetings.hpp` header file into an `include/` folder for the sake of argument
 
 \vspace{.3cm}
 
@@ -398,7 +581,7 @@ target_link_libraries(hello PRIVATE greetings)
 $\Rightarrow$
 
 ```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
+$ cmake -B ./build -S greetings
 $ cmake --build ./build
 errro
 ```
