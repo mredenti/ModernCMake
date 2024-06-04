@@ -579,7 +579,7 @@ add_library(greetings STATIC greetings.hpp greetings.cpp)
 \vspace{.5cm}
 
 ```{.cmake style=cmakestyle}
-target_link_libraries(hello-world greetings)
+target_link_libraries(hello greetings)
 ```
 
 <!--
@@ -601,10 +601,10 @@ library (on GNU/Linux) and the hello-world executable.
     $ cmake --build ./build 
     [ 25%] Building CXX object src/CMakeFiles/greetings.dir/greetings.cpp.o
     [ 50%] Linking CXX static library libgreetings.a
-    [ 50%] Built target greetings
+    @[ 50%] Built target greetings@
     [ 75%] Building CXX object src/CMakeFiles/hello.dir/hello.cpp.o
     [100%] Linking CXX executable hello
-    [100%] Built target hello
+    @[100%] Built target hello@
     ```
 
 <!--
