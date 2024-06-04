@@ -79,6 +79,14 @@ Step 2: Link object file to create executable
 g++ hello.o -o hello
 ```
 
+\vspace{.2cm}
+
+Step 3: Run executable
+
+```{.shell style=bashstyle}
+./hello
+```
+
 ::: 
 ::: {.column width="50%"}
 
@@ -102,6 +110,12 @@ Step 2: Link object file to create executable
 gfortran hello.o -o hello
 ```
 
+\vspace{.2cm}
+
+Step 3: Run executable
+```{.shell style=bashstyle}
+./hello
+```
 
 ::: 
 ::::::::::::::
@@ -224,106 +238,6 @@ add_executable(hello hello.F90)
          Pack Artifacts
 -->
 
-## CMAKE_MINIMUM_REQUIRED()
-
-<!-- 
-  Purpose: Ensures the project uses a minimum version of CMake for compatibility. 
--->
-  
-```{.cmake style=cmakestyle}
-cmake_minimum_required(VERSION <min>)
-```
-
-- Every CMake project requires setting the minimally required version(s) as the first line of the root **CMakeLists.txt** file.
-
-- CMake will stop processing and a fatal error will be issued if the running version of CMake is lower than the `<min>` required.
-
-<!--
-  Which version should you set? Don't worry about it, there are tools that automatically test your project to determine the minimum CMake version required.
--->
-
-<!-- 
-  The CMake language is case insensitive, but the arguments are
-  case sensitive
-
-  However, CMake gives no guidance what this version may be, and a lot of projects just take the current CMake version or whatever the IDE is proposing as default. This is a problem, because some platforms don't always provide the latest CMake version, and a lot of trial and error is needed before projects can be used. -> there are tools that can determine the minimal working version of CMake
--->
-
-## PROJECT()
-
-<!-- 
-  In CMake, C++ is the default programming language. However, we
-  suggest to always explicitly state the project’s language in the
-  project command using the LANGUAGES option.
--->
-
-  
-```{.cmake style=cmakestyle}
-project(<name>
-        [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
-        [DESCRIPTION <description-string>]
-        [HOMEPAGE_URL <url-string>]
-        [LANGUAGES <language-name>...])
-```
-
-<!-- 
-  Defines the project name and sets up the environment for building
--->
-
-- Initializes various project-level settings, variables (`PROJECT_NAME`, `PROJECT_SOURCE_DIR`, ...) and the languages enabled for the build
-
-- Invocation of the `project()` command triggers a series of internal **Modules** inclusion that:
-  - Determine Operating System Information (`CMakeDetermineSystem.cmake`, ...)
-  - Find and Test Compilers (`CMakeDetermineCXXCompiler.cmake`, `CMakeCXXCompiler.cmake`, .)
-
-- Multiple languages can be enabled (C, C++, Fortran, C#, CUDA, ...) 
-
-<!--
-  CMakeDetermineCXXCompiler.cmake: Determines the C++ compiler to use.
-  CMakeCXXCompiler.cmake: Sets up the compiler flags and other configurations specific to the C++ compiler.
-  CMakeCXXInformation.cmake: Sets up C++ specific information, such as default include directories and standard flags.
--->
-
-## ADD_EXECUTABLE()
-
-```{.cmake style=cmakestyle}
-add_executable(<name>
-                [EXCLUDE_FROM_ALL]
-                [source1] [source2 ...]) 
-```
-
-- Creates the `<name>` executable **TARGET** to be built from the source files `source1`, `source2`, `...`
-
-<!--
-
-- `main` is both the name of the executable file generated and the name of the **CMake target** created (we will talk about targets in more depth)
-- The source file list comes next, and you can list as many as you'd like
-- CMake is smart, and will only compile source file extensions. The headers will be, for most intents and purposes, ignored; the only reason to list them is to get them to show up in IDEs
-  The simple example given previously required defining a target name for the executable
-and listing the source files to be compiled
-
-We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
-
-In the above example, note that .h header files were specified as sources too, not just the .cpp implementation files. Headers listed as sources don’t get compiled directly on their own, but the effect of adding them is for the benefit of IDE generators like Visual Studio, Xcode, Qt Creator, etc. This causes those headers to be listed in the project’s file list within the IDE, even if no source file refers to it via #include. This can make those headers easier to find during development and potentially aid things like refactoring functionality
-s.
--->
-
-- Known extensions to CMake:
-  
-  **C** 
-    : .c .C \text{ } .h
-  
-  **CXX**
-    : .c++ .cc .cpp .cxx \text{ } .hpp .h++ .hxx
-  
-  **Fortran**
-    : .f .F .f77 .f90 .f95 .f03 .F90
-
-<!-- 
-  We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables.
-
-  All the above are built-in commands provided by CMake, part of CMake's internal implementation and one of its core commands.
--->
 
 ## RUNNING CMAKE 
 
@@ -729,6 +643,105 @@ Hello, World!
 ::::::::::::::
 
 
+## CMAKE_MINIMUM_REQUIRED()
+
+<!-- 
+  Purpose: Ensures the project uses a minimum version of CMake for compatibility. 
+-->
+  
+```{.cmake style=cmakestyle}
+cmake_minimum_required(VERSION <min>)
+```
+
+- Every CMake project requires setting the minimally required version(s) as the first line of the root **CMakeLists.txt** file.
+
+- CMake will stop processing and a fatal error will be issued if the running version of CMake is lower than the `<min>` required.
+
+<!--
+  Which version should you set? Don't worry about it, there are tools that automatically test your project to determine the minimum CMake version required.
+-->
+
+<!-- 
+  The CMake language is case insensitive, but the arguments are
+  case sensitive
+
+  However, CMake gives no guidance what this version may be, and a lot of projects just take the current CMake version or whatever the IDE is proposing as default. This is a problem, because some platforms don't always provide the latest CMake version, and a lot of trial and error is needed before projects can be used. -> there are tools that can determine the minimal working version of CMake
+-->
+
+## PROJECT()
+
+<!-- 
+  In CMake, C++ is the default programming language. However, we
+  suggest to always explicitly state the project’s language in the
+  project command using the LANGUAGES option.
+-->
+
+  
+```{.cmake style=cmakestyle}
+project(<name>
+        [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
+        [LANGUAGES <language-name>...])
+```
+
+<!-- 
+  Defines the project name and sets up the environment for building
+-->
+
+- Initialises various project-level settings, variables (`PROJECT_NAME`, `PROJECT_SOURCE_DIR`, ...) and the languages enabled for the build
+
+- Invocation of the `project()` command triggers a series of internal **Modules** inclusion that:
+  - Determine Operating System Information (`CMakeDetermineSystem.cmake`, ...)
+  - Find and Test Compilers (`CMakeDetermineCXXCompiler.cmake`, `CMakeCXXCompiler.cmake`, .)
+
+- Multiple languages can be enabled (C, C++, Fortran, C#, CUDA, ...) 
+
+<!--
+  CMakeDetermineCXXCompiler.cmake: Determines the C++ compiler to use.
+  CMakeCXXCompiler.cmake: Sets up the compiler flags and other configurations specific to the C++ compiler.
+  CMakeCXXInformation.cmake: Sets up C++ specific information, such as default include directories and standard flags.
+-->
+
+## ADD_EXECUTABLE()
+
+```{.cmake style=cmakestyle}
+add_executable(<name>
+                [EXCLUDE_FROM_ALL]
+                [source1] [source2 ...]) 
+```
+
+- Creates the `<name>` executable **TARGET** to be built from the source files `source1`, `source2`, `...`
+
+<!--
+
+- `main` is both the name of the executable file generated and the name of the **CMake target** created (we will talk about targets in more depth)
+- The source file list comes next, and you can list as many as you'd like
+- CMake is smart, and will only compile source file extensions. The headers will be, for most intents and purposes, ignored; the only reason to list them is to get them to show up in IDEs
+  The simple example given previously required defining a target name for the executable
+and listing the source files to be compiled
+
+We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables. 
+
+In the above example, note that .h header files were specified as sources too, not just the .cpp implementation files. Headers listed as sources don’t get compiled directly on their own, but the effect of adding them is for the benefit of IDE generators like Visual Studio, Xcode, Qt Creator, etc. This causes those headers to be listed in the project’s file list within the IDE, even if no source file refers to it via #include. This can make those headers easier to find during development and potentially aid things like refactoring functionality
+s.
+-->
+
+- Known extensions to CMake:
+  
+  **C** 
+    : .c .C \text{ } .h
+  
+  **CXX**
+    : .c++ .cc .cpp .cxx \text{ } .hpp .h++ .hxx
+  
+  **Fortran**
+    : .f .F .f77 .f90 .f95 .f03 .F90
+
+<!-- 
+  We will encounter the term target repeatedly. In CMake, a target is any object given as first argument to add_executable or add_library. Targets are the basic atom in CMake. Whenever you will need to organize complex projects, think in terms of its targets and their mutual dependencies. The whole family of CMake commands target_* can be used to express chains of dependencies and is much more effective than keeping track of state with variables.
+
+  All the above are built-in commands provided by CMake, part of CMake's internal implementation and one of its core commands.
+-->
+
 ## GENERATED TARGETS
 
 The build system files generated by CMake (e.g. Makefile) will contain more targets than those strictly needed for building the executable itself
@@ -823,7 +836,7 @@ $ cmake --build ./build --target hello
     $ cmake --build ./build 
     ```
 
-3. Run the `hello` program
+3. **Run** the hello program
 
    ```{.bash style=bashstyle}
     $ ./build/hello
@@ -853,10 +866,59 @@ $ cmake --build ./build --target hello
 ::::::::::::::
 
 
-## CHANGING THE COMPILER 
-
-Maybe show how to change the compiler...
-
 <!--
-fd
+
+## BUILD SYSTEM GENERATOR
+
+CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build systems
+
+
+  CMake is a tool designed to help you build and test your software. It is now more popular than ever and is now supported by some major IDEs and libraries, including Android Studio, CLion, QtCreator or Visual Studio.
+
+  Let's cover the basics, understand how CMake works and how to write modern and extensible cross-platform build scripts with CMake.
+
+  CMake as a Scripting Language
+  CMake is a tool designed to manage the build process of software projects. It uses a scripting language to define the build process in CMakeLists.txt files. Here’s how it fits the characteristics of a scripting language:
+
+  Interpreted Execution: CMake processes the CMakeLists.txt files line by line to generate build instructions (e.g., Makefiles or Visual Studio project files).
+
+
+CMake uses **a scripting language to define the build process** in **CMakeLists.txt** files, which are processed to generate project files for major IDEs and build systems
+
+:::::::::::::: {.columns}
+::: {.column width="5%"}
+
+::: 
+::: {.column width="85%"}
+
+```plantuml
+left to right direction
+skinparam PackagePadding 2
+skinparam BoxPadding 2
+skinparam NodePadding 2
+skinparam style strictuml
+skinparam padding 0
+scale 0.8
+
+skinparam rectangle {
+  BackgroundColor<<Windows>> LightBlue
+  BackgroundColor<<macOS>> LightBlue
+  BackgroundColor<<Linux>> LightBlue
+  BackgroundColor<<Tool>> Green
+}
+
+skinparam Arrow {
+  Color Black
+}
+
+file "CMakeLists.txt" as ST
+rectangle "CMake" as CM #Pink
+
+collections ".sln files" as VS <<Windows>> #FEFECE
+collections "XCode" as XC <<macOS>> #FEFECE
+collections "Makefiles" as MK <<Linux>> #FEFECE
+
+rectangle "Make" as make #Pink
+rectangle "xcode" as xcode #Pink
+rectangle "visual-studio" as visual #Pink
 -->

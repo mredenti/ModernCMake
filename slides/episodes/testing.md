@@ -9,7 +9,17 @@ aspectratio: 169
   CMake has direct support for defining test cases, which are executed with a dedicated testing tool, ctest.
 -->
 
+
+
 # CREATING AND RUNNING TESTS
+
+## EXTREMELY IMPORTANT FOR TESTING 
+
+https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html#:~:text=the%20testing%20process.-,How%20Does%20CMake%20Facilitate%20Testing%3F,-%C2%B6
+
+Use the following in the tutorial for the testing parts 
+
+- https://coderefinery.github.io/cmake-workshop/testing/
 
 
 ## WHY TESTING IS IMPORTANT

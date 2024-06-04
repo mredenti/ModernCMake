@@ -5,6 +5,8 @@ aspectratio: 169
 # TARGETS AND PROPERTIES
 
 
+
+
 ## OVERVIEW 
 
 <!-- 
@@ -66,6 +68,31 @@ All that's required is to tell CMake about the structure of your project, and it
 We use target to tell CMake about the structure of our project and `target_link_libraries()` to express the dependencies between them.
 
 # START HERE
+
+## DECLARING TARGETS 
+
+A target in CMake is essentially a logical unit that encapsulates the settings and dependencies required to build a component of your software project. It can be an executable, a library, or even a custom command.
+
+
+Executable Targets: Represent a binary that can be run. Defined using add_executable().
+Library Targets: Represent shared, static libraries or object files. Defined using add_library().
+Custom Targets: Represent custom build steps or commands. Defined using add_custom_target().
+
+To declare a target in CMake, specific commands are used:
+
+add_executable():
+
+add_executable(myApp main.cpp)
+This command creates an executable target named myApp from the source file main.cpp.
+
+add_library():
+
+add_library(myLib STATIC lib.cpp)
+This command creates a static library target named myLib from the source file lib.cpp.
+
+## PROPERTIES OF TARGETS 
+
+Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. Properties can be set and queried using specific commands
 
 ## TARGET PROPERTIES
 
@@ -841,76 +868,11 @@ TARGETS ARE LIKE OBJECTS WITH PROPERTIES
 INTERFACE libraries have no build specification.
 • They only have usage requirements.
 
-## target_link_libraries()
-
-- Use `target_link_libraries()` to express direct dependencies
-
-
 # STOP HERE
 
-## Example 
 
-- target_link_libraries(Foo
-  PUBLIC Bar::Bar
-  PRIVATE Cow::Cow)
+## TARGET PROPERTIES - Entity Properties
 
-- Adds Bar::Bar to the target properties LINK_LIBRARIES and
-INTERFACE_LINK_LIBRARIES.
-- Adds Cow::Cow to the target property LINK_LIBRARIES.
-- Effectively adds all INTERFACE_<property> of Bar::Bar to
-<property> and INTERFACE_<property>.
-- Effectively adds all INTERFACE_<property> of Cow::Cow to
-<property>.
-
-
-
-
-
-## TARGET PROPERTIES 
-
-Many CMake objects such as targets, directories and source files have properties associated with them. A property is a key-value pair attached to a specific object. The most generic way to access properties is through the set_property and get_property commands. These commands allow you to set or get a property from any object in CMake that has properties.
-
-Any target has a collection of **properties** which define 
-
-- **how** the build artifact should be produced **and**
-- **how** it should be used by other targets in the project that depend on it
-
-## TARGET PROPERTIES (I)
-
-
-
-## TARGET PROPERTIES - COMPILER FLAGS
-
-<!-- 
-    To print a target property on screen, we first need to store it in the `<var>` variable and then message() it to the user; we have to read them one by one. 
--->
-
-\vspace{1cm}
-
-The most fundamental target properties for controlling compiler flags are the following
-
-:::::::::::::: {.columns}
-::: {.column width="50%"}
-
-```plantuml
-object TARGET{
-    INCLUDE_DIRECTORIES
-    COMPILE_DEFINITIONS
-    <LANG>_STANDARD
-    COMPILE_OPTIONS
-    . . .
-}
-```
-
-::: 
-::: {.column width="50%"}
-
-
-::: 
-::::::::::::::
-
-
-## TARGET PROPERTIES - LINK FLAGS 
 
 The target properties associated with linker flags
 
@@ -919,34 +881,15 @@ The target properties associated with linker flags
 **Footnote: CMake defines a large list of "known properties" (see the Further reading section) that are available depending on the type of the target (executable, library, or custom).**
 
 
+Many CMake objects such as targets, directories and source files have properties associated with them. A property is a key-value pair attached to a specific object. The most generic way to access properties is through the set_property and get_property commands. These commands allow you to set or get a property from any object in CMake that has properties.
+
+Any target has a collection of **properties** which define 
+
+- **how** the build artifact should be produced **and**
+- **how** it should be used by other targets in the project that depend on it
 
 
-## DEFINITION OF A TARGET - WHAT IS A TARGET
 
-A target in CMake is essentially a logical unit that encapsulates the settings and dependencies required to build a component of your software project. It can be an executable, a library, or even a custom command.
-
-
-xecutable Targets: Represent a binary that can be run. Defined using add_executable().
-Library Targets: Represent shared or static libraries. Defined using add_library().
-Custom Targets: Represent custom build steps or commands. Defined using add_custom_target().
-
-## DECLARING TARGETS 
-
-To declare a target in CMake, specific commands are used:
-
-add_executable():
-
-add_executable(myApp main.cpp)
-This command creates an executable target named myApp from the source file main.cpp.
-
-add_library():
-
-add_library(myLib STATIC lib.cpp)
-This command creates a static library target named myLib from the source file lib.cpp.
-
-## PROPERTIES OF TARGETS 
-
-Targets in CMake have properties that define their behavior. These properties control various aspects of the build process, such as compiler options, include directories, and dependencies. Properties can be set and queried using specific commands
 
 
 ## DEPENDENCIES BETWEEN TARGETS 
@@ -1118,54 +1061,6 @@ its dependencies.  The set of options is de-duplicated to avoid repetition.
 
 ## VISIBILITY LEVELS / INHERITANCE
 
-## TARGETS ARE OBJECTS WITH PROPERTIES 
-
-```plantuml
-object TARGET{
-    SOURCES => DESCRIPTION
-    COMPILE_DEFINITIONS
-    COMPILE_OPTIONS
-}
-```
-
-## TARGETS ARE OBJECTS WITH PROPERTIES 
-
-- Any target has a collection of **properties** which specify how the build artifact should be produced and how it should be used (inherited) by other **dependent** targets in the project
-
-A target is the basic element in the CMake DSL. Each target has properties, which can be read with get_target_property and modified with set_target_properties. Compile options, definitions, include directories, source files, link libraries, and link options are properties of targets.
-
-The five most used commands used to handle targets are:
-
-- target_sources
-
-- target_compile_options
-
-- target_compile_definitions
-
-- target_include_directories
-
-- target_link_libraries
-
-
-## USAGE REQUIREMENTS 
-
-Modern CMake: target-centric
-
-```{.cmake style=cmakestyle}
-target_include_directories(geometry PUBLIC "include")
-```
-
-geometry and anything that links to it gets `-Iinclude`
-
-Modern CMake is layout indipendent
-
-Classic CMake: directory-centric (don't do this)
-
-```{.cmake style=cmakestyle}
-include_directories("include")
-```
-
-Targets in this directory and subdirs get `-Iinclude`
 
 ## QUERYING PROPERTIES ON THE COMMAND LINE
 
@@ -1192,29 +1087,6 @@ target_precompile_headers
 target_sources
 
 
-## VISIBILITY LEVELS 
-
-- It is much more robust to use targets and properties than using variables and here we will discuss why.
-
-- Visibility levels PRIVATE, PUBLIC, or INTERFACE are very powerful but not easy to describe and imagine in words. Maybe a better approach to demonstrate what visibility levels is to see it in action.
-
-## exporting importing your project
-
-Exporting/Import your project
-Export/Import to/from others
-CMake can help project using CMake as a build system to
-export/import targets to/from other project using CMake as a
-build system.
-No more time for that today sorry, see:
-http://www.cmake.org/Wiki/CMake/Tutorials/Exporting_
-and_Importing_Targets
-
-## SUMMARY 
-
-Understanding targets is critical to writing clean, modern CMake projects. In this chapter, we not only discussed what constitutes a target and how targets depend on each other but also how to present that information in a diagram using the Graphviz module. With this general understanding, we were able to learn about the key feature of targets – properties (all kinds of properties). We not only went through a few commands to set regular properties on targets; we also solved the mystery of transitive usage requirements or propagated properties. This was a hard one to solve, as we not only needed to control which properties get propagated but also how to reliably propagate them to selected, further targets. Furthermore, we discovered how to guarantee that those propagated properties are compatible when they arrive from multiple sources.
-
-We then briefly discussed pseudo targets – imported targets, alias targets, and interface libraries. All of them will come in...
-
 ## CONCLUSION 
 
 The concept of properties isn't unique to targets; CMake supports setting properties of other scopes as well: GLOBAL, DIRECTORY, SOURCE, INSTALL, TEST, and CACHE. To manipulate all kinds of properties, there are general get_property() and set_property() commands. You can use these low-level commands to do exactly what the set_target_properties() command does, just with a bit more work:
@@ -1225,47 +1097,10 @@ set_property(TARGET <target> PROPERTY <name> <value>)
 
 ## SUMMARY 
 
-Scoping
-PUBLIC causes the property to be available in current target and in all targets depending on it
-INTERFACE causes the property to be available only in targets depending on it
 PRIVATE causes the property to be available only in the current target
+INTERFACE causes the property to be available only in targets depending on it
+PUBLIC causes the property to be available in current target and in all targets depending on it
 
-## SUMMARY 
+Understanding targets is critical to writing clean, modern CMake projects. In this chapter, we not only discussed what constitutes a target and how targets depend on each other but also how to present that information in a diagram using the Graphviz module. With this general understanding, we were able to learn about the key feature of targets – properties (all kinds of properties). We not only went through a few commands to set regular properties on targets; we also solved the mystery of transitive usage requirements or propagated properties. This was a hard one to solve, as we not only needed to control which properties get propagated but also how to reliably propagate them to selected, further targets. Furthermore, we discovered how to guarantee that those propagated properties are compatible when they arrive from multiple sources.
 
-Imagine targets as objects
-
-- Constructors:
- - add_executable()
- - add_library()
- - Member variables:
- - Target properties (too many to list here).
- - Member functions:
- - get_target_property()
- - set_target_properties()
- - get_property(TARGET)
- - set_property(TARGET)
- - target_compile_definitions()
- - target_compile_features()
- - target_compile_options()
- - target_include_directories()
- - target_link_libraries()
- - target_sources()
-
-
-## UNDERSTANDING VISIBILITY LEVELS 
-
-dfdkfjd
-
-
-## PRIVATE 
-
-
-D;FDKFLDF 
-
-
-## INTERFACE
-
-
-FDFSDF
-
-## PUBLIC
+We then briefly discussed pseudo targets – imported targets, alias targets, and interface libraries. All of them will come in...
