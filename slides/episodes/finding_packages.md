@@ -213,7 +213,7 @@ and language standard and optionally enable MPI:
     cmake_minimum_required(VERSION 3.21)
     project(HelloWorldMPI LANGUAGES CXX)
 
-    options(TPL_ENABLE_MPI "Enable MPI" "OFF")
+    option(TPL_ENABLE_MPI "Enable MPI" OFF)
     ```
 
 
@@ -313,12 +313,12 @@ and language standard and optionally enable MPI:
   ```{.bash style=bashstyle}
   $ module load openmpi/4.1.1--gcc--10.2.0-cuda-11.5.0
   
-  $ cmake -B ./build -S <>/helloWorldMPI -DTPL_ENABLE_MPI=ON
+  $ cmake -B ./build -S <>/helloWorldMPI @-DTPL_ENABLE_MPI=ON@
   -- The CXX compiler identification is GNU 8.4.1
   ...
   -- Detecting CXX compile features - done
-  -- Found MPI_CXX: <>/openmpi-4.1.1-<>/lib/libmpi.so  
-  -- Found MPI: TRUE (found version "3.1")  
+  -- @Found MPI_CXX: <>/openmpi-4.1.1-<>/lib/libmpi.so@  
+  -- @Found MPI: TRUE (found version "3.1")@  
   -- Configuring done (1.6s)
   -- Generating done (0.0s)
   -- Build files have been written to: <>/build
@@ -331,12 +331,12 @@ and language standard and optionally enable MPI:
 $ cmake --build ./build -v 
 ...
 [ 50%] Building CXX object CMakeFiles/hello.dir/hello.cpp.o
-/usr/bin/c++ -DHAVE_MPI -isystem <>/openmpi-<>/include -std=c++11 
+/usr/bin/c++ @-DHAVE_MPI@ @-isystem <>/openmpi-<>/include@ -std=c++11 
   ... -o CMakeFiles/hello.dir/hello.cpp.o -c <>/hello.cpp
 [100%] Linking CXX executable hello
 ...
-/usr/bin/c++ ... CMakeFiles/hello.dir/hello.cpp.o -o hello
-  ... <>/openmpi-4.1.1-<>/lib/libmpi.so 
+/usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o -o hello
+  ... @<>/openmpi-4.1.1-<>/lib/libmpi.so@ 
 ```
 
 6. To execute this program in parallel, we use the mpirun launcher 
@@ -349,28 +349,27 @@ $ mpirun -np 2 ./build/hello
 
 ## HOW IT WORKS (I)
 
+\vspace{.3cm}
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
 We have found linking to MPI to be extremely compact. We did not have to worry about compile flags, include directories, ...
 ```{.cmake style=cmakestyle}
 target_link_libraries(
     hello_world
-    PUBLIC
+    PRIVATE
         MPI::MPI_CXX)
 ```
 
 . . . 
 
-... these settings and dependencies are encoded in the definition of the `IMPORTED` library `MPI::MPI_CXX`.
-
-YOU COULD PROBABLY FIT THE PRINT HELPERS HERE IF YOU SPLIT ON TWO COLUMNS
-
-. . . 
-
-\centering But where was this **IMPORTED** target `MPI::MPI_CXX` defined?
+:::
+::: {.column width="50%"}
 
 
-## HOW IT WORKS (III)
+... these settings and dependencies are encoded in the definition of the `IMPORTED` target `MPI::MPI_CXX`.
 
- ... these settings and dependencies are encoded in the definition of the library 
 
 ```{.cmake style=cmakestyle}
 include(CMakePrintHelpers)
@@ -380,21 +379,36 @@ cmake_print_properties(
     PROPERTIES
         INTERFACE_COMPILE_OPTIONS
         INTERFACE_INCLUDE_DIRECTORIES
-        INTERFACE_LINK_LIBRARIES
-)
+        INTERFACE_LINK_LIBRARIES)
 ```
 
 ```{.bash style=bashstyle}
 show properties values
 ```
 
-**If you split the above part into two columns then we can easily fit the below**
 
-**Note that all properties of interest have the prefix INTERFACE_, because these properties
-usage requirements for any target wanting to interface and use the OpenMP target.**
+<!--
+  Note that all properties of interest have the prefix INTERFACE_, because these properties
+  usage requirements for any target wanting to interface and use the OpenMP target.
+-->
 
-\alert{You should have talked about the CMakePrintHelpers.cmake standard module
-already in the TARGETS chapter}
+:::
+::::::::::::::
+
+. . . 
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+\centering But where was this target `MPI::MPI_CXX` defined?
+
+
+:::
+::: {.column width="50%"}
+
+
+:::
+::::::::::::::
 
 ## HOW IT WORKS (II)
 
@@ -412,10 +426,10 @@ already in the TARGETS chapter}
   ```
 
 - `find_package(<package_name>)` is a wrapper command that looks for a file named `Find<package_name>.cmake` in the CMake cache variable `CMAKE_MODULE_PATH`
-- These CMake scripts identify packages in standard locations on the system, define variables and imported targets that will be run internally when a call to `find_package()` is issued
+- These CMake scripts identify packages in standard locations on the system, define variables and **imported targets** that will be run internally when a call to `find_package()` is issued
 
 
-## FindMPI.cmake Overview
+## FindMPI.cmake
 
 \vspace{.5cm}
 
@@ -509,7 +523,7 @@ set_property(TARGET MPI::MPI_${LANG}
 
   Variables for using MPI
   ^^^^^^^^^^^^^^^^^^^^^^^
-  The module exposes components ``C``, ``CXX``, ``MPICXX`` ...
+  The module exposes components ``C``, ``CXX``, ``Fortran`` ...
 
   ``MPI_FOUND``
   . . . <some other output>
