@@ -330,7 +330,7 @@ generators
 
 **Test frameworks integration**
 
-- Dash, GoogleTest
+- Catch2, GoogleTest
 
 \vspace{0.2cm}
 

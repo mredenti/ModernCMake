@@ -2,7 +2,7 @@
 aspectratio: 169
 ---
 
-# Finding Packages 
+# FINDING PACKAGES
 
 ## Motivation
 

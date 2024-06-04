@@ -416,7 +416,7 @@ Total Test time (real) =   0.01 sec
   enable_testing()
   ```
 
-  instructs CMake to write out a CTest input file in the `CMAKE_CURRENT_BINARY_DIR`, which will contain details of all the tests defined in the project.
+  instructs CMake to write out a CTest input file (`CTestTestfile.cmake`) in the `CMAKE_CURRENT_BINARY_DIR`, which will contain details of all the tests defined in the project.
 
 - Defining individual tests is done with the `add_test()` command
 
@@ -452,7 +452,7 @@ Total Test time (real) =   0.01 sec
 
 Let us introduce a bug into our code...
 
-```diff
+```cpp
 -sum += i;
 +sum *= i;
 ```
@@ -540,34 +540,40 @@ CLI switch to use is `--rerun-failed`, and it proves extremely useful during deb
 
 # TEST PROPERTIES
 
-## TEST PROPERTIES 
+## TEST PROPERTIES - A FEW EXAMPLES
 
 \centering 
 
-**Just like targets, tests in CMake can have properties that control various aspects of their behavior.**
+**Just like targets, tests can have properties that control various aspects of their behavior.**
 
 \raggedright
 
-\vspace{.5cm}
+\vspace{.3cm}
 
-- Properties are set using the `set_tests_properties()` command.
-
-- See the [CMake: Test Properties Documentation](https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#test-properties) for a full list of properties 
-
-
-:::::::::::::: {.columns}
-::: {.column width="50%"}
+Properties are set using the `set_tests_properties()` command.
 
 
 **TIMEOUTS** 
 
-:::
-::: {.column width="50%"}
+The test is terminated and marked as failed if the test goes past specified time
+
+```{.cmake style=cmakestyle}
+set_tests_properties(example PROPERTIES TIMEOUT 10) # [s]
+```
+
+<!-- for whatever reason (the test has stalled or the machine is too slow) Specify a **TIMEOUT** for the test, and set it to 10 seconds: -->
 
 **LABELS** 
 
-:::
-::::::::::::::
+
+The test is terminated and marked as failed if the test goes past that time
+
+```{.cmake style=cmakestyle}
+set_tests_properties(example PROPERTIES TIMEOUT 10)
+```
+
+
+- See the [CMake: Test Properties Documentation](https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#test-properties) for a full list of properties 
 
 
 ## EXAMPLE: USING TIMEOUTS FOR LONG TESTS 
@@ -576,131 +582,6 @@ DFD
 
 ## EXAMPLE: LABELS 
 
-## INTEGRATION WITH TEST FRAMEWORKS
-
-we do not discuss here ...
-
-## TESTING EXPECTED FAILURES 
-
-<!-- 
-  Ideally, we want all of our tests to always pass on every platform. However, we may want
-  to test whether an expected failure or exception will occur in a controlled setting, and in
-  that case, we would define the expected failure as a successful outcome. We believe that
-  typically, this is a task that should be given to the test framework (such as Catch2 or Google
-  Test), which should check for the expected failure and report successes to CMake. But,
-  there may be situations where you wish to define a non-zero return code from a test as
-  success; in other words, you may want to invert the definitions of success and failure. In
-  this recipe, we will demonstrate such a situation.
--->
-
-\alert{come up with a clear example, as otherwise it is not clear}
-
-
-- Usually we want all of our tests to always pass on every platform.
-
-```{.cmake style=cmakestyle}
-add_test(NAME example
-        COMMAND ...)
-
-set_tests_properties(example PROPERTIES WILL_FAIL true)
-```
-
-- The property `WILL_FAIL` set to true inverts success/failure. However, this feature should
-not be used to temporarily fix broken tests.
-
-Many other properties can be set on tests... 
-
-
-## USING TIMEOUTS FOR LONG TESTS
-
-- Ideally tests should take only a short time in order to motivate the developers to run the test often, and to encourage testing every commit. 
-
-- At times, tests might take longer or get stuck (eg. high file I/O load) and we may need to implement timeouts to termitate tests that go overtime before they pile up and delay the entire terst and deploy pipeline.
-
-- Implementing timeouts can be achieved with properties too...
-
-
-[CMake Properties On Tests - Documentation](https://cmake.org/cmake/help/v3.19/manual/cmake-properties.7.html#properties-on-tests)
-
-## VALGRIND EXAMPLE SOMEWHERE
-
-lkl
-
-
-## Using timeouts for long tests
-
-The code for this recipe is available at https:/ / github. com/ dev- cafe/
-cmake- cookbook/ tree/ v1. 0/ chapter- 04/ recipe- 07. The recipe is valid
-with CMake version 3.5 (and higher), and has been tested on GNU/Linux,
-macOS, and Windows.
-Ideally, the test set should take only a short time, in order to motivate developers to run the
-test set often, and to make it possible (or easier) to test every commit (changeset). However,
-some tests might take longer or get stuck (for instance, due to a high file I/O load), and we
-may need to implement timeouts to terminate tests that go overtime, before they pile up
-and delay the entire test and deploy pipeline. In this recipe, we will demonstrate one way
-of implementing timeouts, which can be adjusted separately for each test.
-
-In addition, we specify a TIMEOUT for the test, and set it to 10 seconds:
-set_tests_properties(example PROPERTIES TIMEOUT 10)
-
-Now, to verify that the TIMEOUT works, we increase the sleep command in
-test.py to 11 seconds, and rerun the test:
-
-## RUNNING TESTS IN PARALLEL
-
-Most modern computers have four or more CPU cores. One fantastic feature of CTest is its
-ability to run tests in parallel, if you have more than one core available. This can
-significantly reduce the total time to test, and reducing the total test time is what really
-counts, to motivate developers to test frequently. In this recipe, we will demonstrate this
-feature and discuss how you can optimize the definition of your tests for maximum
-performance.
-
-## RUNNING A SUBSET OF THE TESTS 
-
-In the previous recipe, we learned how to run tests in parallel with the help of CMake, and
-we discussed that it is advantageous to start with the longest tests. While this strategy
-minimizes the total test time, during the code development of a particular feature, or
-during debugging, we may not wish to run the entire test set. We may prefer to start with
-the longest tests, especially while debugging functionality that is exercised by a short test.
-For debugging and code development, we need the ability to only run a selected subset of
-tests. In this recipe, we will present strategies to accomplish that.
-
-
-## INTEGRATED SUPPORT FOR TESTING FRAMEWORKS AND STATIC CODE ANALYSIS
-
-- Support is also provided for the popular GoogleTest framework
-
-- While GoogleTest can be used standalone, CTest can drive the tests defined with the GoogleTest framework, taking over how tests are scheduled to run and the environment they run in.
-
-List of testing frameworks:
-  - fdfd
-  - fdfd
-
-- CMake also has direct support for a number of popular static code analysis tools
-
-  - clang-tidy
-  - cppcheck
-  - include-what-you-use 
-
-The above complement tests by providing additional verification of the code quality, adherence to relevant standards and catching common programming models.
-Dynamic code analysis is also possible with CMake projects.
-
-## CTEST 
-
-- The CTest is the testing tool used to control how tests execute
-
-- By default, `ctest` will execute all defined tests one at a time, logging a status message as each test is started and completed, but hiding all test output. An overall summary of the tests will be printed at the end.
-
-- Rich features are provided for defining how tests use resources, constraints between tests, and controlling how
-tests execute.
-
-- Reporting options include support for a dedicated dashboard server (CDash) or file ouptput in the widely used JUnit XML format.
-
-# The CTest command-line interface
-
-## CTEST 
-
-show a couple of things with the CTest command line interface
 
 <!-- 
 
