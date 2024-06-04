@@ -176,3 +176,24 @@ The CMake project started sometime around year 2000.
   - Functions in CMake are defined using the `function()` command and are called by their name
   - Functions can take arguments and optionally "return" values by modifying passed variables
   - Functions are user-defined and make use of commands to perform conditional logic, execute processes and so on...
+
+
+
+
+## IMPORTANT (IMPORTED LIBRARIES)
+
+Just like executables, libraries may be defined as imported targets. These are heavily used 
+by config files created during packaging or find module implementations. 
+
+They do not define a library to be built by the project, rather they act as a reference to a library 
+that is provided externally, eg. it already exists on the system, is built by some process outside 
+the current CMake project, or is provided by the package that a config file is part of...
+
+- Tip 
+  ```{.cmake style=cmakestyle}
+  cmake -B <build tree> -S <source tree>
+  ```
+
+We connect our libraries with executables by using the target_link_libraries() command. Without it, the compilation for executables would fail because of undefined symbols. Have you noticed that we invoked this command before actually declaring any of the libraries? When CMake configures the project, it collects the information about targets and their properties – their names, dependencies, source files, and other details.
+
+After parsing all the files, CMake will attempt to build a dependency graph. And like with all valid dependency graphs, they're directional acyclic graphs. This means that there is a clear direction of which target depends on which, and such dependencies cannot form cycles.
