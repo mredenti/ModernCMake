@@ -528,8 +528,9 @@ int main() {
 ::: 
 ::: {.column width="33%"}
 
-\vspace{-.5cm}
+\vspace{-.1cm}
 
+\scalebox{0.9}{
 \begin{forest}
   pic dir tree,
   where level=0{}{
@@ -554,7 +555,7 @@ int main() {
     ]
   ]
 \end{forest}
-
+}
 ::: 
 ::::::::::::::
 
@@ -563,9 +564,9 @@ int main() {
 
 \vspace{.3cm}
 
-some missing test
+Compilation fails if compiler can not find header file **greetings.hpp**
 
-\vspace{.3cm}
+\vspace{.1cm}
 
 :::::::::::::: {.columns}
 ::: {.column width="67%"}
@@ -573,24 +574,28 @@ some missing test
 ```{.cmake style=cmakestyle}
 add_library(greetings 
             STATIC 
-              greetings.hpp greetings.cpp) 
+              greetings.cpp) 
 add_executable(hello hello.cpp) 
 target_link_libraries(hello PRIVATE greetings)
 ```
 
-$\Rightarrow$
 
 ```{.bash style=bashstyle}
 $ cmake -B ./build -S greetings
 $ cmake --build ./build
-errro
+@[25%] Building CXX object <>/greetings.cpp.o@
+/usr/bin/c++ -c <>/greetings.cpp
+<>/src/greetings.cpp:2:10: fatal error: 
+  greetings.hpp: No such file or directory
+ #include "greetings.hpp"
+          ^~~~~~~~~~~~~~~
 ```
 
 ::: 
 ::: {.column width="33%"}
 
-\vspace{-.5cm}
 
+\scalebox{0.9}{
 \begin{forest}
   pic dir tree,
   where level=0{}{
@@ -615,6 +620,7 @@ errro
     ]
   ]
 \end{forest}
+}
 
 ::: 
 ::::::::::::::
@@ -630,12 +636,12 @@ Let us set the header search path as a **build requirement** of the `greetings` 
 \vspace{.3cm}
 
 :::::::::::::: {.columns}
-::: {.column width="67%"}
+::: {.column width="72%"}
 
 ```{.cmake style=cmakestyle}
 add_library(greetings 
             STATIC 
-              greetings.hpp greetings.cpp) 
+              greetings.cpp) 
 target_include_directories(greetings 
             PRIVATE 
               ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -643,19 +649,19 @@ add_executable(hello hello.cpp)
 target_link_libraries(hello PRIVATE greetings)
 ```
 
-$\Rightarrow$
-
 ```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
+$ cmake -B ./build -S ./greetings
 $ cmake --build ./build
-errro
+@[25%] Building CXX object <>/greetings.cpp.o@
+@[50%] Linking CXX static library libgreetings.a@
 ```
 
 ::: 
-::: {.column width="33%"}
+::: {.column width="28%"}
 
-\vspace{-.5cm}
+\vspace{-.2cm}
 
+\scalebox{0.9}{
 \begin{forest}
   pic dir tree,
   where level=0{}{
@@ -680,6 +686,7 @@ errro
     ]
   ]
 \end{forest}
+}
 
 ::: 
 ::::::::::::::
@@ -693,12 +700,12 @@ Let us set the header search path as a **usage requirement** of the `greetings` 
 \vspace{.3cm}
 
 :::::::::::::: {.columns}
-::: {.column width="67%"}
+::: {.column width="72%"}
 
 ```{.cmake style=cmakestyle}
 add_library(greetings 
             STATIC 
-              greetings.hpp greetings.cpp) 
+              greetings.cpp) 
 target_include_directories(greetings 
             INTERFACE 
               ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -709,16 +716,18 @@ target_link_libraries(hello PRIVATE greetings)
 $\Rightarrow$
 
 ```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
+$ cmake -B ./build -S ./greetings
 $ cmake --build ./build
-errro
+@[25%] Building CXX object <>/greetings.cpp.o@
+@[50%] Linking CXX static library libgreetings.a@
 ```
 
 ::: 
-::: {.column width="33%"}
+::: {.column width="28%"}
 
 \vspace{-.5cm}
 
+\scalebox{0.9}{
 \begin{forest}
   pic dir tree,
   where level=0{}{
@@ -743,7 +752,7 @@ errro
     ]
   ]
 \end{forest}
-
+}
 ::: 
 ::::::::::::::
 
@@ -773,7 +782,7 @@ target_link_libraries(hello PRIVATE greetings)
 $\Rightarrow$
 
 ```{.bash style=bashstyle}
-$ cmake -B <build-tree> -S <source-tree>
+$ cmake -B ./build -S ./greetings
 $ cmake --build ./build
 errro
 ```
