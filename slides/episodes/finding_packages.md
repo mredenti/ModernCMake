@@ -213,9 +213,7 @@ and language standard and optionally enable MPI:
     cmake_minimum_required(VERSION 3.21)
     project(HelloWorldMPI LANGUAGES CXX)
 
-    # ... set standard
-
-    set(TPL_ENABLE_MPI "OFF" CACHE BOOL "WITH MPI")
+    options(TPL_ENABLE_MPI "Enable MPI" "OFF")
     ```
 
 
