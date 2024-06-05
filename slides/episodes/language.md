@@ -310,7 +310,16 @@ $ cmake --help-module-list | wc -l
 
 ```{.bash style=bashstyle}
 $ cmake --help-module CheckCXXCompilerFlag
+CheckCXXCompilerFlag
+------------------------
+Check whether the CXX compiler supports a given flag.
 
+    check_cxx_compiler_flag(<flag> <var>)
+
+Check that the ``<flag>`` is accepted by the compiler without
+a diagnostic.  Stores the result in an internal cache entry
+named ``<var>``.
+...
 ```
 
 
