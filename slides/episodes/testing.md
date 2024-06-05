@@ -589,9 +589,7 @@ set_tests_properties(example PROPERTIES TIMEOUT 10)
 ```
 
 
-. . .
-
-- See the [CMake: Test Properties Documentation](https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#test-properties) for a full list of properties 
+- See [\color{blue}{CMake: Test Properties Documentation}](https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#test-properties) for a full list of properties 
 
 
 
