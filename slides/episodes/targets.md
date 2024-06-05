@@ -8,15 +8,14 @@ aspectratio: 169
 ## WHAT IS A TARGET 
 
 
-In CMake, a target is a node <!-- logical unit --> inside the dependecy graph of your project
+**In CMake, a target is a node <!-- logical unit --> inside the dependecy graph of your project**
 
 - A target is declared by either `add_executable()` or `add_library()` commands where 
 
-- Executable Targets: Represent a binary that can be run. Defined using `add_executable()`.
+- \underline{Executable Targets}: Represent a binary that can be run. 
 
-- Library Targets: Represent shared, static libraries or object files. Defined using `add_library()`.
+- \underline{Library Targets}: Represent shared, static libraries or object files. 
 
-- To declare a target in CMake, specific commands are used
 
 ## TARGET PROPERTIES
 
