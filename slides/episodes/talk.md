@@ -1,3 +1,16 @@
+## CCMake
+
+The ccmake executable is the CMake curses interface. Project configuration settings may be specified interactively through this GUI. Brief instructions are provided at the bottom of the terminal when the program is running.
+
+-S <path-to-source>
+Path to root directory of the CMake project to build.
+
+-B <path-to-build>
+Path to directory which CMake will use as the root of build directory.
+
+If the directory doesn't already exist CMake will make it.
+
+
 ## IMPORTANT (SIMPLIFYING THE TARGET NAMES)
 CMake is one of the most popular makefile generator systems for C++. If you look at an open-source library on GitHub, chances are it is either instrumented by CMake or at least has a CMake integration
 
@@ -579,5 +592,60 @@ tests execute.
 ## CTEST 
 
 show a couple of things with the CTest command line interface
+
+
+## WHAT IS A TARGET
+
+\centering
+
+**GNU Make** 
+
+A target is essentially a recipe that a buildsystem uses to compile a list of files into another file. It can be a `.cpp` implementation file compiled into an `.o` object file, a group of `.o` files packaged into an `.a` static library, and many other combinations.
+
+**CMake**
+
+A target is a logical unit that ...
+
+CMake works on a higher level of abstraction. It understands how to build an executable directly from source files. So, you don't need to write an explicit recipe to compile any object files. All that's required is an `add_executable()` or `add_library` command with the name of the executable target and a list of the files that are to be its elements:
+
+All that's required is to tell CMake about the structure of your project, and it will help you build it. 
+We use target to tell CMake about the structure of our project and `target_link_libraries()` to express the dependencies between them.
+
+
+
+## OVERVIEW 
+
+<!-- 
+    Targets are fundamental concept in CMake
+
+    Next, we'll explain in detail all the steps that the toolchain takes to build a binary artifact from a target. That's the part many books about C++ are missing: how to configure and use preprocessors, compilers, and linkers properly, as well as how to optimize their behavior.
+
+    Lastly, this section will cover all the different ways in which CMake offers to manage dependencies, and will explain how to pick the best one for your specific use case.
+
+    
+    Real-world projects require more than compiling a few source files into executables and/or libraries. In the vast majority of cases, you will be faced with projects comprising dozens to hundreds of source files sprawling in a complex source tree. Using modern CMake helps you keep the complexity of the build system in check.
+
+-->
+
+<!-- 
+    A CMake target has dependencies and properties.
+        1. Executable are targets: add executable
+        2.  Libraries are targets: add library
+        3. There exist some builtin targets: install, clean, package, . . .
+        4.  You may create custom targets: add custom target
+
+In CMake, a target is a core concept that represents a buildable entity within a project. Targets are used to define the final products that CMake generates, such as executables, libraries, or custom commands. Understanding and effectively using targets is crucial for managing complex build systems, especially in larger projects. Here’s a detailed description of the concept of targets in CMake:
+
+1. Definition of a Target
+A target in CMake is essentially a logical unit that encapsulates the settings and dependencies required to build a component of your software project. It can be an executable, a library, or even a custom command.
+-->
+
+- With the advent of CMake 3.0, also known as Modern CMake, there has been a significant shift in the way CMake builds should be structured and described. Rather than relying on variables to convey information in a project, we should shift to using **targets** and **properties** allowing for more fine-grained configurations and being less error-prone. (maybe put a link to a good blog post)
+
+
+- Moder CMake introduced the new concept that "everything is a self-contained target"
+
+- Your application is built as a collection of targets depending on each other.
+
 
 -->

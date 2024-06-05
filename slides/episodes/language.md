@@ -36,7 +36,7 @@ file(READ <fname> <variable>)
 
 **Variables are defined with the command `set()`**
 
-\vspace{.7cm}
+\vspace{.4cm}
 
 [\color{blue}{CMake Language - Documentation}](https://cmake.org/cmake/help/latest/manual/cmake-language.7.html) 
 

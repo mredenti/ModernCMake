@@ -484,7 +484,9 @@ On Galileo100
   The command invokes CMake through its command-line interface (CLI) and specifies the location of the project's top-level `CMakeLists.txt` file (`-S` option) and target build location (`-B` option) where the host default build system will be generated
 -->
 
-On GNU/Linux, CMake will by default generate Unix Makefiles to build the project:
+On GNU/Linux, CMake will by default generate Unix Makefiles to build the project. 
+
+- The root the of build directory will contain:
 
 **Makefile**
 : The set of instructions that make will run to build the project.
@@ -523,7 +525,7 @@ On GNU/Linux, CMake will by default generate Unix Makefiles to build the project
     CMake also comes to our aid in helping us not have to deal with the platform differences of the build tool. The cmake --build option directs CMake to invoke the appropriate build tool for us, which allows us to specify the whole build something like this:
 -->
 
-\centering Once the project files have been generated, we direct CMake to invoke the appropriate build tool.
+\centering Once the project files have been generated, we direct CMake to invoke the underlying build tool.
 
 \vspace{.3cm}
 
