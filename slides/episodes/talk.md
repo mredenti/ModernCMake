@@ -724,3 +724,41 @@ As software developers, we deliberately draw boundaries and designate components
   Understanding the concepts that are to come in this chapter helps in organizing 
   and managing larger projects effectively, ensuring better code maintenance and scalability.
 -->
+
+
+## SETTING THE STANDARD 
+
+<!--
+  Programming languages have different standards available, that is, different versions that
+  offer new and improved language constructs. Enabling new standards is accomplished by
+  setting the appropriate compiler flag.
+-->
+
+- Setting the C++ standard is often a decision driven by the project's code requirements.
+
+- CMake offers a platform- and compiler-independent mechanism for setting the language standard for `CXX`
+and `C`:
+
+  ```{.cmake style=cmakestyle}
+  # myProject/CMaleLists.txt
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+  ```
+
+  ```{.bash style=bashstyle}
+  @[ 50%] Building CXX object main.cxx.o@
+  /usr/bin/c++ -std=gnu++17 -o main.o -c main.cpp
+  ```
+
+
+## SETTING THE STANDARD (Cont.)
+
+`CMAKE_CXX_STANDARD` 
+  : mandates the standard that we would like to have.
+
+`CXX_STANDARD_REQUIRED` 
+  : specifies that the version of the standard chosen is required. If this version is not available, CMake will stop configuration with an error. When this property is set to OFF, CMake will look for next latest version of the standard, until a proper flag has been set. This means to first look for `C++14`, then `C++11`, then `C++98`.
+
+`CXX_EXTENSIONS` 
+  : tells CMake to only use compiler flags that will enable the ISO C++ standard, without compiler-specific extensions.

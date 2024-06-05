@@ -1019,19 +1019,11 @@ This is the command that will be used as the ``<LANG>`` compiler.
 
 CMake stores compilers for each language in the `CMAKE_<LANG>_COMPILER` variable, where `<LANG>` is any of the supported languages.
 
-The user can set this variable in one of two ways:
+The user can set this by using the `-D` option in the CLI
 
-1. [preferred] By using the `-D` option in the CLI
-
-  ```{.bash style=bashstyle}
-  $ cmake -B ./build -S <...> -D CMAKE_CXX_COMPILER:FILEPATH=clang++
-  ```
-
-2. By exporting the environment variable `CXX` (`CC`, `FC`) 
-  
-  ```{.bash style=bashstyle}
-  $ env CXX=clang++ cmake -B ./build -S <...>
-  ```
+```{.bash style=bashstyle}
+$ cmake -B ./build -S <...> -D CMAKE_CXX_COMPILER:FILEPATH=clang++
+```
 
 **Note:** We have here assumed that the additional compilers are available in the standard paths
 where CMake does its lookups. If that is not the case, the user will need to pass the full path
@@ -1071,43 +1063,6 @@ $ cmake -B ./build -S <...>
 -- Generating done (0.0s)
 -- Build files have been written to:<>/build
 ```
-
-## SETTING THE STANDARD 
-
-<!--
-  Programming languages have different standards available, that is, different versions that
-  offer new and improved language constructs. Enabling new standards is accomplished by
-  setting the appropriate compiler flag.
--->
-
-- Setting the C++ standard is often a decision driven by the project's code requirements.
-
-- CMake offers a platform- and compiler-independent mechanism for setting the language standard for `CXX`
-and `C`:
-
-  ```{.cmake style=cmakestyle}
-  # myProject/CMaleLists.txt
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-  set(CMAKE_CXX_EXTENSIONS OFF)
-  ```
-
-  ```{.bash style=bashstyle}
-  @[ 50%] Building CXX object main.cxx.o@
-  /usr/bin/c++ -std=gnu++17 -o main.o -c main.cpp
-  ```
-
-
-## SETTING THE STANDARD (Cont.)
-
-`CMAKE_CXX_STANDARD` 
-  : mandates the standard that we would like to have.
-
-`CXX_STANDARD_REQUIRED` 
-  : specifies that the version of the standard chosen is required. If this version is not available, CMake will stop configuration with an error. When this property is set to OFF, CMake will look for next latest version of the standard, until a proper flag has been set. This means to first look for `C++14`, then `C++11`, then `C++98`.
-
-`CXX_EXTENSIONS` 
-  : tells CMake to only use compiler flags that will enable the ISO C++ standard, without compiler-specific extensions.
 
 ## COMPILATION FLAGS
 
@@ -1155,23 +1110,21 @@ MinSizeRel
 
 ```{.cmake style=cmakestyle}
 include(CMakePrintHelpers)
-cmake_print_variables(CMAKE_BUILD_TYPE
-                      CMAKE_CXX_FLAGS
-                      CMAKE_CXX_FLAGS_DEBUG
-                      CMAKE_CXX_FLAGS_RELEASE)
+cmake_print_variables(CMAKE_BUILD_TYPE)
 ```
 
 :::
 ::::::::::::::
 
 
+\vspace{.2cm}
+
 The build type can be selected on the command line
 
 
 ```{.bash style=bashstyle}
 $ cmake -B ./build-rel -S <...> -D CMAKE_BUILD_TYPE:STRING=Release
--- CMAKE_BUILD_TYPE="Release" ; CMAKE_CXX_FLAGS="" ; 
-CMAKE_CXX_FLAGS_DEBUG="-g" ; CMAKE_CXX_FLAGS_RELEASE="-O3 -DNDEBUG"
+-- CMAKE_BUILD_TYPE="Release"
 ```
 
 ```{.bash style=bashstyle}
