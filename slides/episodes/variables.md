@@ -841,7 +841,7 @@ set(<variable> <value>... CACHE <type> <docstring>)
 :::::::::::::: {.columns}
 ::: {.column width="45%"}
 
-\vspace{1cm}
+\vspace{.6cm}
 
 - Unlike local variables, **cache variables have global scope** 
 
@@ -1017,13 +1017,15 @@ This is the command that will be used as the ``<LANG>`` compiler.
 
 ## SPECIFYING THE COMPILER 
 
-CMake stores compilers for each language in the `CMAKE_<LANG>_COMPILER` variable, where `<LANG>` is any of the supported languages.
+CMake stores compilers for each language in the `CMAKE_<LANG>_COMPILER` variable, where `<LANG>` is any of the supported languages (`C/CXX/Fortran`).
 
 The user can set this by using the `-D` option in the CLI
 
 ```{.bash style=bashstyle}
 $ cmake -B ./build -S <...> -D CMAKE_CXX_COMPILER:FILEPATH=clang++
 ```
+
+\vspace{1.2cm}
 
 **Note:** We have here assumed that the additional compilers are available in the standard paths
 where CMake does its lookups. If that is not the case, the user will need to pass the full path
@@ -1160,21 +1162,9 @@ endif()
 - Things like the compiler location, as discovered or set on the first run, are cached.
 -->
 
-## CHECKING COMPILER FLAGS AS FROM THE WORKSHOP 
-
-you might need to introduce modules as well
-
-## CONTROLLING COMPILER DEPENDENT FLAGS
-
 ## CONTROLLING COMPILER FLAGS
 
-I think these are cache variables
-
-Compiler flags for different compilers 
-
 ```{.cmake style=cmakestyle}
-set(CMAKE_CXX_STANDARD 17)
-
 if(CMAKE_CXX_COMPILER_ID MATCHES Intel)
     set(CMAKE_CXX_FLAGS "-ip -xHOST")
 endif()
@@ -1184,7 +1174,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
 endif()
 ```
 
-The above will the set the flags for the entire project
 
 <!--
 
