@@ -581,13 +581,23 @@ Errors while running CTest
 
 **LABELS** 
 
-
-The test is terminated and marked as failed if the test goes past that time
-
 ```{.cmake style=cmakestyle}
-set_tests_properties(example PROPERTIES TIMEOUT 10)
+add_test(NAME benchmark-a 
+          COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/test/benchmark-a.py)
+add_test(NAME benchmark-a 
+          COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/test/benchmark-b.py)
+add_test(NAME benchmark-c 
+          COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/test/benchmark-c.py)
+
+set_tests_properties(benchmark-a benchmark-b PROPERTIES LABELS "quick")
+set_tests_properties(benchmark-c PROPERTIES LABELS "long")
 ```
 
+
+- Filter by label 
+  ```{.bash style=bashstyle}
+  $ ctest --test-dir ./build -L quick
+  ```
 
 - See [\color{blue}{CMake: Test Properties Documentation}](https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#test-properties) for a full list of properties 
 

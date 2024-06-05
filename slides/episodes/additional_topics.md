@@ -13,65 +13,38 @@ aspectratio: 169
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
 
-**Finding Packages**
+**Finding Dependencies**
 
-\vspace{0.2cm}
+- [\color{blue}{PkgConfig}](https://cmake.org/cmake/help/latest/module/FindPkgConfig.html)
+- Write your own module file
 
-**Multiple Generators**
 
-- Makefiles 
-- Ninja
-- Microsoft Visual Studio (.sln)
-- Eclipse
-- Xcode
+**[\color{blue}{Installing Dependencies}](https://cmake.org/cmake/help/latest/module/ExternalProject.html)**
 
-\vspace{0.2cm}
-
-**Cross-platform** (Linux, Windows, macOS, ...)
-
-\vspace{0.2cm}
-
-**Direct CMake integration with IDEs** 
-
-  - Microsoft Visual Studio 2017...
-  - JetBrains CLion
-
+- `external_project_add()`
+- `FetchContent_Declare()`
 
 :::
-
-. . . 
 
 ::: {.column width="50%"}
 
 
-**Dependency discovery made easy**
-
-- `find_package()`
+**[\color{blue}{Generator Expressions}](https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html)**
 
 \vspace{0.2cm}
 
-**Automatic chaining of library dependency information**
+**[\color{blue}{Installation}](https://cmake.org/cmake/help/latest/command/install.html)**
 
 \vspace{0.2cm}
 
-
-**Compiler language level support**
-
-- C, C++, Fortran, CUDA, HIP, ...
-
-\vspace{0.2cm}
-
-**Fortran Module Order**  
-
-\vspace{0.2cm}
 
 **Test frameworks integration**
 
-- Catch2, GoogleTest
+- [\color{blue}{GoogleTest}](https://google.github.io/googletest/quickstart-cmake.html)
 
-\vspace{0.2cm}
 
-**CMake scripting language**
+
+
 <!-- 
 
   CMake as a Scripting Language
@@ -115,29 +88,14 @@ Discussion on how CMake fits into the software development process, its role in 
 
 
 
-## RESOURCES
+## ADDITIONAL RESOURCES
 
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.25\textwidth}
-        \includegraphics[width=\textwidth]{./fig/ProfessionalCMake.jpg}
-        %\caption{Caption 1}
-        %\label{fig:image1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.25\textwidth}
-        \includegraphics[width=\textwidth]{./fig/ProfessionalCMake.jpg}
-        %\caption{Caption 2}
-        %\label{fig:image2}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.25\textwidth}
-        \includegraphics[width=\textwidth]{./fig/ProfessionalCMake.jpg}
-        %\caption{Caption 3}
-        %\label{fig:image3}
-    \end{subfigure}
-\end{figure}
+- [\color{blue}{CMake Cookbook}](https://www.packtpub.com/product/cmake-cookbook/9781788470711)
+
+- [\color{blue}{CMake Discourse}](https://discourse.cmake.org/)
+
+- [\color{blue}{Professional CMake: A Practical Guide 18th Edition}](https://crascit.com/professional-cmake/)
 
  
 
