@@ -343,7 +343,8 @@ $ cmake --build ./build -v
 
 ```{.bash style=bashstyle}
 $ mpirun -np 2 ./build/hello
-...
+Hello World from rank 1
+Hello World from rank 0
 ```
 
 
@@ -377,13 +378,8 @@ cmake_print_properties(
     TARGETS
         MPI::MPI_CXX
     PROPERTIES
-        INTERFACE_COMPILE_OPTIONS
         INTERFACE_INCLUDE_DIRECTORIES
         INTERFACE_LINK_LIBRARIES)
-```
-
-```{.bash style=bashstyle}
-show properties values
 ```
 
 
@@ -397,18 +393,16 @@ show properties values
 
 . . . 
 
-:::::::::::::: {.columns}
-::: {.column width="50%"}
+```{.bash style=bashstyle}
+$ cmake -B ./build -S helloWorldMPI
+MPI::MPI_CXX.INTERFACE_INCLUDE_DIRECTORIES = "<>/openmpi/include"
+MPI::MPI_CXX.INTERFACE_LINK_LIBRARIES = "<>/openmpi/lib/libmpi.so"
+```
+
+. . . 
 
 \centering But where was this target `MPI::MPI_CXX` defined?
 
-
-:::
-::: {.column width="50%"}
-
-
-:::
-::::::::::::::
 
 ## HOW IT WORKS (II)
 
@@ -418,7 +412,7 @@ show properties values
 
   ```{.bash style=bashstyle}
   $ ls $CMAKE_PREFIX_PATH/share/cmake-3.21/Modules/ | grep "Find"
-  FindMPI.cmake
+  @FindMPI.cmake@
   FindOpenMP.cmake
   FindPythonInterp.cmake
   FindCUDAToolkit.cmake
