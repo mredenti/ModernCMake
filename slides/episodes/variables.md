@@ -997,7 +997,9 @@ The user can set this by using the `-D` option in the CLI
 $ cmake -B ./build -S <...> -D CMAKE_CXX_COMPILER:FILEPATH=clang++
 ```
 
-\vspace{1.2cm}
+. . .
+
+\vspace{1.4cm}
 
 **Note:** We have here assumed that the additional compilers are available in the standard paths
 where CMake does its lookups. If that is not the case, the user will need to pass the full path

@@ -10,31 +10,17 @@ aspectratio: 169
 
 In CMake, a target is a node <!-- logical unit --> inside the dependecy graph of your project
 
-- A target is declared by either `add_executable()` or `add_library()` commands
+- A target is declared by either `add_executable()` or `add_library()` commands where 
 
 - Executable Targets: Represent a binary that can be run. Defined using `add_executable()`.
-- 
+
 - Library Targets: Represent shared, static libraries or object files. Defined using `add_library()`.
 
-- To declare a target in CMake, specific commands are used:
-
-add_executable():
-
-add_executable(myApp main.cpp)
-This command creates an executable target named myApp from the source file main.cpp.
-
-add_library():
-
-add_library(myLib STATIC lib.cpp)
-This command creates a static library target named myLib from the source file lib.cpp.
-
-
-
-
-- Any target has a collection of properties, which define which define how the build recipe should be produced and how it should be used by other dependent targets in the project.
-
+- To declare a target in CMake, specific commands are used
 
 ## TARGET PROPERTIES
+
+<!-- - Any target has a collection of properties, which define which define how the build recipe should be produced and how it should be used by other dependent targets in the project. -->
 
 Targets in CMake have properties that define their behavior. compiler options, include directories, and dependencies. Properties can be set and queried using specific commands
 
