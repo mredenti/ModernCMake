@@ -1070,16 +1070,10 @@ CMake distinguishes between the following build types:
 ::: {.column width="30%"}
 
 Debug
-: 
+: `"-g"`
 
 Release
-: 
-
-RelWithDebInfo
-: 
-
-MinSizeRel
-: 
+: `"-O3 -DNDEBUG"`
 
 ::: 
 ::: {.column width="70%"}

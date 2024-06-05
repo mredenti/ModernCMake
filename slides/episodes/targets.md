@@ -35,6 +35,8 @@ aspectratio: 169
 
 \vspace{.5cm}
 
+Example of source and usage requirements:
+
   - source files (normally not a usage requirement)
   - include search paths (`-I/<>/include/`)
   - pre-processor macros (`-DTYPE=double`)
@@ -93,9 +95,11 @@ object mylib{
 ::: 
 ::::::::::::::
 
-- put a link to a full list of properties that can be set on targets
+\vspace{.4cm}
 
-\vspace{.2cm}
+See [\color{blue}{CMake - Properties on targets}](https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#properties-on-targets) for a full list of properties that can be set on targets
+
+
 
 
 ## TARGET PROPERTIES -  SETTING BUILD REQUIREMENTS (II)
@@ -265,7 +269,7 @@ object mylib{
 
 
 object main{
-    TYPE : STATIC_LIBRARY
+    TYPE : EXECUTABLE
     
     SOURCES : main.cpp
     
@@ -343,7 +347,7 @@ object mylib{
 
 
 object main{
-    TYPE : STATIC_LIBRARY
+    TYPE : EXECUTABLE
     
     SOURCES : main.cpp
     
@@ -367,7 +371,7 @@ mylib --> main
 ::::::::::::::
 
 
-## TARGET PROPERTIES -  SETTING BUILD AND USAGE REQUIREMENTS (I)
+## TARGET PROPERTIES -  SETTING BUILD AND USAGE REQUIREMENTS 
 
 :::::::::::::: {.columns}
 ::: {.column width="70%"}
@@ -443,22 +447,15 @@ object mylib{
 ::::::::::::::
 
 
-
-## TARGET PROPERTIES -  SETTING BUILD AND USAGE REQUIREMENTS (II)
-
-
-
-
-
 # UNDERSTANDING VISIBILITY LEVELS: PRIVATE, INTERFACE, PUBLIC
 
 ## SETUP
 
-\vspace{.3cm}
+\vspace{.2cm}
 
 Let us move the `greetings.hpp` header file into an `include/` folder for the sake of argument
 
-\vspace{.3cm}
+\vspace{.2cm}
 
 :::::::::::::: {.columns}
 ::: {.column width="67%"}
@@ -672,13 +669,11 @@ target_link_libraries(hello PRIVATE greetings)
 $ cmake -B ./build -S ./greetings
 $ cmake --build ./build
 @[25%] Building CXX object <>/greetings.cpp.o@
-@[50%] Linking CXX static library libgreetings.a@
-@[75%] Building CXX object <>/hello.cpp.o@
-/usr/bin/c++ -o <>/hello.cpp.o -c <>/hello.cpp
-<>/hello.cpp:2:10: fatal error: greetings.hpp: No such file or directory
+/usr/bin/c++ -c <>/greetings.cpp
+<>/src/greetings.cpp:2:10: fatal error: 
+  greetings.hpp: No such file or directory
  #include "greetings.hpp"
           ^~~~~~~~~~~~~~~
-compilation terminated.
 ```
 
 ::: 
@@ -781,13 +776,17 @@ $ cmake --build ./build
 ::: 
 ::::::::::::::
 
+<!-- 
 
-## AUMMARY 
+## RECAP 
 
-TARGETS ARE LIKE OBJECTS WITH PROPERTIES
+In CMake, a target is a node  inside the dependecy graph of your project.
 
+- Build requirements 
 - USAGE REQUIREMENT PROPAGATE ALON EDGES OF THE DEPENDENCY GRAPH AND IF
   
 - Private populates the non interface property
 - INTERFACE populates the INTERFACE_ property.
 - PUBLIC populates both.
+
+-->
