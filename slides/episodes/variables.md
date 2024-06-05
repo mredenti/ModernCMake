@@ -913,11 +913,7 @@ Local variables hide cache variables
 
   Although rarely useful, CMake also allows the value of environment variables to be retrieved and set using a modified form of the CMake variable notation. 
 
--->
 
-<!-- 
-  The following example shows how to retrieve and set an environment variable:
--->
 
 **READ**
 
@@ -933,11 +929,15 @@ endif()
 set(ENV{PATH} "$ENV{PATH}:/opt/myDir")
 ```
 
+
+
 **\underline{Note}**
   Setting an environment variable like this only affects the currently running CMake instance. 
-  <!-- 
+ 
     As soon as the CMake run is finished, the change to the environment variable is lost. In particular, the change to the environment variable will not be visible at build time.
-  -->
+
+-->
+
 
 <!-- 
 
