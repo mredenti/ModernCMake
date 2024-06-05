@@ -4,81 +4,8 @@ aspectratio: 169
 
 
 
-# CREATING A LIBRARY 
+# CREATING A STATIC LIBRARY 
 
-## MOTIVATION
-
-<!-- 
-  BUILDING AND LINKING STATIC AND SHARED LIBRARIES
--->
-
-<!--
-  A project almost always consists of more than a single executable built from a single source file. Projects are split across multiple source files, often spread across different subdirectories in the source tree. This practice not only helps in keeping source code organized within a project, but greatly favors modularity, code reuse, and separation of concerns, since common tasks can be grouped into libraries. This separation also simplifies and speeds up recompilation of a project during development. In this recipe, we will show
-
-  how to group sources into libraries and how to link targets against these libraries.
-
-  Keeping everything in one directory is fine for simple projects, but most real world projects split
-  their files across multiple directories. It is common to find different file types or individual modules
-  grouped under their own directories, or for files belonging to logical functional groupings to be in
-  their own part of the project’s directory hierarchy. While the directory structure may be driven by
-  how developers think of the project, the way the project is structured also impacts the build system.
-
-  
-WHY USE LIBRARIES IN LARGE-SCALE PROJECTS?
-Modularity & Structure:
-
-Organize code into logical entities.
-Separate concerns for better readability and maintenance.
-Code Reuse:
-
-Share common functionality across multiple targets.
-Promote reusability and reduce redundancy.
-Efficient Development:
-
-Faster compilation times by isolating changes.
-Simplify and speed up the build process.
-Maintainability:
-
-Easier to manage, update, and debug large codebases.
-Improve overall project structure and scalability.
-
-Mature applications are often built from many components, and I don't mean external dependencies here. Specifically, I'm talking about internal libraries. Adding them to the project is useful from a structural perspective, as related things are packaged together in a single logical entity. And they can be linked with other targets – another library or an executable. This is especially convenient when multiple targets are using the same library.
-
-As software developers, we deliberately draw boundaries and designate components to group one or more units of translation (.cpp files). We do it for multiple reasons: to increase code readability, manage coupling and connascence, speed up the build process, and finally, extract the reusable components.
--->
-
-\vspace{.1cm}
-
-- Large scale projects consist of multiple source files organised in logical components to separate concerns for better readability and maintenance. 
-  
-\vspace{.5cm}
-
-- In this context, the use of libraries enables:
-
-  Code Reuse
-
-    : Share common functionality across multiple targets.
-
-  Efficient Development
-    
-    : Faster compilation times by isolating changes.
-
-  Maintainability
-    
-    : Easier to manage, update, and debug large codebases.
-
-<!-- 
-  Why Use Libraries?
-    Libraries organize common tasks and reusable code.
-    They facilitate modular project structure.
-    Libraries improve code maintainability and understanding.
-
-  A project almost always consists of more than a single executable built from a single source file. 
-  Only rarely we have one-source-file projects and more realistically, as projects grow, we split them up into separate files. This simplifies (re)compilation but also helps humans maintaining and understanding the project.
-
-  Understanding the concepts that are to come in this chapter helps in organizing 
-  and managing larger projects effectively, ensuring better code maintenance and scalability.
--->
 
 
 ## A GREETINGS LIBRARY - SET UP (I)
@@ -571,7 +498,7 @@ add_library(greetings STATIC greetings.hpp greetings.cpp)
 
 - The name of the target, `greetings`, can be used troughout `CMakeLists.txt` to refer to the library
 
-- The actual name of the generated library will be formed by CMake by adding the prefix `lib` in front and the appropriate extension as a suffix, determined based on the second argument (**STATIC**, **SHARED**, **OBJECT**, ...)  and the OS.
+- The actual name of the generated library will be formed by CMake by adding the prefix `lib` in front and the appropriate extension as a suffix, determined based on the second argument (**STATIC**, **SHARED**, ...)  and the OS.
 
 
 ## HOW IT WORKS - TARGET_LINK_LIBRARIES()

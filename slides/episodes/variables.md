@@ -182,7 +182,7 @@ add_subdirectory(src)
 2. Introduce a variable `_sources`, listing `greetings.hpp` and `greetings.cpp` 
 
 ```{.cmake style=cmakestyle}
-list(APPEND _sources greetings.hpp greetings.cpp)
+set(_sources "greetings.hpp;greetings.cpp")
 ```
 
 3. Introduce an `if-else` statement based on the value of `USE_LIBRARY` to toggle between the two behaviours
@@ -236,6 +236,7 @@ endif()
   verified by running the objdump -x command on GNU/Linux.
 -->
 
+
 ## HOW IT WORKS 
 
 - The variable `USE_LIBRARY` has been set to `OFF` in the top level CMakeLists.txt file. 
@@ -250,7 +251,30 @@ endif()
 
 \vspace{.2cm}
 
-$\Rightarrow$ At build time...
+$\Rightarrow$ At **configuration + generation** time...
+
+```{.bash style=bashstyle}
+$ cmake -B ./build 
+...
+@[100%] Linking CXX executable hello@
+cd <>/build/src ...
+/usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o 
+            CMakeFiles/hello.dir/greetings.cpp.o -o hello 
+```
+
+## HOW IT WORKS 
+
+- The variable `USE_LIBRARY` has been set to `OFF` in the top level CMakeLists.txt file. 
+
+- In the CMake language, true or false values can be expressed in a number of ways:
+  
+  - A logical variable is **true** if it is set to any of the following: **1**, **ON**, **YES**, **TRUE**, **Y**, or a **non-zero number**.
+  
+  - A logical variable is **false** if it is set to any of the following: **0**, **OFF**, **NO**, **FALSE**, **N**, **IGNORE**, **NOTFOUND**, an empty string **""**, or it ends in the suffix **-NOTFOUND**.
+
+\vspace{.2cm}
+
+$\Rightarrow$ ...**at build time**
 
 ```{.bash style=bashstyle}
 $ cmake --build ./build --verbose
@@ -600,6 +624,8 @@ The `add_subdirectory()` command creates a new scope for processing that subdire
 :::
 :::::::::::::: 
 
+<!--
+
 ## LOCAL VARIABLES - FUNCTION SCOPE 
 
 
@@ -621,6 +647,7 @@ message(STATUS ${TEST_EXTEND}) # "42"
 
 \alert{What about the rest like accessing a pre-defined variable? -> show that you can still read directory scoped variables}
 
+-->
 
 ## {.standout}
 
@@ -807,25 +834,6 @@ set(<variable> <value>... CACHE <type> <docstring>)
   -- nvcc .. missing output
   ```
 
-## CACHE VARIABLES - GLOBAL SCOPE (?) 
-
-- Unlike local variables, **cache variables have global scope** 
-
-
-    \vspace{.5cm}
-
-    ```{.cmake style=cmakestyle}  
-    # CMakeLists.txt file
-    function(test)
-      set(TEST "42")  // ADD CACHE /..
-      set(TEST_EXTEND "42" PARENT_SCOPE)
-    endfunction()
-
-    test()
-    message(STATUS ${TEST}) # ""
-    message(STATUS ${TEST_EXTEND}) # "42"
-    ```
-
   
 ## CMAKECACHE.TXT
 
@@ -834,6 +842,9 @@ set(<variable> <value>... CACHE <type> <docstring>)
 ::: {.column width="45%"}
 
 \vspace{1cm}
+
+- - Unlike local variables, **cache variables have global scope** 
+
 
 - Cache variables are stored in a file called **CMakeCache.txt** located in the top directory of the build tree 
 <!--
@@ -900,13 +911,6 @@ set(<variable> <value>... CACHE <type> <docstring>)
 :::
 :::::::::::::: 
 
-
-## VARIABLES AND THE CACHE 
-
-Dereferences look first for a local variable, then
-in the cache if there is no local definition for a
-variable
-Local variables hide cache variables
 
 <!-- 
   ## ENVIRONMENT VARIABLES 

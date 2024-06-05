@@ -240,7 +240,7 @@ check_type_size(long SIZEOF_LONG)
   Example: `Find<Package>.cmake` modules help in locating and configuring and external dependency to be used by the project.
 -->
 
-\vspace{.5cm}
+\vspace{.3cm}
 
 [\color{blue}{Documentation : CMake Modules}](https://cmake.org/cmake/help/latest/manual/cmake-modules.7.html)
 
@@ -267,7 +267,7 @@ check_type_size(long SIZEOF_LONG)
 
 \raggedright
 
-\vspace{0.3cm}
+\vspace{0.1cm}
 
 **COMMANDS** 
 

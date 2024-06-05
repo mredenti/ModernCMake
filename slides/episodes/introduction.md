@@ -30,7 +30,11 @@ aspectratio: 169
 | **11:00 - 12:00** Targets               | **16:00 - 17:00** Hands on             |
 
 
-## WHY CMAKE
+
+<!-- 
+
+
+
 
 \centering 
 
@@ -41,7 +45,7 @@ aspectratio: 169
 
 GNU Make
   : Complications with large projects 
-  <!-- 
+  
     you can not just use Bash. In fact you can write make target recipes in any scripting language you want.
 
     Development and maintenance of Makefiles can become very complicated as the project grows (error prone to deal with thousands of files and dependencies) 
@@ -49,60 +53,57 @@ GNU Make
     Structuring Makefiles for a huge project is possible but very time consuming
 
     Often see developing and maintaining multiple Makefiles targeting a specific platform or even compiler toolchain
-  -->
+ 
   : Platform dependence 
-  <!-- 
+ 
     Make does not know which compiler (options) we want and which environment we are on.
 
     OS specific commands (ls, grep, dir, ..., slash, backslash) will not port.
     
-    Surely one can hack their ways to achieve portabilty but GNU Make alternatives: NMake (Visual Studio) where shell commands are obviously targeted at Windows -->
+    Surely one can hack their ways to achieve portabilty but GNU Make alternatives: NMake (Visual Studio) where shell commands are obviously targeted at Windows
   : Manual Dependency Management
-  <!-- 
+   
     Developers must manually handle dependencies, which can lead to errors and maintenance challenges. 
     If the project grows, maintaining these dependencies manually becomes error-prone and cumbersome.
 
     In CMake, dependency management is handled automatically.
-  -->
-
-<!--
+ 
   All of the above approached poorly integrate with IDEs and 
   cross-platform or IDE integrations would require manual updates across different build tools and IDEs respective configuration files
--->
 
-<!--
   CMake is particularly favored for its cross-platform capabilities and ease of managing complex projects. GNU Make remains a staple in Unix-like environments for its simplicity and power. 
--->
+
 
 . . . 
 
 \hspace{0.5cm}
 
-<!-- 
+ 
     I am not sure this is true : Limited to Unix platforms : Generates only Makefiles
--->
 
-Autotools <!-- a.k.a. Autohell -->
+
+Autotools  a.k.a. Autohell 
 
   : Complex manual scripts (Bourne shell, m4) 
-  <!-- Long, difficult to understand scripts -->
+ Long, difficult to understand scripts 
 
   : Poor IDE integration
 
   : Maintenance Overhead
   
-  <!-- 
+ 
     Keeping the Autotools scripts up to date and working correctly can require significant maintenance effort.
 
     Manual ordering of Fortran module files 
-  -->
+
   
-  <!-- 
+
     You need to make sure that the module files are created before they are referenced 
-  --> 
+ 
 
+-->
 
-## BUILD SYSTEMS POPULARITY
+## WHY CMAKE
 
 \begin{center}
     \includegraphics[width=1.2\paperwidth,height=0.8\paperheight]{./fig/GoogleTrends.png}
