@@ -985,34 +985,6 @@ This is the command that will be used as the ``<LANG>`` compiler.
 . . . 
 ```
 
-## SOME USEFUL CMAKE VARIABLES 
-
-- Non user settable variables
-
-  `CMAKE_HOST_SYSTEM_NAME`
-    : Name of the OS CMake is running on
-
-  `PROJECT_BINARY_DIR`
-    : Full path to build directory for project (`-B`) 
-
-  `CMAKE_CURRENT_LIST_DIR`
-    : Full directory of the listfile currently being processed
-
-\vspace{.3cm}
-
-- User settable variables
-
-  `CMAKE_<LANG>_COMPILER` 
-    : The full path to the compiler for `LANG`
-
-  `CMAKE_BUILD_TYPE`
-    : Specifies the build type (`Debug`, `Release`, `RelWithDebInfo`, `MinSizeRel`)
-
-  `CMAKE_Fotran_PREPROCESS`
-    : Control whether the Fortran source file should be preprocessed
-
-\vspace{.4cm}
-
 [\color{blue}{CMake Variables - Documentation}](https://cmake.org/cmake/help/latest/manual/cmake-variables.7.html) 
 
 ## SPECIFYING THE COMPILER 
