@@ -456,7 +456,7 @@ On Galileo100
       ]
       [CMakeFiles
       ]
-      [Makefile, file
+      [\colorbox{pink}{Makefile}, file
       ]
       [cmake\_install.cmake, file
       ]
@@ -493,7 +493,7 @@ On GNU/Linux, CMake will by default generate Unix Makefiles to build the project
 : Directory which contains temporary files, used by CMake for detecting the operating system, compiler and other project specific files.
 
 **cmake_install.cmake**
-: A CMake script handling install rules, which is used at install time. (more on this later)
+: A CMake script handling install rules, which is used at install time. 
 
 **CMakeCache.txt**
 : A set of key-value cache variables used by CMake when re-running the configuration. (more on this later)
@@ -569,6 +569,62 @@ To see the output in verbose mode append the `--verbose` flag
   . . .
   [100%] Built target hello
   ```
+
+<!-- 
+  Here’s what each part means:
+
+/usr/bin/c++ - This is the C++ compiler being invoked (likely g++).
+-MD - Generate a dependency file in addition to the object file.
+-MT CMakeFiles/hello.dir/hello.cpp.o - This specifies the target name in the generated dependency file. This is typically the object file name.
+-MF CMakeFiles/hello.dir/hello.cpp.o.d - This specifies the name of the dependency file to write (hello.cpp.o.d in this case).
+-o CMakeFiles/hello.dir/hello.cpp.o - This specifies the name of the output file (the object file hello.cpp.o).
+-c <...>/HelloWorld/hello.cpp - This tells the compiler to compile (not link) the source file hello.cpp into an object file.
+Summary
+The -MD flag generates a .d file containing dependency information.
+The -MF flag specifies the name of the .d file to be generated.
+These flags are often used by build systems like CMake to manage dependencies automatically, ensuring that changes in source files correctly trigger recompilation of dependent files.
+
+he object file appears twice in the command line because of how dependency generation and compilation are structured. Here’s a breakdown of the reasons:
+
+Dependency Generation:
+The first appearance of the object file (CMakeFiles/hello.dir/hello.cpp.o) is related to the -MT option. The -MT option sets the target in the dependency file to be the object file. This tells the compiler to generate dependencies for the object file.
+Compilation Output:
+The second appearance of the object file (-o CMakeFiles/hello.dir/hello.cpp.o) specifies the actual output of the compilation process. This tells the compiler to place the compiled object code into the specified file.
+Detailed Explanation
+Here’s the full command again for reference:
+
+bash
+Copia codice
+/usr/bin/c++ -MD -MT CMakeFiles/hello.dir/hello.cpp.o -MF CMakeFiles/hello.dir/hello.cpp.o.d -o CMakeFiles/hello.dir/hello.cpp.o -c <...>/HelloWorld/hello.cpp
+-MD: Generates a .d file for dependencies.
+
+-MT CMakeFiles/hello.dir/hello.cpp.o: Specifies that the target in the generated .d file is CMakeFiles/hello.dir/hello.cpp.o. This line in the .d file might look something like this:
+
+bash
+Copia codice
+CMakeFiles/hello.dir/hello.cpp.o: hello.cpp header1.h header2.h
+This tells the build system that hello.cpp.o depends on hello.cpp, header1.h, header2.h, etc.
+
+-MF CMakeFiles/hello.dir/hello.cpp.o.d: Specifies the file to write the dependencies to (hello.cpp.o.d).
+
+-o CMakeFiles/hello.dir/hello.cpp.o: Specifies the output file for the compiled object code (hello.cpp.o).
+
+-c <...>/HelloWorld/hello.cpp: Indicates that the compiler should compile (not link) the source file hello.cpp.
+
+Why Both Are Needed
+Dependency Target (-MT):
+
+This is used to generate the dependency file with the correct target. The build system (e.g., Make or CMake) will use this dependency information to understand which files need to be rebuilt when a source or header file changes.
+Compilation Output (-o):
+
+This directs the compiler where to place the resulting object file after compilation. This object file is later used in the linking stage to create the final executable or library.
+Summary
+The object file is specified twice because:
+
+Once for generating the correct dependency information (-MT).
+Once for specifying the actual output of the compilation (-o).
+This separation ensures that the build system has the correct dependency information while also correctly generating the compiled object file for later stages of the build process.
+-->
 
 ## STEP 2 - RUNNING THE NATIVE BUILD SYSTEM (VERBOSE MODE)
 

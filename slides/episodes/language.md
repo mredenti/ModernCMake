@@ -28,8 +28,8 @@ if(FOO)
 **Commands may have arguments and overloads** 
 
 ```{.cmake style=cmakestyle}
-file(WRITE <file> <content>)
-file(READ <file> <variable>)
+file(WRITE <fname> <content>)
+file(READ <fname> <variable>)
 ```
 
 \vspace{.2cm}

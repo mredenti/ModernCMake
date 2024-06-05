@@ -7,20 +7,33 @@ aspectratio: 169
 
 ## Setup
 
-\alert{I AM NOT SURE - LET US FIRST SEE WHAT AUTOTOOLS DOES}
+**Step 1** Log into G100 Cineca cluster
 
-Logging into G100 Cineca cluster
-
-```{.bash style=bashstyle}
+```shell
 $ ssh <username>@login.g100.cineca.it
 ```
 
-Clone the exercises repository
+**Step 2** [\color{blue}{Clone the repository}](https://gitlab.hpc.cineca.it/training/build_system_pkg_manager_hpc.git)
 
 ```{.bash style=bashstyle}
-$ git clone https://gitlab.hpc.cineca.it/training/<...>.git
-ls day2/morning/SlidesExamples
+$ git clone \ 
+    https://gitlab.hpc.cineca.it/training/build_system_pkg_manager_hpc.git
 ```
+
+or update 
+
+```{.bash style=bashstyle}
+$ cd build_system_pkg_manager_hpc 
+$ git pull origin 
+```
+
+## Instructions
+
+```{.bash style=bashstyle}
+cd day2/morning/SlidesExamples
+```
+
+Open the Readme.md file or view it from the repository
 
 Loading the cmake module
 
