@@ -821,7 +821,6 @@ set(<variable> <value>... CACHE <type> <docstring>)
 - Another example: Enable CUDA language if required
     
   ```{.cmake style=cmakestyle}  
-  # set(ENABLE_CUDA "OFF" CACHE BOOL "Build project with CUDA enabled")
   option(ENABLE_CUDA "Build project X with CUDA support" OFF)
 
   if(ENABLE_CUDA)
@@ -831,7 +830,8 @@ set(<variable> <value>... CACHE <type> <docstring>)
 
   ```{.bash style=bashstyle}
   $ cmake -B <...> -S <...> -D ENABLE_CUDA=ON 
-  -- nvcc .. missing output
+  -- The CUDA compiler identification is NVIDIA 11.5.50 
+  -- Check for working CUDA compiler: <>/cuda-11.5.0/bin/nvcc 
   ```
 
   
@@ -1067,7 +1067,7 @@ CMake distinguishes between the following build types:
 
 
 :::::::::::::: {.columns}
-::: {.column width="30%"}
+::: {.column width="33%"}
 
 Debug
 : `"-g"`
@@ -1076,7 +1076,7 @@ Release
 : `"-O3 -DNDEBUG"`
 
 ::: 
-::: {.column width="70%"}
+::: {.column width="67%"}
 
 ```{.cmake style=cmakestyle}
 include(CMakePrintHelpers)
@@ -1087,7 +1087,7 @@ cmake_print_variables(CMAKE_BUILD_TYPE)
 ::::::::::::::
 
 
-\vspace{.2cm}
+\vspace{.4cm}
 
 The build type can be selected on the command line
 
@@ -1132,7 +1132,12 @@ endif()
 
 ## CONTROLLING COMPILER FLAGS
 
+Sometimes it's necessary to set specific compiler flags to optimize performance based on the compiler being used, as shown here for Intel and GNU compilers.
+
 ```{.cmake style=cmakestyle}
+include(CMakePrintHelpers)
+cmake_print_variables(CMAKE_CXX_COMPILER_ID)
+
 if(CMAKE_CXX_COMPILER_ID MATCHES Intel)
     set(CMAKE_CXX_FLAGS "-ip -xHOST")
 endif()
@@ -1142,6 +1147,12 @@ if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
 endif()
 ```
 
+```{.bash style=bashstyle}
+$ cmake --build ./build 
+[ 50%] Building CXX object CMakeFiles/main.dir/main.cpp.o
+/usr/bin/c++ @-Ofast -march=native@ 
+  -o CMakeFiles/main.dir/main.cpp.o -c <>/main.cpp
+```
 
 <!--
 
