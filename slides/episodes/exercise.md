@@ -17,7 +17,7 @@ $ ssh <username>@login.g100.cineca.it
 
 ```{.bash style=bashstyle}
 $ git clone \ 
-    https://gitlab.hpc.cineca.it/training/build_system_pkg_manager_hpc.git
+https://gitlab.hpc.cineca.it/training/build_system_pkg_manager_hpc.git
 ```
 
 or update 

@@ -38,7 +38,7 @@ file(READ <fname> <variable>)
 
 \vspace{.7cm}
 
-[CMake Language - Documentation](https://cmake.org/cmake/help/latest/manual/cmake-language.7.html) 
+[\color{blue}{CMake Language - Documentation}](https://cmake.org/cmake/help/latest/manual/cmake-language.7.html) 
 
 :::
 ::: {.column width="50%"}
@@ -240,8 +240,10 @@ check_type_size(long SIZEOF_LONG)
   Example: `Find<Package>.cmake` modules help in locating and configuring and external dependency to be used by the project.
 -->
 
+\vspace{.5cm}
 
-add a link to the documentation 
+[\color{blue}{Documentation : CMake Modules}](https://cmake.org/cmake/help/latest/manual/cmake-modules.7.html)
+
 
 <!-- 
 

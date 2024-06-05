@@ -42,7 +42,7 @@ aspectratio: 169
 
 \vspace{.3cm}
 
-Three types of variables: **Local**, **Cache**, **Environment**
+Two main types of variables: **Local**, **Cache**
 
 <!--
 
@@ -908,9 +908,12 @@ in the cache if there is no local definition for a
 variable
 Local variables hide cache variables
 
-## ENVIRONMENT VARIABLES 
+<!-- 
+  ## ENVIRONMENT VARIABLES 
 
-Although rarely useful, CMake also allows the value of environment variables to be retrieved and set using a modified form of the CMake variable notation. 
+  Although rarely useful, CMake also allows the value of environment variables to be retrieved and set using a modified form of the CMake variable notation. 
+
+-->
 
 <!-- 
   The following example shows how to retrieve and set an environment variable:
