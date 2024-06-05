@@ -843,7 +843,7 @@ set(<variable> <value>... CACHE <type> <docstring>)
 
 \vspace{1cm}
 
-- - Unlike local variables, **cache variables have global scope** 
+- Unlike local variables, **cache variables have global scope** 
 
 
 - Cache variables are stored in a file called **CMakeCache.txt** located in the top directory of the build tree 
@@ -1013,7 +1013,7 @@ This is the command that will be used as the ``<LANG>`` compiler.
 
 \vspace{.4cm}
 
-[CMake Variables - Documentation](https://cmake.org/cmake/help/latest/manual/cmake-variables.7.html) 
+[\color{blue}{CMake Variables - Documentation}](https://cmake.org/cmake/help/latest/manual/cmake-variables.7.html) 
 
 ## SPECIFYING THE COMPILER 
 
@@ -1071,21 +1071,6 @@ $ cmake -B ./build -S <...>
 -- Generating done (0.0s)
 -- Build files have been written to:<>/build
 ```
-
-## SPECIFYING THE COMPILER (Cont.)
-
-You can verify which compiler has been cache either by inspecting the `CMakeCache.txt` file directly or by printing Cache variables to screen with the flag `-LAH`
-
-```{.bash style=bashstyle}
-$ cmake -B ./build -S <...> -LAH | grep "CMAKE_CXX_COMPILER"
-CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
-```
-
-where 
-
-- `-L`: lists all the variables in the CMake cache
-- `-LA`: lists all the variables in the CMake cache as well as advanced ones
-- `-LAH`: lists all the variables in the CMake cache as well as advanced ones with the docstring
 
 ## SETTING THE STANDARD 
 
