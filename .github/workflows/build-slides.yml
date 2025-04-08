@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
 
       - name: Ensure pdf directory exists
-        run: mkdir -p slides/pdf      
+        run: mkdir -p ./pdf      
       
       - name: Build slides
         run: make CMake.pdf
