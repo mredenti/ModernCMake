@@ -4,20 +4,13 @@ This repository provides slides for a course on Modern CMake, generated with Pan
 
 ## Step 1: Building the Docker Image
 
-Ensure you have the `Dockerfile` in your working directory (the `Dockerfile` provided above).
-
-Run this command to build your Docker image:
+You can build the Docker image locally:
 
 ```shell
-docker build -t slides-builder .
+docker build -t slides-builder-pandoc .
 ```
 
-Alternatively, if you have a tagged image from a registry:
-
-```shell
-docker pull ghcr.io/mredenti/slides-builder-pandoc:latest
-docker tag ghcr.io/mredenti/slides-builder-pandoc:latest slides-builder
-```
+Alternatively, pull the Docker image directly from GitHub Container Registry:
 
 ## Step 2: Generate the slides 
 

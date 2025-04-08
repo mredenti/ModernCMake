@@ -1,0 +1,36 @@
+name: Build and Upload Slides
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build slides using Docker
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/source \
+            -w /source \
+            ghcr.io/mredenti/slides-builder-pandoc:latest \
+            make CMake.pdf
+
+      - name: Upload slides PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CMake-slides
+          path: slides/pdf/CMake.pdf
+
