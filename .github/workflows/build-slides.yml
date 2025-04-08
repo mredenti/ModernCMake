@@ -18,13 +18,13 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Build slides using Docker
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/source \
-            -w /source \
+            -w /source/slides \
             ghcr.io/mredenti/slides-builder-pandoc:latest \
             make CMake.pdf
 
