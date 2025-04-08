@@ -21,6 +21,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
+
+      - name: Ensure pdf directory exists
+        run: mkdir -p slides/pdf      
       
       - name: Build slides
         run: make CMake.pdf
