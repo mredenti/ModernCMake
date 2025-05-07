@@ -19,15 +19,17 @@ aspectratio: 169
 
 | MORNING                                 | AFTERNOON                              |
 | --------------------------------------- | -------------------------------------- |
-| **09:00 - 09:30** Introduction to CMake | **13:00 - 14:00** Finding dependencies |
+| **09:00 - 09:30** Introduction to CMake | **13:00 - 14:00** CMake Targets        |
 |                                         |                                        |
-| **09:30 - 10:00** Creating a library    | **14:00 - 14:30** Testing              |
+| **09:30 - 10:00** Creating a library    | **14:00 - 15:00** Finding Dependencies |
 |                                         |                                        |
-| **10:00 - 10:30** Variables             | **15:00 - 15:30** Advanced Topics      |
+| **10:00 - 10:30** Practical session #1  | **15:00 - 15:30** Testing              |
 |                                         |                                        |
-| > **10:30 - 11:00** Coffe break <       | > **15:30 - 16:00** Coffe break <      |
+| > **10:30 - 10:45** Coffe break <       | > **15:30 - 15:45** Coffe break <      |
 |                                         |                                        |
-| **11:00 - 12:00** Targets               | **16:00 - 17:00** Hands on             |
+| **10:45 - 11:30** Variables             | **15:45 - 17:00** Practical session #3 |
+|                                         |                                        |
+| **11:30 - 12:00** Practical session #2  |                                        |
 
 
 
