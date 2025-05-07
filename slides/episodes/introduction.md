@@ -19,7 +19,7 @@ aspectratio: 169
 
 | MORNING                                 | AFTERNOON                              |
 | --------------------------------------- | -------------------------------------- |
-| **09:00 - 09:30** Introduction to CMake | **13:00 - 14:00** CMake Targets        |
+| **09:00 - 09:30** Introduction to CMake | **13:00 - 14:00** Targets and Properties|
 |                                         |                                        |
 | **09:30 - 10:00** Creating a library    | **14:00 - 15:00** Finding Dependencies |
 |                                         |                                        |
