@@ -100,5 +100,5 @@ Discussion on how CMake fits into the software development process, its role in 
  
 
 
-# HANDS ON
+# HANDS-ON #3
 

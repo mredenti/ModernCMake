@@ -3,14 +3,14 @@ aspectratio: 169
 ---
 
 
-# HANDS ON
+# HANDS-ON #1
 
 ## Setup
 
-**Step 1** Log into G100 Cineca cluster
+**Step 1** Log in to Leonardo
 
 ```shell
-$ ssh <username>@login.g100.cineca.it
+$ ssh <username>@login.leonardo.cineca.it
 ```
 
 **Step 2** [\color{blue}{Clone the repository}](https://gitlab.hpc.cineca.it/training/build_system_pkg_manager_hpc.git)
@@ -33,10 +33,4 @@ $ git pull origin
 cd day2/morning/SlidesExamples
 ```
 
-Open the Readme.md file or view it from the repository
-
-Loading the cmake module
-
-```{.bash style=bashstyle}
-$ module load cmake
-```
+Open the `README.md` file and follow the instructions

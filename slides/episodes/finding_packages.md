@@ -2,7 +2,7 @@
 aspectratio: 169
 ---
 
-# FINDING PACKAGES
+# FINDING DEPENDENCIES
 
 ## Motivation
 

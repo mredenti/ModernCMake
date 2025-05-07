@@ -1,5 +1,5 @@
 ---
-title: Introduction to CMake
+title: CMake
 subtitle: Introduction to Build Systems and Package Managers in HPC
 author: 
   - Michael Redenti 

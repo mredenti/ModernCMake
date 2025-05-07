@@ -15,8 +15,8 @@ all: $(CMake:.md=.pdf)
 
 CMake := episodes/introduction.md \
 		episodes/basic_steps.md \
-		episodes/exercise.md \
 		episodes/library.md \
+		episodes/exercise.md \
 		episodes/language.md \
 		episodes/variables.md \
 		episodes/targets.md \

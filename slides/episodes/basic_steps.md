@@ -121,6 +121,83 @@ Step 3: Run executable
 ::::::::::::::
 
 
+## HELLO, WORLD! WITH MAKE
+
+\vspace{.3cm}
+
+\centering
+
+The root of a project using \underline{Make} must contain a **Makefile**.
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+\vspace{.4cm}
+
+**CPP**
+
+```{.cmake style=cmakestyle}
+all: hello
+
+hello: hello.o
+	g++ hello.o -o hello
+
+hello.o: hello.cpp
+	g++ -c hello.cpp -o hello.o
+```
+
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [\colorbox{pink}{Makefile}, file
+      ]
+      [hello.cpp, file
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::: {.column width="50%"}
+
+\vspace{.4cm}
+
+**FORTRAN**
+
+```{.cmake style=cmakestyle}
+all: hello
+
+hello: hello.o
+	gfortran hello.o -o hello
+
+hello.o: hello.F90
+	gfortran -c hello.F90 -o hello.o
+```
+
+\begin{forest}
+  pic dir tree,
+  where level=0{}{
+    directory,
+  },
+  [ 
+    [hello-world
+      [\colorbox{pink}{Makefile}, file
+      ]
+      [hello.F90, file
+      ]
+    ]
+  ]
+\end{forest}
+
+::: 
+::::::::::::::
+
+
 ## HELLO, WORLD! WITH CMAKE
 
 <!--
@@ -150,7 +227,7 @@ Step 3: Run executable
 
 \centering
 
-The root of a project using CMake must contain a **CMakeLists.txt** file.
+The root of a project using \underline{CMake} must contain a file named **CMakeLists.txt**.
 
 :::::::::::::: {.columns}
 ::: {.column width="50%"}
@@ -258,7 +335,7 @@ add_executable(hello hello.F90)
 
 \vspace{.5cm}
 
-On Galileo100
+On Leonardo
 
   ```{.bash style=bashstyle}
   $ module load cmake
@@ -415,11 +492,11 @@ On Galileo100
 
 \vspace{1cm}
 
-- **Unix Makefiles** is the default CMake generator on G100
+- **Unix Makefiles** is the default CMake generator on Unix-like systems (e.g., Linux, macOS).
 
 \vspace{.5cm}
 
-- The developer must **never edit the generated files**
+- The developer must **\underline{never edit the generated files}**
 <!-- 
   The developer edits the CMakeLists.txt, invoke CMake but must never edit the generated files
 -->
@@ -545,7 +622,7 @@ $ cmake --build ./build
 
 . . . 
 
-- [Not recommended] If the generator is **Unix Makefiles** the following is equivalent
+- [Not recommended] If the generator (-G) is **Unix Makefiles** the following is equivalent
 
   ```{.bash style=bashstyle}
   $ cd build && make all

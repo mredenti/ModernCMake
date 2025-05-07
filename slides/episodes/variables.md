@@ -1306,3 +1306,14 @@ if(CMAKE_CXX_COMPILER_LOADED)
 endif()
 ```
 -->
+
+
+# HANDS-ON #2
+
+## Instructions
+
+```{.bash style=bashstyle}
+cd day2/morning/SlidesExamples
+```
+
+Open the `README.md` file and follow the instructions
