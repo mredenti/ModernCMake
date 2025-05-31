@@ -189,10 +189,13 @@ one of the following: mpirun, mpiexec, or orterun.
     g++ -I<...>/openmpi/4.1.6/gcc--12.2.0/include -pthread 
     -L<...>/openmpi/4.1.6/gcc--12.2.0/lib -Wl,-rpath -Wl, -lmpi
     ```
+\vspace{1cm}
 
-\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Note]
+. . . 
+
+\begin{curiositybox}
 Although one could simply pass the MPI compiler wrapper (e.g., \texttt{mpic++}) directly as the \texttt{CMAKE\_CXX\_COMPILER}, it's often more robust to handle MPI logic explicitly within the \texttt{CMakeLists.txt}...
-\end{tcolorbox}
+\end{curiositybox}
 
 ## HOW TO DO IT - DETECTING MPI IN CMAKE
 

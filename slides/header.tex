@@ -12,6 +12,10 @@
 \usepackage{hyperref}
 \usepackage{tcolorbox}
 
+\definecolor{violet2}{RGB}{221,160,221}
+\definecolor{violet1}{RGB}{186,85,211}
+\newenvironment{curiositybox}[1][upper=violet1,lower=violet2,shadow=false]{\begin{tcolorbox}[title=Note, size=small,coltitle=black,colback=white,colframe=violet1,colbacktitle=violet2]}{\end{tcolorbox}}
+
 \definecolor{commentgreen}{RGB}{2,112,10}
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{lightcommentgreen2}{RGB}{120, 180, 120}
