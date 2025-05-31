@@ -182,22 +182,17 @@ one of the following: mpirun, mpiexec, or orterun.
 
 \vspace{.5cm}
 
-- The compiler wrapper is just a thin layer around the compiler used to build the MPI library...
+- The compiler wrapper is just a thin layer over the underlying compiler that automatically adds necessary arguments, such as include paths and libraries, for building parallel MPI programs.
     
     ```{.bash style=bashstyle}
-    $ mpic++ --showme:command
-    <>/gcc-10.2.0-<>/bin/gcc
+    $ mpic++ --showme
+    g++ -I<...>/openmpi/4.1.6/gcc--12.2.0/include -pthread 
+    -L<...>/openmpi/4.1.6/gcc--12.2.0/lib -Wl,-rpath -Wl, -lmpi
     ```
-- ... and it will augment it with additional arguments, such as include paths and libraries, needed to successfully build a parallel
-program
 
-    ```{.bash style=bashstyle}
-    $ mpicxx --showme:incdirs
-    <...>/openmpi-4.1.1<...>/include 
-
-    $ mpicxx --showme:libs
-    mpi
-    ```
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Note]
+Although one could simply pass the MPI compiler wrapper (e.g., \texttt{mpic++}) directly as the \texttt{CMAKE\_CXX\_COMPILER}, it's often more robust to handle MPI logic explicitly within the \texttt{CMakeLists.txt}...
+\end{tcolorbox}
 
 ## HOW TO DO IT - DETECTING MPI IN CMAKE
 
