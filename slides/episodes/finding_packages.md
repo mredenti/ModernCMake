@@ -7,6 +7,10 @@ aspectratio: 169
 ## Motivation
 
 <!--
+Detecting and Integrating External Libraries
+-->
+
+<!--
     In this chapter we will talk about how to detect external/third party 
     libraries in CMake. There comes a time where as your project grows 
     you want to make use of external libraries, programs, files...
@@ -306,10 +310,10 @@ and language standard and optionally enable MPI:
 
 ## HOW TO DO IT - GENERATE
 
-4. (G100) Let us configure and generate the project files:
+4. (Leonardo) Let us configure and generate the project files:
 
   ```{.bash style=bashstyle}
-  $ module load openmpi/4.1.1--gcc--10.2.0-cuda-11.5.0
+  $ module load openmpi
   
   $ cmake -B ./build -S <>/helloWorldMPI @-DTPL_ENABLE_MPI=ON@
   -- The CXX compiler identification is GNU 8.4.1
