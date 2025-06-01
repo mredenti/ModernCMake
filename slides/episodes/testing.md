@@ -56,21 +56,27 @@ command-line tool. -->
 
 <!-- 
   Testing is an essential activity in the development cycle. A well-designed test suite will help you detect bugs and can also facilitate the onboarding of new developers.
+
+   and encourages simpler, modular code.
+
 -->
 
-Testing is an essential component of the code development toolbox
 
-- Early detection of functionality regressions
+Testing is an important aspect of software development. It helps catch bugs early, verify functionality, ensure proper installation, ...
 
-- Assurance of code functionality for new developers
+\vspace{1cm}
 
-- Verification of installation and deployment
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,inner sep=0pt, xshift=-1.6cm, yshift=-2.6cm] at (current page.north east) {
+  \href{http://www.example.com}{\includegraphics[scale=0.38]{./fig/CMakeCTestWorkflow.png}}
+};
+\end{tikzpicture}
 
-- Encouragement of modular and less complex code
+\vspace{2.5cm}
 
-\vspace{0.5cm}
-
-**CTest** is part of the CMake suite of programs. It is a test runner. You can handle your test suite definition, execution, and reporting through it.
+\begin{curiositybox}
+\textbf{CTest} is a driver to kick off a test runner like Google Test or PyTest, or anything you like to run. You can handle your test suite definition, execution, and reporting through it.
+\end{curiositybox}
 
 <!--
     Testing is an essential activity in the development cycle. A well-designed test suite will help you detect bugs and can also facilitate the onboarding of new developers. In this episode, we will look into how to use CTest to define and run our tests.
@@ -195,6 +201,15 @@ int main() {
   enable_testing() can be
 called in a subdirectory without error, but without a call to enable_testing() at the top level, the
 ctest input file will not be created at the top of the build tree where it is normally expected to be
+
+
+I prefer to have verbose output, and I can do this with setting the CMake CTest arguments:
+
+list(APPEND CMAKE_CTEST_ARGUMENTS "--output-on-failure")
+list(APPEND CMAKE_CTEST_ARGUMENTS "--verbose")
+
+CTest is a driver to kick off a test runner like Google Test or PyTest, or anything you like to run:
+
 -->
 
 1. In the top-level CMakeLists.txt file insert a call to `enable_testing()` which will instruct CMake to produce an input file for CTest in the `CMAKE_CURRENT_BINARY_DIR`.
@@ -313,7 +328,7 @@ target_include_directories(
 
 \vspace{.5cm}
 
-3. Then, we define the testing executable, link it to the summation library and define a test case with `add_test()`.
+3. Then, we define the testing executable, link it to the summation library and register a test target with `add_test()`.
 
 ```{.cmake style=cmakestyle}
 # testing binary
