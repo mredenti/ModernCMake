@@ -26,7 +26,7 @@ Use the following in the tutorial for the testing parts
 # CREATING AND RUNNING TESTS
 
 
-## WHY TESTING IS IMPORTANT
+## INTEGRATING TESTS IN THE CMAKE WORKFLOW
 
 <!--
 A natural follow-on to building a project is to test the artifacts it created. The CMake software suite
