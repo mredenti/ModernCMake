@@ -29,6 +29,11 @@ Use the following in the tutorial for the testing parts
 ## INTEGRATING TESTS IN THE CMAKE WORKFLOW
 
 <!--
+
+One key element of a CI/CD pipeline is the automatic testing phase: whenever I check in new source code or manually trigger it, I can run a test suite to make sure that the changes do not break anything. For this, I have to run automated tests.
+
+In a TDD (Test Driven Development) world you would first write the tests, then develop the software. That would be ideal, but as we all know: the world is not ideal. Instead, in many cases you might have to work on legacy code, and adding tests later on. In this article I describe, how tests can be added to a CMake based project, using the Unity test framework and CTest as testing driver.
+
 A natural follow-on to building a project is to test the artifacts it created. The CMake software suite
 includes the ctest tool, which can be used to automate the testing phase. This chapter covers the
 fundamental aspects of testing. It discusses how to define tests and execute them using the ctest
