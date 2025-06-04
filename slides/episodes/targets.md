@@ -12,9 +12,9 @@ aspectratio: 169
 
 - A target is declared by either `add_executable()` or `add_library()` commands where 
 
-- \underline{Executable Targets}: Represent a binary that can be run. 
+  - \underline{Executable Targets}: Represent a binary that can be run. 
 
-- \underline{Library Targets}: Represent shared, static libraries or object files. 
+  - \underline{Library Targets}: Represent shared, static libraries object files or external libraries. 
 
 
 ## TARGETS HAVE PROPERTIES
