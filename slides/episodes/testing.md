@@ -72,7 +72,7 @@ Testing is an important aspect of software development. It helps catch bugs earl
 \vspace{1cm}
 
 \begin{tikzpicture}[remember picture,overlay]
-\node[anchor=north east,inner sep=0pt, xshift=-1.6cm, yshift=-2.6cm] at (current page.north east) {
+\node[anchor=north east,inner sep=0pt, xshift=-14cm, yshift=-6.6cm] at (current page.north east) {
   \href{http://www.example.com}{\includegraphics[scale=0.38]{./fig/CMakeCTestWorkflow.png}}
 };
 \end{tikzpicture}
