@@ -256,10 +256,9 @@ $\Rightarrow$ At **configuration + generation** time...
 ```{.bash style=bashstyle}
 $ cmake -B ./build 
 ...
-@[100%] Linking CXX executable hello@
-cd <>/build/src ...
-/usr/bin/c++ CMakeFiles/hello.dir/hello.cpp.o 
-            CMakeFiles/hello.dir/greetings.cpp.o -o hello 
+@Compile sources into a library? OFF@
+-- Configuring done (0.3s)
+-- Generating done (0.0s) 
 ```
 
 ## HOW IT WORKS 
